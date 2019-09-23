@@ -7,37 +7,41 @@
 #include <string>
 #include <unordered_map>
 
-typedef pair<string, Vertex*> Country;
 typedef vector<Card*> Hand;
 
 class Player {
 
     string* name;
-    unordered_map<string, Vertex*> countries;
-    int* cubes;
-    int* disks;
+    set<string>* countries;
+    int* armies;
+    int* cities;
     int* coins;
     Hand* hand;
 
     public:
-        Player(const string& name, int cubes, int disks, int coins);
+        Player(const string& name,int startCoins);
         ~Player();
 
-        void PayCoin();
-        void PlaceNewArmies();
-        void MoveArmies();
-        void MoveOverLand();
-        void BuildCity();
-        void DestroyArmy();
+        bool PayCoin(int amount);
+        bool PlaceNewArmies(int newArmies, Vertex* country, const string& start);
+        bool MoveArmies(int numArmies, Vertex* start, Vertex* end);
+        bool MoveOverLand(int numArmies, Vertex* start, Vertex* end);
+        bool BuildCity(Vertex* country);
+        bool DestroyArmy(Vertex* country);
 
         string getName();
-        set<Vertex>* getCountries();
-        int getCubes();
-        int getDisks();
+        set<string>* getCountries();
+        int getArmies();
+        int getCities();
         int getCoins();
         Hand* getHand();
 
+    private:
         void addCountry(Vertex* country);
+        void removeCountry(Vertex* country);
+        void addArmiesToCountry(Vertex* country, int numArmies);
+        void removeArmiesFromCountry(Vertex* country, int numArmies);
+        bool isAdjacent(Vertex* country, bool overWaterAllowed);
 };
 
 #endif

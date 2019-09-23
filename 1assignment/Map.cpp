@@ -21,6 +21,17 @@ void GameMap::addEdge(const string& startVertex, const string& endVertex, bool i
     v2->addEdge(v1, isWaterEdge);
 }
 
+bool GameMap::setStartVertex(const string& startVertex){
+    //check if startVertex exists in vertices, if yes, set startVertex to its name
+    if (vertices->find(startVertex) != vertices->end()) {
+        cout << "Setting " << startVertex << " as the START." << endl;
+        *start = startVertex;
+        return true;
+    }
+    
+    return false;
+}
+
 Vertices* GameMap::getVertices(){return vertices;}
 
 GameMap::GameMap() {

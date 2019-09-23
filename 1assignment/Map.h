@@ -13,19 +13,16 @@
 using namespace std;
 
 struct Vertex {
-    typedef bool isWaterEdge;
-    typedef pair<Vertex*, isWaterEdge> Edge;
+    typedef pair<Vertex*, bool> Edge;
 
     string name;
-    string owner;
+    set<string> owner;
     string continent;
-    int numArmies;
+    unordered_map<string, int> armies;
+    unordered_map<string, int> cities;
     vector<Edge> edges;
 
-    Vertex(string aName, string continent) : name(aName), continent(continent) {
-        numArmies = 0;
-        owner = "None";
-    }
+    Vertex(string aName, string continent) : name(aName), continent(continent) {}
 
     void addEdge(Vertex* vertex, bool isWaterEdge) {
         // cout << "Adding edge from " << name << " to " << vertex->name << endl;
@@ -37,6 +34,7 @@ typedef unordered_map<string, Vertex*> Vertices;
 
 class GameMap {
     Vertices* vertices;
+    string* start;
 
 public:
     GameMap();
@@ -44,6 +42,7 @@ public:
     void addVertex(const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     Vertices* getVertices();
+    bool setStartVertex(const string& startVertex);
 };
 
 #endif
