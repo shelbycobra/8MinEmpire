@@ -1,27 +1,33 @@
 #include "Map.h"
-#include <iostream>
 
+void GameMap::addVertex(const string& name, const string& continent) {
+    Vertices::iterator it = vertices->find(name);
 
-void Map::addVertex(Vertex* vertex) { vertices->push_back(vertex);}
-void Map::addEdge(Edge* edge) {edges->push_back(edge);}
-Vertices* Map::getVertices(){return vertices;}
-Edges* Map::getEdges() {return edges;}
+    if (it == vertices->end()) {
+        Vertex * vertex = new Vertex (name, continent);
+        typedef pair<string, Vertex*> node;
+        vertices->insert(node (name, vertex));
+        return;
+    }
 
-int main() {
-    Edges edges;
-    Vertex* node = new Vertex {"Node", "ME", 0, edges};
-    Edges edges2;
-    Vertex* node2 = new Vertex {"Node2", "opponent", 1, edges2};
+    Vertex* v = vertices->find(name)->second;
+    cout << "Vertex " << v->name << " on continent " << v->continent << " already exists on the map.\n" << endl;
+}
 
-    
-    cout << node->name << endl;
-    cout << node->owner << endl;
-    cout << node->numArmies << endl;
-    cout << node->edges.size() << endl;
-    cout << node2->name << endl;
-    cout << node2->owner << endl;
-    cout << node2->numArmies << endl;
-    cout << node2->edges.size() << endl;
+void GameMap::addEdge(const string& startVertex, const string& endVertex, bool isWaterEdge) {
+    Vertex * v1 = vertices->find(startVertex)->second;
+    Vertex * v2 = vertices->find(endVertex)->second;
+    v1->addEdge(v2, isWaterEdge);
+    v2->addEdge(v1, isWaterEdge);
+}
 
-    return 0;
+Vertices* GameMap::getVertices(){return vertices;}
+
+GameMap::GameMap() {
+    vertices = new Vertices();
+}
+
+GameMap::~GameMap() {
+    delete vertices;
+    vertices = NULL;
 }
