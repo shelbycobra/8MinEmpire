@@ -1,4 +1,5 @@
 #include "MapUtil.h"
+#include <sstream>
 
 typedef pair<Vertex*, bool> Edge;
 
@@ -199,6 +200,81 @@ bool playerOccupiedCountriesAreFoundOnMap(set<Vertex*>* countries, Vertices* ver
         }
     }
     return true;
+}
+
+vector<string>* split(string& str, char delimiter) {
+    vector<string>* arr = new vector<string>();
+    string next;
+
+    for(string::const_iterator it = str.begin(); it != str.end(); ++it) {
+        if (*it == delimiter) {
+            if (!next.empty()) {
+                arr->push_back(next);
+                next.clear();
+            }
+        } else {
+            next += *it;
+        }
+    }
+
+    if (!next.empty())
+        arr->push_back(next);
+
+    return arr;
+}
+
+bool performCardAction(Player* player, string action) {
+    //if action contains OR -> ask player which to use
+    int orPos = action.find("OR");
+    if ( orPos != -1) {
+        cout << "Which action do you want?" << endl;
+
+    }
+    cout << "PLAYER does " << action << endl;
+    vector<string>* actionArr = split(action, ' ');
+
+    for(vector<string>::iterator it = actionArr->begin(); it != actionArr->end(); ++it) {
+        cout << (*it) << endl;
+        if ((*it) == "Move") {
+
+            ++it;
+            stringstream toInt(*it);
+            int numArmies;
+            toInt >> numArmies;
+
+            bool overWater = action.find("water") != -1;
+
+            Vertex* startVertex = chooseStartVertex(player);
+            Vertex* endVertex = chooseEndVertex(player);
+
+            player->moveArmies(numArmies, startVertex, endVertex, overWater);
+        }
+        if ((*it) ==  "Add") {
+            ++it;
+            // int amount = (int) (*it);
+        }
+        if ((*it) ==  "Destroy") {
+            ++it;
+            // int amount = (int) (*it);
+        }
+        if ((*it) == "Build") {
+            ++it;
+            // int amount = (int) (*it);
+        }
+    }
+    cout << "[ " << player->getName() << " ] Does action \"" << action << "\"" << endl;
+
+    return true;
+}
+
+Vertex* chooseStartVertex(Player* player){
+    /TODO
+    return NULL;
+}
+
+Vertex* chooseEndVertex(Player* player){
+    //TODO
+    return NULL;
 }
 
 GameMap* generateValidMap() {

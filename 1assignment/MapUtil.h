@@ -2,6 +2,7 @@
 #define MAPUTIL_H
 
 #include "Map.h"
+#include "Player.h"
 
 typedef pair<Vertex*, bool> Edge;
 
@@ -10,6 +11,10 @@ bool validateContinents(GameMap* map);
 vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
 bool playerOccupiedCountriesAreFoundOnMap(set<Vertex*>* countries, Vertices* vertices);
+vector<string>* split(string& str, char delimiter);
+bool performCardAction(Player* player, string action);
+Vertex* chooseStartVertex(Player* player);
+Vertex* chooseEndVertex(Player* player);
 
 GameMap* generateValidMap();
 GameMap* generateSmallSimpleMap();

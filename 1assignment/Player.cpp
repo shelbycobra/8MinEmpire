@@ -1,9 +1,10 @@
 #include "Player.h"
 #include "Map.h"
+#include "Cards.h"
 
 Player::Player(string& playerName, int startCoins): name(new string(playerName)),
     armies(new int(14)), cities(new int(3)), coins(new int(startCoins)),
-    countries(new set<Vertex*>()), hand(new Hand()){
+    countries(new set<Vertex*>()), hand(new vector<Card*>()){
         cout << "[ " << *name << " ] CREATED. (Purse = " << startCoins << ")." << endl;
     }
 
@@ -193,11 +194,8 @@ bool Player::destroyArmies(Vertex* country, Player* opponent){
     return false;
 }
 
-void Player::addCard(Card* card) {
+void Player::addCardToHand(Card* card) {
     hand->push_back(card);
-
-    string action = card->action;
-    //
 }
 
 
@@ -274,7 +272,7 @@ int Player::getAvailableCities(){return *cities;}
 
 int Player::getCoins(){return *coins;}
 
-Hand* Player::getHand(){return hand;}
+vector<Card*>* Player::getHand(){return hand;}
 
 void Player::increaseAvailableArmies(int amount) {
     *armies += amount;

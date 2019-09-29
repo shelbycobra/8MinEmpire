@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 
+struct Card;
 
 class Player {
 
@@ -32,7 +33,7 @@ class Player {
         bool buildCity(Vertex* country);
         bool destroyArmies(Vertex* country, Player* opponent);
 
-        void addCard(Card* card);
+        void addCardToHand(Card* card);
         void addCountry(Vertex* country);
         void removeCountry(Vertex* country);
 
@@ -44,7 +45,7 @@ class Player {
         int getAvailableArmies();
         int getAvailableCities();
         int getCoins();
-        Hand* getHand();
+        vector<Card*>* getHand();
 
     private:
         void addArmiesToCountry(Vertex* country, int numArmies);

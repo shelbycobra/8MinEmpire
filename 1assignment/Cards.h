@@ -1,7 +1,6 @@
 #ifndef CARDS_H
 #define CARDS_H
 
-#include <map>
 #include <string>
 #include <vector>
 #include <queue>
@@ -10,13 +9,15 @@
 
 using namespace std;
 
+class Player;
+
 struct Card {
 
     int id;
     string good;
     string action;
 
-    Card(int id, string theGood, string theAction): id(id), good(theGood), action(theAction) {}
+    Card(int theId, string theGood, string theAction): id(theId), good(theGood), action(theAction) {}
 };
 
 class Deck {
@@ -26,6 +27,7 @@ class Deck {
         Deck();
         ~Deck();
         Card* draw();
+        queue<Card*>* getDeck();
 };
 
 class Hand {
@@ -37,8 +39,9 @@ class Hand {
         Hand();
         ~Hand();
 
-        void exchange(int position, Player* player);
+        Card* exchange(int position);
         void printHand();
+        vector<Card*>* getHand();
 };
 
 #endif
