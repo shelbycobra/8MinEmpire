@@ -2,6 +2,7 @@
 #include "MapUtil.h"
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 GameMap* loadMap(const string& filePath) {
     ifstream mapFile(filePath);

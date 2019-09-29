@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "You must provide a driver name as an argument. Eg. ./run_driver Player (for PlayerDriver.cpp)"
+    exit 1
+fi
+
+CPP_STD="-std=c++14"
+CPP_FILES="Cards.cpp Player.cpp Map.cpp MapUtil.cpp MapLoader.cpp $1Driver.cpp"
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    g++ $CPP_STD $CPP_FILES
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    clang++ $CPP_STD $CPP_FILES
+fi
+
+./a.out

@@ -268,7 +268,7 @@ bool performCardAction(Player* player, string action) {
 }
 
 Vertex* chooseStartVertex(Player* player){
-    /TODO
+    //TODO
     return NULL;
 }
 
