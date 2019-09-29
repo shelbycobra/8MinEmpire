@@ -42,7 +42,8 @@ public:
     void addVertex(const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     Vertices* getVertices();
-    bool setStartVertex(const string& startVertex);
+    string* getStartVertex();
+    bool setStartVertex(string& startVertexName);
 };
 
 #endif

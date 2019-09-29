@@ -12,36 +12,47 @@ typedef vector<Card*> Hand;
 class Player {
 
     string* name;
-    set<string>* countries;
+    set<Vertex*>* countries;
     int* armies;
     int* cities;
     int* coins;
     Hand* hand;
 
     public:
-        Player(const string& name,int startCoins);
+
+        //Constructors & Destructors
+        Player(string &name,int startCoins);
         ~Player();
 
-        bool PayCoin(int amount);
-        bool PlaceNewArmies(int newArmies, Vertex* country, const string& start);
-        bool MoveArmies(int numArmies, Vertex* start, Vertex* end);
-        bool MoveOverLand(int numArmies, Vertex* start, Vertex* end);
-        bool BuildCity(Vertex* country);
-        bool DestroyArmy(Vertex* country);
+        //Copy Constructor & Assignment Overload
 
+        bool payCoins(int amount);
+        bool placeNewArmies(int newArmies, Vertex* country, string& start);
+        bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
+        bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
+        bool buildCity(Vertex* country);
+        bool destroyArmies(Vertex* country, Player* opponent);
+
+        void addCountry(Vertex* country);
+        void removeCountry(Vertex* country);
+
+        // Getters
+        int getArmiesOnCountry(Vertex* country);
+        int getCitiesOnCountry(Vertex* country);
         string getName();
-        set<string>* getCountries();
-        int getArmies();
-        int getCities();
+        set<Vertex*>* getCountries();
+        int getAvailableArmies();
+        int getAvailableCities();
         int getCoins();
         Hand* getHand();
 
     private:
-        void addCountry(Vertex* country);
-        void removeCountry(Vertex* country);
         void addArmiesToCountry(Vertex* country, int numArmies);
         void removeArmiesFromCountry(Vertex* country, int numArmies);
         bool isAdjacent(Vertex* country, bool overWaterAllowed);
+        void increaseAvailableArmies(int amount);
+        void decreaseAvailableArmies(int amount);
+        bool isCountryInCountriesSet(Vertex* country);
 };
 
 #endif

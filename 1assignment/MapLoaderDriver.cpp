@@ -7,7 +7,7 @@ void test_ReadInvalidMapFiles();
 void test_CreateInvalidGraphFromMap();
 
 int main() {
-    GameMap* map = loadmap("../gotmap/got.map");
+    GameMap* map = loadMap("../gotmap/got.map");
     cout << map->getVertices()->size() << endl;
 
     cout << "ConnectMap: " << isConnectedMap(map)<< endl;
