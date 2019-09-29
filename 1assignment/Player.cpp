@@ -193,11 +193,19 @@ bool Player::destroyArmies(Vertex* country, Player* opponent){
     return false;
 }
 
+void Player::addCard(Card* card) {
+    hand->push_back(card);
+
+    string action = card->action;
+    //
+}
+
+
 void Player::addCountry(Vertex* country){
     Vertex* v;
     v = country;
     countries->insert(v);
-    cout << "[ " << *name << " ] " << "Added country < " << country->name << " >." << endl;
+    cout << "[ " << *name << " ] " << "Added country < " << country->name << " > to player's countries." << endl;
 }
 
 void Player::removeCountry(Vertex* country) {

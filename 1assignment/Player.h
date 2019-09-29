@@ -7,7 +7,6 @@
 #include <string>
 #include <unordered_map>
 
-typedef vector<Card*> Hand;
 
 class Player {
 
@@ -16,7 +15,7 @@ class Player {
     int* armies;
     int* cities;
     int* coins;
-    Hand* hand;
+    vector<Card*>* hand;
 
     public:
 
@@ -33,6 +32,7 @@ class Player {
         bool buildCity(Vertex* country);
         bool destroyArmies(Vertex* country, Player* opponent);
 
+        void addCard(Card* card);
         void addCountry(Vertex* country);
         void removeCountry(Vertex* country);
 

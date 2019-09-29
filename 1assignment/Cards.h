@@ -1,25 +1,44 @@
 #ifndef CARDS_H
 #define CARDS_H
 
-#include <unordered_map>
+#include <map>
 #include <string>
+#include <vector>
+#include <queue>
+
+#include "Player.h"
 
 using namespace std;
 
-class Card {
+struct Card {
 
-    string* good;
-    string* action;
+    int id;
+    string good;
+    string action;
+
+    Card(int id, string theGood, string theAction): id(id), good(theGood), action(theAction) {}
 };
 
 class Deck {
+    queue<Card*>* cardDeck;
 
-    unordered_map<int, Card*>* deck;
-    
-
-public:
-    Card* draw();
+    public:
+        Deck();
+        ~Deck();
+        Card* draw();
 };
 
+class Hand {
+
+    vector<Card*>* hand;
+    Deck* deck;
+
+    public:
+        Hand();
+        ~Hand();
+
+        void exchange(int position, Player* player);
+        void printHand();
+};
 
 #endif
