@@ -2,6 +2,8 @@
 #include "MapUtil.h"
 #include "Map.h"
 
+typedef unordered_map<string, Player*> Players;
+
 int main() {
 
     GameMap* map = generateValidMap();
@@ -37,6 +39,6 @@ int main() {
     if (player1->payCoins(values[position])) {
         Card* card = gameHand->exchange(5);
         player1->addCardToHand(card);
-        bool result = map->performCardAction(player1, card->action, players);
+        bool result = performCardAction(player1, card->action, map, players);
     }
 }

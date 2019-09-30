@@ -5,11 +5,7 @@
 #include <vector>
 #include <queue>
 
-#include "Player.h"
-
 using namespace std;
-
-class Player;
 
 struct Card {
 

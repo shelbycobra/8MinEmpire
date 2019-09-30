@@ -8,11 +8,10 @@
 #include <unordered_map>
 #include <stdio.h>
 
-using namespace std;
-
 typedef unordered_map<string, Player*> Players;
 
 struct Card;
+struct Vertex;
 
 class Player {
 

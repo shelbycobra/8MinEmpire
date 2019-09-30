@@ -222,6 +222,187 @@ vector<string>* split(string& str, char delimiter) {
     return arr;
 }
 
+bool performCardAction(Player* player, string action, GameMap* map, Players* players) {
+    //if action contains OR -> ask player which to use
+    int orPos = action.find("OR");
+    if ( orPos != -1) {
+        while(true) {
+            cout << "[ GAME ] Which action do you want? 1 or 2 ?" << endl;
+            string firstChoice = action.substr(0, orPos -1);
+            string secondChoice = action.substr(orPos + 2);
+            cout << "[ OPTION 1 ] " << firstChoice << endl;
+            cout << "[ OPTION 2 ] " << secondChoice << endl;
+            string answer;
+            cin >> answer;
+
+            if (answer == "1") {
+                action = firstChoice;
+                break;
+            } else if (answer == "2") {
+                action = secondChoice;
+                break;
+            } else {
+                cout << "[ GAME ] Invalid choice. Please use either 1 or 2." << endl;
+            }
+        }
+
+    }
+
+    vector<string>* actionArr = split(action, ' ');
+
+    for(vector<string>::iterator it = actionArr->begin(); it != actionArr->end(); ++it) {
+        if ((*it) == "Move") {
+            Vertex* startVertex;
+            Vertex* endVertex;
+
+            ++it;
+            stringstream toInt(*it);
+            int numArmies;
+            toInt >> numArmies;
+
+            bool overWater = action.find("water") != -1;
+            actionType type = overWater ? actionType::MOVE_OVER_WATER : actionType::MOVE_OVER_LAND;
+
+            startVertex = chooseStartVertex(player);
+
+            while(true) {
+                endVertex = chooseEndVertex(player, type, map);
+                if (!player->moveArmies(numArmies, startVertex, endVertex, overWater)) {
+                    cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+                    continue;
+                }
+                break;
+            }
+
+        }
+        if ((*it) ==  "Add") {
+            Vertex* endVertex;
+
+            ++it;
+            stringstream toInt(*it);
+            int numArmies;
+            toInt >> numArmies;
+
+            while(true) {
+                endVertex = chooseEndVertex(player, actionType::ADD_ARMY, map);
+                if (!player->placeNewArmies(numArmies, endVertex)) {
+                    cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+                    continue;
+                }
+                break;
+            }
+
+        }
+        if ((*it) ==  "Destroy") {
+            Vertex* endVertex;
+            string opponentName;
+            Player* opponent;
+
+            while (true) {
+                cout << "[ GAME ] Choose an opponent." << endl;
+                cout << "[ GAME ] > ";
+                cin >> opponentName;
+                if (players->find(opponentName) == players->end())
+                    cerr << "[ ERROR! ] Player doesn't exist. Try again." << endl;
+                else {
+                    opponent = players->find(opponentName)->second;
+                    break;
+                }
+            }
+
+            while(true) {
+                endVertex = chooseEndVertex(player, actionType::DESTROY_ARMY, map);
+                if (!player->destroyArmy(endVertex, opponent)) {
+                    cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+                    continue;
+                }
+                break;
+            }
+
+        }
+        if ((*it) == "Build") {
+            Vertex* endVertex;
+
+            while (true) {
+                endVertex = chooseEndVertex(player, actionType::DESTROY_ARMY, map);
+                if (!player->buildCity(endVertex)) {
+                    cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+                    continue;
+                }
+                break;
+            }
+
+        }
+    }
+    cout << "[ " << player->getName() << " ] Does action \"" << action << "\"" << endl;
+
+    return true;
+}
+
+Vertex* chooseStartVertex(Player* player){
+
+    string startName;
+    Vertex* startVertex;
+
+    while(true){
+        cout << "[ GAME ] You must choose a country to take armies from." << endl;
+        player->printCountries();
+        cin >> startName;
+
+        if (player->getCountries()->find(startName) == player->getCountries()->end()) {
+            cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+        } else {
+            startVertex = player->getCountries()->find(startName)->second;
+            break;
+        }
+    }
+    return startVertex;
+}
+
+Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
+    string endName;
+    Vertex* endVertex;
+
+    while(true){
+        cout << "[ GAME ] You must choose a country to add armies to." << endl;
+
+        if (type == actionType::ADD_ARMY || type == actionType::BUILD_CITY) {
+            player->printCountries();
+        } else if (type == actionType::MOVE_OVER_LAND || type == actionType::MOVE_OVER_WATER) {
+            map->printMap();
+            cout <<"\nW---Z   A---B---E===O---P---Q"
+            <<"\n \\  |   |\\  |  /     \\  |  /"
+            <<"\n  \\ |   | \\ | /       \\ | /"
+            <<"\n   \\|   |  \\|/         \\|/"
+            <<"\nY---X===C   D           R\n" << endl;
+        } else if (type == actionType::DESTROY_ARMY) {
+            map->printMap();
+            cout << "\nW---Z   A---B---E===O---P---Q"
+            <<"\n \\  |   |\\  |  /     \\  |  /"
+            <<"\n  \\ |   | \\ | /       \\ | /"
+            <<"\n   \\|   |  \\|/         \\|/"
+            <<"\nY---X===C   D           R\n" << endl;
+        } else {
+            cerr << "[ ERROR! ] Invalid action type." << endl;
+            return NULL;
+        }
+
+        cout << "[ GAME ] > ";
+        cin >> endName;
+        cout << "[ GAME ] You chose < " << endName << " >." << endl;
+
+        if (map->getVertices()->find(endName) == map->getVertices()->end()) {
+            cerr << "[ ERROR! ] That country doesn't exist on the map." << endl;
+            continue;
+        }
+
+        break;
+    }
+
+    endVertex = map->getVertices()->find(endName)->second;
+    return endVertex;
+}
+
 GameMap* generateValidMap() {
     GameMap* map = new GameMap();
 

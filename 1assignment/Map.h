@@ -15,6 +15,8 @@
 
 using namespace std;
 
+class Player;
+
 struct Vertex {
     typedef pair<Vertex*, bool> Edge;
 

@@ -18,9 +18,9 @@ vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
 bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* vertices);
 vector<string>* split(string& str, char delimiter);
-bool performCardAction(Player* player, string action, Vertices* mapVertices);
+bool performCardAction(Player* player, string action, GameMap* map, Players* players);
 Vertex* chooseStartVertex(Player* player);
-Vertex* chooseEndVertex(Player* player, bool isWaterAllowed, Vertices* mapVertices);
+Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map);
 
 GameMap* generateValidMap();
 GameMap* generateSmallSimpleMap();
