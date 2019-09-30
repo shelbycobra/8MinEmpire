@@ -3,6 +3,8 @@
 
 #include "Map.h"
 
+using namespace std;
+
 GameMap* loadMap(const string& filePath);
 
 #endif

@@ -158,7 +158,7 @@ bool Player::buildCity(Vertex* country){
     return false;
 }
 
-bool Player::destroyArmies(Vertex* country, Player* opponent){
+bool Player::destroyArmy(Vertex* country, Player* opponent){
 
     if (opponent->getName() == *name) {
         cout << "[ " << *name << " ] Can't destroy own army." << endl;

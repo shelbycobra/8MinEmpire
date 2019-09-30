@@ -1,6 +1,9 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "Player.h"
+#include "MapUtil.h"
+
 #include <queue>
 #include <set>
 #include <unordered_set>
@@ -44,6 +47,12 @@ public:
     Vertices* getVertices();
     string* getStartVertex();
     bool setStartVertex(string& startVertexName);
+    bool performCardAction(Player* player, string action, Players* players);
+    void printMap();
+
+private:
+    Vertex* chooseStartVertex(Player* player);
+    Vertex* chooseEndVertex(Player* player, actionType type);
 };
 
 #endif

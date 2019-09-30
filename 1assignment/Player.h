@@ -8,6 +8,10 @@
 #include <unordered_map>
 #include <stdio.h>
 
+using namespace std;
+
+typedef unordered_map<string, Player*> Players;
+
 struct Card;
 
 class Player {
@@ -32,7 +36,7 @@ class Player {
         bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
         bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
         bool buildCity(Vertex* country);
-        bool destroyArmies(Vertex* country, Player* opponent);
+        bool destroyArmy(Vertex* country, Player* opponent);
 
         void addCardToHand(Card* card);
         void addCountry(Vertex* country);

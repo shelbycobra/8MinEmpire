@@ -4,7 +4,13 @@
 #include "Map.h"
 #include "Player.h"
 
+#include <sstream>
+
+using namespace std;
+
 typedef pair<Vertex*, bool> Edge;
+
+enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
 bool isConnectedMap(GameMap* map);
 bool validateContinents(GameMap* map);

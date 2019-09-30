@@ -339,7 +339,7 @@ void test_DestroyArmy(){
     int startArmies;
 
     player2->getArmiesOnCountry(startVertex);
-    result = player1->destroyArmies(startVertex, player2);
+    result = player1->destroyArmy(startVertex, player2);
     startArmies = player2->getArmiesOnCountry(startVertex);
 
     assert( result == true && startArmies == 2 );
@@ -347,7 +347,7 @@ void test_DestroyArmy(){
     cout << "\nTEST: Player 1 fails destroys own army on START.\n" << endl;
 
     player1->getArmiesOnCountry(startVertex);
-    result = player1->destroyArmies(startVertex, player1);
+    result = player1->destroyArmy(startVertex, player1);
     startArmies = player1->getArmiesOnCountry(startVertex);
 
     assert( result == false && startArmies == 3 );
@@ -360,7 +360,7 @@ void test_DestroyArmy(){
 
     player3->getArmiesOnCountry(pVertex);
     result = player3->moveOverLand(1, startVertex, pVertex);
-    result = result && player1->destroyArmies(pVertex, player3);
+    result = result && player1->destroyArmy(pVertex, player3);
     pArmies = player3->getArmiesOnCountry(pVertex);
 
     assert( result == true && pArmies == 0 );
@@ -368,7 +368,7 @@ void test_DestroyArmy(){
     cout << "\nTEST: Player 1 fails to destroy an army on \"P\" from Player 2.\n" << endl;
 
     player2->getArmiesOnCountry(pVertex);
-    result = player1->destroyArmies(pVertex, player2);
+    result = player1->destroyArmy(pVertex, player2);
     pArmies = player2->getArmiesOnCountry(pVertex);
 
     assert( result == false && pArmies == 0);
@@ -377,7 +377,7 @@ void test_DestroyArmy(){
 
     result = player1->moveOverLand(1, startVertex, pVertex);
     player1->getArmiesOnCountry(pVertex);
-    result = result && player1->destroyArmies(pVertex, player1);
+    result = result && player1->destroyArmy(pVertex, player1);
     pArmies = player1->getArmiesOnCountry(pVertex);
 
     assert( result == false && pArmies == 1 );

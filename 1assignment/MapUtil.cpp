@@ -1,5 +1,4 @@
 #include "MapUtil.h"
-#include <sstream>
 
 typedef pair<Vertex*, bool> Edge;
 
@@ -221,95 +220,6 @@ vector<string>* split(string& str, char delimiter) {
         arr->push_back(next);
 
     return arr;
-}
-
-bool performCardAction(Player* player, string action, Vertices* mapVertices) {
-    //if action contains OR -> ask player which to use
-    int orPos = action.find("OR");
-    if ( orPos != -1) {
-        cout << "Which action do you want?" << endl;
-
-    }
-    cout << "PLAYER does " << action << endl;
-    vector<string>* actionArr = split(action, ' ');
-
-    for(vector<string>::iterator it = actionArr->begin(); it != actionArr->end(); ++it) {
-        cout << (*it) << endl;
-        if ((*it) == "Move") {
-
-            ++it;
-            stringstream toInt(*it);
-            int numArmies;
-            toInt >> numArmies;
-
-            bool overWater = action.find("water") != -1;
-
-            Vertex* startVertex = chooseStartVertex(player);
-            Vertex* endVertex = chooseEndVertex(player, overWater, mapVertices);
-
-            player->moveArmies(numArmies, startVertex, endVertex, overWater);
-        }
-        if ((*it) ==  "Add") {
-            ++it;
-            // int amount = (int) (*it);
-        }
-        if ((*it) ==  "Destroy") {
-            ++it;
-            // int amount = (int) (*it);
-        }
-        if ((*it) == "Build") {
-            ++it;
-            // int amount = (int) (*it);
-        }
-    }
-    cout << "[ " << player->getName() << " ] Does action \"" << action << "\"" << endl;
-
-    return true;
-}
-
-Vertex* chooseStartVertex(Player* player){
-
-    string startName;
-    Vertex* startVertex;
-
-    while(true){
-        cout << "[ GAME ] You must choose a country to take armies from." << endl;
-        player->printCountries();
-        cin >> startName;
-
-        if (player->getCountries()->find(startName) == player->getCountries()->end()) {
-            cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
-        } else {
-            startVertex = player->getCountries()->find(startName)->second;
-            break;
-        }
-    }
-    return startVertex;
-}
-
-Vertex* chooseEndVertex(Player* player, bool isWaterAllowed,Vertices* mapVertices){
-    string endName;
-    Vertex* endVertex;
-
-    while(true){
-        cout << "[ GAME ] You must choose a country to add armies to." << endl;
-        cout <<"\nW---Z   A---B---E===O---P---Q"
-             <<"\n \\  |   |\\  |  /     \\  |  /"
-             <<"\n  \\ |   | \\ | /       \\ | /"
-             <<"\n   \\|   |  \\|/         \\|/"
-             <<"\nY---X===C   D           R\n" << endl;
-
-        cin >> endName;
-        cout << "You chose " << endName << endl;
-
-        if (player->isAdjacent(endName, isWaterAllowed)) {
-            cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
-        } else {
-            endVertex = mapVertices->find(endName)->second;
-            break;
-        }
-    }
-    return endVertex;
 }
 
 GameMap* generateValidMap() {
