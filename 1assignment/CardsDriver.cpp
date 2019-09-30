@@ -21,7 +21,7 @@ int main() {
     Players* players = new Players();
     Player* player1 = new Player(name1, 11);
     Player* player2 = new Player(name2, 11);
-    Palyer* player3 = new Player(name3, 11);
+    Player* player3 = new Player(name3, 11);
 
     players->insert(pair<string, Player*>(name1, player1));
     players->insert(pair<string, Player*>(name2, player2));

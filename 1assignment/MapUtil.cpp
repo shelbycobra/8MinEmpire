@@ -285,7 +285,7 @@ bool performCardAction(Player* player, string action, GameMap* map, Players* pla
 
             while(true) {
                 endVertex = chooseEndVertex(player, actionType::ADD_ARMY, map);
-                if (!player->placeNewArmies(numArmies, endVertex)) {
+                if (!player->placeNewArmies(numArmies, endVertex, *map->getStartVertex())) {
                     cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
                     continue;
                 }

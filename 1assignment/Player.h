@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <stdio.h>
 
-typedef unordered_map<string, Player*> Players;
+enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
 struct Card;
 struct Vertex;

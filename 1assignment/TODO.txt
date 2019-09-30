@@ -1,0 +1,1 @@
+1. Make Vertex a class and file of its own. Import it individually into Map and Player

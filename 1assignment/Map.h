@@ -2,7 +2,6 @@
 #define MAP_H
 
 #include "Player.h"
-#include "MapUtil.h"
 
 #include <queue>
 #include <set>
@@ -16,6 +15,7 @@
 using namespace std;
 
 class Player;
+typedef unordered_map<string, Player*> Players;
 
 struct Vertex {
     typedef pair<Vertex*, bool> Edge;
