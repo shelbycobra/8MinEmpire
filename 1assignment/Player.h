@@ -6,13 +6,14 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <stdio.h>
 
 struct Card;
 
 class Player {
 
     string* name;
-    set<Vertex*>* countries;
+    Vertices* countries;
     int* armies;
     int* cities;
     int* coins;
@@ -36,12 +37,15 @@ class Player {
         void addCardToHand(Card* card);
         void addCountry(Vertex* country);
         void removeCountry(Vertex* country);
+        void printCountries();
+        bool isAdjacent(Vertex* country, bool overWaterAllowed);
+        bool isAdjacent(string countryName, bool overWaterAllowed);
 
         // Getters
         int getArmiesOnCountry(Vertex* country);
         int getCitiesOnCountry(Vertex* country);
         string getName();
-        set<Vertex*>* getCountries();
+        Vertices* getCountries();
         int getAvailableArmies();
         int getAvailableCities();
         int getCoins();
@@ -50,10 +54,8 @@ class Player {
     private:
         void addArmiesToCountry(Vertex* country, int numArmies);
         void removeArmiesFromCountry(Vertex* country, int numArmies);
-        bool isAdjacent(Vertex* country, bool overWaterAllowed);
         void increaseAvailableArmies(int amount);
         void decreaseAvailableArmies(int amount);
-        bool isCountryInCountriesSet(Vertex* country);
 };
 
 #endif

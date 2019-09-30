@@ -10,11 +10,11 @@ bool isConnectedMap(GameMap* map);
 bool validateContinents(GameMap* map);
 vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
-bool playerOccupiedCountriesAreFoundOnMap(set<Vertex*>* countries, Vertices* vertices);
+bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* vertices);
 vector<string>* split(string& str, char delimiter);
-bool performCardAction(Player* player, string action);
+bool performCardAction(Player* player, string action, Vertices* mapVertices);
 Vertex* chooseStartVertex(Player* player);
-Vertex* chooseEndVertex(Player* player);
+Vertex* chooseEndVertex(Player* player, bool isWaterAllowed, Vertices* mapVertices);
 
 GameMap* generateValidMap();
 GameMap* generateSmallSimpleMap();
