@@ -3,6 +3,8 @@
 3. Create test cases for MapLoader
 4. Create test cases for Cards
 5. Complete test suite for Player
+6. Documentation
+7. README
 
 Questions
 1. Do the vertex members need to be pointers even though its a struct and not a class?
