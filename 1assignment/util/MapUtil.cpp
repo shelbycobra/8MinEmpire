@@ -31,6 +31,7 @@ int selectPositionOfCardFromGameHand(Hand* gameHand){
 
     while (true) {
         cout << "[ GAME HAND ] Please choose a card from the game hand." << endl;
+        cout << "[ GAME HAND ] > ";
         getline(cin, pos);
 
         stringstream toInt(pos);
@@ -191,7 +192,7 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
     int maxArmies;
     int remainderArmies;
 
-    stringstream toInt(action.substr(6, 7));
+    stringstream toInt(action.substr(5, 6));
     toInt >> maxArmies;
     remainderArmies = maxArmies;
 
@@ -200,8 +201,9 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
     actionType type = overWater ? actionType::MOVE_OVER_WATER : actionType::MOVE_OVER_LAND;
     string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n"; 
 
-    cout << "\n[ ACTION ] Move " << maxArmies << actionSuffix << endl;
-    cout << "[ GAME ] You have the choice of moving " << maxArmies << " armies around the board." << endl;
+
+    cout << "\n[[ ACTION ]] Move " << maxArmies << actionSuffix << endl;
+    cout << "[ GAME ] You can move " << maxArmies << " armies around the board." << endl;
 
     while(remainderArmies > 0) {
         int armies;
@@ -223,13 +225,13 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
 void executeAddArmies(Player* player, string action, GameMap* map) {
     Vertex* endVertex;
 
-    stringstream toInt(action.substr(5, 6));
+    stringstream toInt(action.substr(4, 5));
     int maxArmies;
     int remainderArmies;
     toInt >> maxArmies;
     remainderArmies = maxArmies;
 
-    cout << "\n[ ACTION ] Add " << maxArmies << " armies.\n" << endl;
+    cout << "\n[[ ACTION ]] Add " << maxArmies << " armies.\n" << endl;
     cout << "[ GAME ] You have the choice of adding " << maxArmies << " armies on the board." << endl;
 
     while(remainderArmies > 0) {
@@ -250,7 +252,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
 }
 
 void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players) {
-    cout << "\n[ ACTION ] Destroy an army.\n" << endl;
+    cout << "\n[[ ACTION ]] Destroy an army.\n" << endl;
 
     Vertex* endVertex;
     string opponentName;
@@ -271,7 +273,7 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
 }
 
 void executeBuildCity(Player* player, string action, GameMap* map) {
-    cout << "\n[ ACTION ] Build a city.\n" << endl;
+    cout << "\n[[ ACTION ]] Build a city.\n" << endl;
 
     Vertex* endVertex;
 

@@ -20,20 +20,21 @@ struct Vertex {
     typedef pair<Vertex*, bool> Edge;
 
     string name;
+    string abbr;
     set<string> owner;
     string continent;
     unordered_map<string, int> armies;
     unordered_map<string, int> cities;
     vector<Edge> edges;
 
-    Vertex(string aName, string continent) : name(aName), continent(continent) {}
+    Vertex(string aName, string abbr, string continent) : name(aName), abbr(abbr), continent(continent) {}
 
     void addEdge(Vertex* vertex, bool isWaterEdge) {
         edges.push_back(Edge(vertex, isWaterEdge));
     }
 
     void print() {
-        cout << "[ COUNTRY ]\tName: " << name << endl;
+        cout << "[ COUNTRY ] " << name << endl;
         unordered_map<string, int>::iterator it;
 
         int numArmies, numCities;
@@ -45,7 +46,7 @@ struct Vertex {
             if (cities.find(player) != cities.end()) 
                 numCities = cities.find(player)->second;
 
-            printf("\t\tOwner: %-15sArmies: %-5dCities: %d\n", player.c_str(), numArmies, numCities);
+            printf("\t\t%-15sArmies: %-5dCities: %d\n", player.c_str(), numArmies, numCities);
         }
     }
 };
@@ -60,7 +61,7 @@ class GameMap {
 public:
     GameMap();
     ~GameMap();
-    void addVertex(const string& name, const string& continent);
+    void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     Vertices* getVertices();
     string* getStartVertex();

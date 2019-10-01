@@ -2,6 +2,7 @@
 #include "util/MapUtil.h"
 #include "util/TestUtil.h"
 #include "Map.h"
+#include "MapLoader.h"
 
 typedef unordered_map<string, Player*> Players;
 
@@ -26,9 +27,11 @@ int main() {
     // test_DeckObject();
 
 
-    GameMap* map = generateValidMap();
+    // GameMap* map = generateValidMap();
 
-    string startName = "O";
+    GameMap* map = loadMap("../gotmap/got.map");
+
+    string startName = "NO";
     map->setStartVertex(startName);
     Vertex* startVertex = map->getVertices()->find(startName)->second;
 
@@ -51,16 +54,24 @@ int main() {
 
     int values[] = {0, 1, 1, 2, 2, 3};
 
-                int position;
-    
+    int position;
+    queue<Player*>* nextTurn = new queue<Player*>();
+    nextTurn->push(player1);
+    nextTurn->push(player2);
+
     while(true) {
+        Player* currentPlayer = nextTurn->front();
+        nextTurn->pop();
+        nextTurn->push(currentPlayer);
+
+        cout << "\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
+
         position = selectPositionOfCardFromGameHand(gameHand);
 
-        if (player1->payCoins(values[position])) {
+        if (currentPlayer->payCoins(values[position])) {
             Card* card = gameHand->exchange(position);
-            player1->addCardToHand(card);
-            performCardAction(player1, card->action, map, players);
-            break;
+            currentPlayer->addCardToHand(card);
+            performCardAction(currentPlayer, card->action, map, players);
         }
     }  
 

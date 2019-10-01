@@ -6,13 +6,6 @@ Player::Player(string& playerName, int startCoins): name(new string(playerName))
     armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()){
         cout << "[ " << *name << " ] CREATED. (Purse = " << startCoins << ")." << endl;
     }
-    // //
-    // string* name;
-    // Vertices* countries;
-    // int* armies;
-    // int* cities;
-    // int* coins;
-    // vector<Card*>* hand;
 
 Player::~Player(){
     delete name;
@@ -69,7 +62,7 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
 
     while(it != countries->end()) {
 
-        if (it->first == target)
+        if (it->second->name == target)
             return true;
 
         if (visited.find(it->first) == visited.end())
@@ -127,7 +120,7 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
             removeArmiesFromCountry(start, numArmies);
 
             cout << "[ " << *name << " ] Moved " << numArmies 
-                 << " from < " << start->name << " > to < " << end->name << " >." << endl;
+                 << " armies from < " << start->name << " > to < " << end->name << " >." << endl;
             return true;
         }
 
@@ -293,6 +286,6 @@ void Player::printCountries(){
         if (it->second->cities.find(*name) != it->second->cities.end())
             numCities = it->second->cities.find(*name)->second;
 
-        printf("\tNAME: %-10s ARMIES: %-5d CITIES: %-5d\n", it->second->name.c_str(), numArmies, numCities);
+        printf("\t%-15s ARMIES: %-5d CITIES: %-5d\n", it->second->name.c_str(), numArmies, numCities);
     }
 }

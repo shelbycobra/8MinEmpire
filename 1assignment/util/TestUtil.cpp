@@ -55,7 +55,7 @@ bool validateContinents(GameMap* map) {
         for (p = continents.begin(); p != continents.end(); ++p) {
             set<string>* currentSet = *p;
 
-            if (currentSet->size() < 2) {
+            if (currentSet->size() == 1) {
                 cout << "ERROR: Continent size is " << currentSet->size() << ". It must contain more than one vertex.\n" << endl;
                 return false;
             }
@@ -188,12 +188,13 @@ bool validateEdges(GameMap* map){
 
 bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVertices) {
     Vertices::iterator it;
+
     for(it = countries->begin(); it != countries->end(); ++it) {
-        if (mapVertices->find(it->first) == mapVertices->end()) {
-            cout << it->first << " does not exist on the map.\n" << endl;
+        if (mapVertices->find(it->second->abbr) == mapVertices->end()) {
+            cout << it->second->name << " does not exist on the map.\n" << endl;
             return false;
         } else {
-            cout << it->first << " exists on the map!\n" << endl;
+            cout << it->second->name << " exists on the map!\n" << endl;
         }
     }
     return true;
@@ -216,13 +217,13 @@ GameMap* generateValidMap() {
     string nodes3[] = {"W", "X", "Y", "Z"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     for (const string& node : nodes3)
-        map->addVertex(node, continent3);
+        map->addVertex(node, node, continent3);
 
     map->addEdge("A", "B", false);
     map->addEdge("A", "D", false);
@@ -253,8 +254,8 @@ GameMap* generateSmallSimpleMap() {
     cout << "\nGenerate SmallSimpleMap\n"
     <<"\nW---Z\n" << endl;
 
-    map->addVertex("W", "continent1");
-    map->addVertex("Z", "continent1");
+    map->addVertex("W", "W", "continent1");
+    map->addVertex("Z", "Z", "continent1");
 
     map->addEdge("Z", "W", false);
 
@@ -278,13 +279,13 @@ GameMap* generateValidMapContainingNodeWithTwoWaterEdges() {
     string nodes3[] = {"K", "L"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     for (const string& node : nodes3)
-        map->addVertex(node, continent3);
+        map->addVertex(node, node, continent3);
 
     map->addEdge("A", "B", false);
     map->addEdge("B", "F", false);
@@ -318,13 +319,13 @@ GameMap* generateDisconnectedMap() {
     string nodes3[] = {"W", "X", "Y", "Z"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     for (const string& node : nodes3)
-        map->addVertex(node, continent3);
+        map->addVertex(node, node, continent3);
 
     map->addEdge("A", "B", false);
     map->addEdge("A", "D", false);
@@ -364,13 +365,13 @@ GameMap* generateInvalidContinentMap() {
     string nodes3[] = {"Z"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     for (const string& node : nodes3)
-        map->addVertex(node, continent3);
+        map->addVertex(node, node, continent3);
 
     map->addEdge("A", "B", false);
     map->addEdge("A", "D", false);
@@ -404,10 +405,10 @@ GameMap* generateInvalidContinentMap2() {
     string nodes2[] = {"Z"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     map->addEdge("Z", "A", true);
 
@@ -431,10 +432,10 @@ GameMap* generateInvalidContinentMap3() {
     string nodes2[] = {"O", "P", "R"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     map->addEdge("A", "B", false);
     map->addEdge("B", "F", false);
@@ -466,10 +467,10 @@ GameMap* generateMapWithInternalWaterEdge() {
     string nodes2[] = {"O", "P", "R"};
 
     for (const string& node : nodes1)
-        map->addVertex(node, continent1);
+        map->addVertex(node, node, continent1);
 
     for (const string& node : nodes2)
-        map->addVertex(node, continent2);
+        map->addVertex(node, node, continent2);
 
     map->addEdge("A", "B", false);
     map->addEdge("B", "F", false);
@@ -490,9 +491,9 @@ GameMap* generateCompletelyDisconnectedMap() {
     cout << "\nGenerate Completely Disconnected Map\n"
     <<"\nA B C\n" << endl;
 
-    map->addVertex("A", "continent1");
-    map->addVertex("B", "continent2");
-    map->addVertex("C", "continent2");
+    map->addVertex("A", "A", "continent1");
+    map->addVertex("B", "B", "continent2");
+    map->addVertex("C", "C", "continent2");
 
     return map;
 }
@@ -504,9 +505,9 @@ GameMap* generateDuplicateEdgesMap() {
     <<"\nA---B---C"
     <<"\n\\__/\n" << endl;
 
-    map->addVertex("A", "continent2");
-    map->addVertex("B", "continent2");
-    map->addVertex("C", "continent2");
+    map->addVertex("A", "A", "continent2");
+    map->addVertex("B", "B", "continent2");
+    map->addVertex("C", "C", "continent2");
 
     map->addEdge("A", "B", false);
     map->addEdge("A", "B", false);
@@ -522,9 +523,9 @@ GameMap* generateSelfLoopMap() {
     <<"\n A---B---C"
     <<"\n/_\\\n" << endl;
 
-    map->addVertex("A", "continent2");
-    map->addVertex("B", "continent2");
-    map->addVertex("C", "continent2");
+    map->addVertex("A", "A", "continent2");
+    map->addVertex("B", "B", "continent2");
+    map->addVertex("C", "C", "continent2");
 
     map->addEdge("A", "A", false);
     map->addEdge("A", "B", false);

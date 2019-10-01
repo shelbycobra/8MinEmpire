@@ -20,9 +20,9 @@ bool GameMap::setStartVertex(string& startVertexName){
     cout << "[ MAP ] Setting start vertex. Searching for \"" << startVertexName << "\"." << endl;
 
     for(it = vertices->begin(); it != vertices->end(); ++it) {
-        if (startVertexName == it->first) {
-            *start = it->first;
-            cout << "[ MAP ] Start vertex is now < " << it->first << " >." << endl;
+        if (startVertexName == it->second->name) {
+            *start = it->second->name;
+            cout << "[ MAP ] Start vertex is now < " << it->second->name << " >." << endl;
             return true;
         }
     }
@@ -33,17 +33,17 @@ bool GameMap::setStartVertex(string& startVertexName){
 string* GameMap::getStartVertex(){return start;}
 Vertices* GameMap::getVertices(){return vertices;}
 
-void GameMap::addVertex(const string& name, const string& continent) {
-    Vertices::iterator it = vertices->find(name);
+void GameMap::addVertex(const string& key, const string& name, const string& continent) {
+    Vertices::iterator it = vertices->find(key);
 
     if (it == vertices->end()) {
-        Vertex * vertex = new Vertex (name, continent);
+        Vertex * vertex = new Vertex (name, key, continent);
         typedef pair<string, Vertex*> node;
-        vertices->insert(node (name, vertex));
+        vertices->insert(node (key, vertex));
         return;
     }
 
-    Vertex* v = vertices->find(name)->second;
+    Vertex* v = vertices->find(key)->second;
     cout << "[ MAP ] Vertex " << v->name << " on continent " << v->continent << " already exists on the map.\n" << endl;
 }
 

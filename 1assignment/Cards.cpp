@@ -12,11 +12,11 @@ int generateRandomInt(set<int>* nums);
 
 Deck::Deck(){
     string resources[] = {"GEM", "IRON", "STONE", "WOOD", "CARROT"};
-    string actions[] = {"Add 3 armies", "Add 2 armies", "Move 6 armies", "Move 5 armies",
+    string actions[] = {"Add 3 armies", "Add 2 armies", "Add 4 armies", "Move 3 armies", "Move 5 armies",
     "Move 4 armies", "Move 5 armies over water", "Move 4 armies over water", "Build city", "Destroy army"};
 
     int numResources = 5;
-    int numActions = 9;
+    int numActions = 10;
 
     int resourceIndex = 0;
     int actionIndex = 0;
@@ -30,21 +30,21 @@ Deck::Deck(){
         string good = resources[resourceIndex];
         string action = actions[actionIndex];
 
-        // if count divisible by 14, make OR with actionIndex and 7 or 8
+        // if count divisible by 14, make OR with actionIndex and 8 or 9
         if (count % 7 == 0) {
             if (actionIndex == 7 + joinedCard) { // prevents the same action being or'd
-                action = actions[actionIndex-2] + " OR " + actions[7 + joinedCard];
+                action = actions[actionIndex-2] + " OR " + actions[8 + joinedCard];
             } else
-                action = actions[actionIndex] + " OR " + actions[7 + joinedCard];
+                action = actions[actionIndex] + " OR " + actions[8 + joinedCard];
             joinedCard = joinedCard == 0 ? 1 : 0;
         }
 
         // if count divisible by 10, make AND actionIndex and 7 or 8
         if (count % 10 == 0) {
             if (actionIndex == 7 + joinedCard) { // prevents the same action being and'd
-                action = actions[actionIndex-2] + " AND " + actions[7 + joinedCard];
+                action = actions[actionIndex-2] + " AND " + actions[8 + joinedCard];
             } else
-                action = actions[actionIndex] + " AND " + actions[7 + joinedCard];
+                action = actions[actionIndex] + " AND " + actions[8 + joinedCard];
             joinedCard = joinedCard == 0 ? 1 : 0;
         }
 
@@ -77,6 +77,7 @@ Deck::~Deck(){
 Card* Deck::draw(){
     Card* card = cardDeck->front();
     cardDeck->pop();
+    cout << "[ DECK ] Drew card { " << card->good << " : \"" << card->action << "\" } from the deck." << endl;
     return card;
 }
 

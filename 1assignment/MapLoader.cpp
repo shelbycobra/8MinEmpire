@@ -22,7 +22,7 @@ GameMap* loadMap(const string& filePath) {
         else {
             size_t pos = line.find(':');
             nameMap.insert(pair<string, string> (line.substr(0, pos), line.substr(pos+1)));
-            map->addVertex(line.substr(pos+1), continent);
+            map->addVertex(line.substr(0, pos), line.substr(pos+1), continent);
         }
         getline(mapFile, line);
     }
@@ -62,7 +62,6 @@ GameMap* loadMap(const string& filePath) {
     string image = "";
 
     while(getline(mapFile, line)) {
-        // cout << line << endl;
         image.append(line);
         image.append("\n");
     }
