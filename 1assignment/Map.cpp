@@ -1,6 +1,6 @@
 #include "Map.h"
 
-GameMap::GameMap(): start(new string("none")) {
+GameMap::GameMap(): start(new string("none")), image(new string("")) {
     vertices = new Vertices();
 }
 
@@ -55,5 +55,14 @@ void GameMap::addEdge(const string& startVertex, const string& endVertex, bool i
 }
 
 void GameMap::printMap(){
+    cout << *image << endl;
+    Vertices::iterator it;
+    for(it = vertices->begin(); it != vertices->end(); ++it) {
+        if (it->second->armies.size() > 0 || it->second->cities.size() > 0)
+            it->second->print();
+    }
+}
 
+void GameMap::setImage(string& newImage) {
+    *image = newImage;
 }

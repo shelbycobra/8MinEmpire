@@ -1,5 +1,5 @@
 #include <cassert>
-#include "MapUtil.h"
+#include "TestUtil.h"
 
 void test_ConnectedMap();
 void test_EachCountryBelongsToOneContinent();

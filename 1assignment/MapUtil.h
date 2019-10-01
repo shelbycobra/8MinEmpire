@@ -3,33 +3,26 @@
 
 #include "Map.h"
 #include "Player.h"
+#include "Cards.h"
 
 #include <sstream>
 
 using namespace std;
 
+typedef unordered_map<string, Player*> Players;
 typedef pair<Vertex*, bool> Edge;
 
-bool isConnectedMap(GameMap* map);
-bool validateContinents(GameMap* map);
-vector<set<string>* > getMapContinents(GameMap* map);
-bool validateEdges(GameMap* map);
-bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* vertices);
 vector<string>* split(string& str, char delimiter);
-bool performCardAction(Player* player, string action, GameMap* map, Players* players);
+void performCardAction(Player* player, string action, GameMap* map, Players* players);
 Vertex* chooseStartVertex(Player* player);
 Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map);
-
-GameMap* generateValidMap();
-GameMap* generateSmallSimpleMap();
-GameMap* generateValidMapContainingNodeWithTwoWaterEdges();
-GameMap* generateDisconnectedMap();
-GameMap* generateInvalidContinentMap();
-GameMap* generateInvalidContinentMap2();
-GameMap* generateInvalidContinentMap3();
-GameMap* generateMapWithInternalWaterEdge();
-GameMap* generateCompletelyDisconnectedMap();
-GameMap* generateDuplicateEdgesMap();
-GameMap* generateSelfLoopMap();
+int chooseArmies(int maxArmies, int remainderArmies);
+string chooseORAction(string action);
+Player* chooseOpponent(Players* players, Player* currentPlayer);
+int selectPositionOfCardFromGameHand(Hand* gameHand);
+void executeMoveArmies(Player* player,string action, GameMap* map);
+void executeAddArmies(Player* player, string action, GameMap* map);
+void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players);
+void executeBuildCity(Player* player, string action, GameMap* map);
 
 #endif

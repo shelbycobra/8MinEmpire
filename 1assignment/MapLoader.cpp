@@ -27,8 +27,10 @@ GameMap* loadMap(const string& filePath) {
         getline(mapFile, line);
     }
 
+    getline(mapFile, line);
+
     //Add Edges
-    while(getline(mapFile, line)) {
+    while(line != "%") {
         // cout << line << endl;
         string text = line;
         istringstream iss(text);
@@ -39,7 +41,8 @@ GameMap* loadMap(const string& filePath) {
 
         // cout << "Start vertex - " << key << ":" << startVertex << endl;
         // cout << "StartVertex " << startVertex << endl;
-        for(int i = 1; i < results.size(); i++) {
+        auto i = results.size();
+        for(i = 1; i < results.size(); i++) {
             // cout << results.at(i) << " ";
             bool isWaterEdge = false;
             if (results.at(i) == "w") {
@@ -52,9 +55,23 @@ GameMap* loadMap(const string& filePath) {
             map->addEdge(startVertex, endVertex, isWaterEdge);
         }
         // cout << endl;
+        getline(mapFile, line);
 
     }
+
+    string image = "";
+
+    while(getline(mapFile, line)) {
+        // cout << line << endl;
+        image.append(line);
+        image.append("\n");
+    }
+
+    // Load in map image at end of file.
     mapFile.close();
+
+    map->setImage(image);
+    map->printMap();
 
     return map;
 }

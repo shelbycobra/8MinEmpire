@@ -15,7 +15,6 @@
 using namespace std;
 
 class Player;
-typedef unordered_map<string, Player*> Players;
 
 struct Vertex {
     typedef pair<Vertex*, bool> Edge;
@@ -30,8 +29,24 @@ struct Vertex {
     Vertex(string aName, string continent) : name(aName), continent(continent) {}
 
     void addEdge(Vertex* vertex, bool isWaterEdge) {
-        // cout << "Adding edge from " << name << " to " << vertex->name << endl;
         edges.push_back(Edge(vertex, isWaterEdge));
+    }
+
+    void print() {
+        cout << "[ COUNTRY ]\tName: " << name << endl;
+        unordered_map<string, int>::iterator it;
+
+        int numArmies, numCities;
+        string player;
+        for(it = armies.begin(); it != armies.end(); ++it) {
+            numCities = 0;
+            numArmies = it->second;
+            player = it->first;
+            if (cities.find(player) != cities.end()) 
+                numCities = cities.find(player)->second;
+
+            printf("\t\tOwner: %-15sArmies: %-5dCities: %d\n", player.c_str(), numArmies, numCities);
+        }
     }
 };
 
@@ -40,6 +55,7 @@ typedef unordered_map<string, Vertex*> Vertices;
 class GameMap {
     Vertices* vertices;
     string* start;
+    string* image;
 
 public:
     GameMap();
@@ -49,12 +65,8 @@ public:
     Vertices* getVertices();
     string* getStartVertex();
     bool setStartVertex(string& startVertexName);
-    bool performCardAction(Player* player, string action, Players* players);
     void printMap();
-
-private:
-    Vertex* chooseStartVertex(Player* player);
-    Vertex* chooseEndVertex(Player* player, actionType type);
+    void setImage(string& newImage);
 };
 
 #endif
