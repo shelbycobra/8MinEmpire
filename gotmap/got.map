@@ -23,7 +23,6 @@ SB:Slavers Bay
 VD:Vaes Dothrak
 KS:Kingdom of Sarnor
 RW:The Red Waste
-IB:Ibben
 YT:Yi Ti
 $VALYRIA
 LS:Land of Long Summer
@@ -44,14 +43,45 @@ DO RE
 BA PE QO
 PE w CL QO MY TY
 MY QO TY
-QO TY w KS
+QO w KS
 TY w SL
 VO QO MY w LS
 SB RW w LS VD KS
-VD KS RW IB YT
-KS RW IB
-RW w LS w BP YT
-YT w WP
-LS w TY VY
+VD KS RW YT
+RW YT
+LS VY
 VY w RW
-BP WP
+%
+-------------------------------THE NORTH--------------------------------------
+HF:Haunted Forest  NO:The North       II:Iron Islands        SK:Skagos
+
+-------------------------------THE SOUTH--------------------------------------
+RL:Riverlands      VA:Vale of Arryn   WL:Westerlands         RE:The Reach
+SL:Stormlands      DO:Dorne           CL:Crownlands
+
+-------------------------------FREE CITIES------------------------------------
+BA:Braavos         PE:Pentos          MY:Myr                 QO:Qohor   
+TY:Tyrosh          VO:Volantis
+
+-------------------------------DOTHRAKI SEA-----------------------------------
+SB:Slavers Bay     VD:Vaes Dothrak    KS:Kingdom of Sarnor   RW:The Red Waste
+YT:Yi Ti
+
+-------------------------------VALYRIA----------------------------------------
+LS:Land of Long Summer                VY:Valyria
+
+   HF  
+  / |   SK=
+ II |  /   ==
+  \ | /      =
+   NO= = = = = BA      
+  =  =         | \        KS-----VD-----YT
+ =     =       |  \      = \    / \    /
+WL--RL--VA     |   \    =   \  /   \  /
+ \   \  /      |    \  =     \/     \/
+  \   CL=======PE---QO       SB-----RW
+   \ /  \      | \   \       =      =
+    RE--SL=    |  \   \      =      =
+    |  /   ==  |   \   \     =      =
+    DO       = TY--MY--VO====LS-----VY     
+                          
