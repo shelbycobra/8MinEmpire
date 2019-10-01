@@ -1,1 +1,12 @@
-1. Make Vertex a class and file of its own. Import it individually into Map and Player
+1. Add image loading function in MapLoader
+2. Add image in got.text
+3. Create test cases for MapLoader
+4. Create test cases for Cards
+5. Complete test suite for Player
+
+Questions
+1. Do the vertex members need to be pointers even though its a struct and not a class?
+2. Hand exchange method: Is it supposed to act upon a player object causing it?
+3. Does the naming have to be exactly as the requirements?
+4. Does each cpp file have to be a class? or can they be just methods?
+5. CardsDriver test cases?
