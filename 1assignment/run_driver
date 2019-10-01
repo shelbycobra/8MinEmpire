@@ -6,12 +6,14 @@ if [ -z "$1" ]; then
 fi
 
 CPP_STD="-std=c++14"
-CPP_FILES="Cards.cpp Player.cpp Map.cpp MapUtil.cpp MapLoader.cpp $1Driver.cpp"
+CPP_FILES="Cards.cpp Player.cpp Map.cpp MapUtil.cpp MapLoader.cpp TestUtil.cpp $1Driver.cpp"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    g++ $CPP_STD $CPP_FILES
+    COMPILER="g++" 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    clang++ $CPP_STD $CPP_FILES
+    COMPILER="clang++"
 fi
+
+$COMPILER -Wall $CPP_STD $CPP_FILES
 
 ./a.out
