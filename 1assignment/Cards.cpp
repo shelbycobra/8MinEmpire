@@ -62,7 +62,7 @@ Deck::Deck(){
     while(nums->size() < 42) {
         int rand = generateRandomInt(nums);
         Card* card = cards->find(rand)->second;
-        cout << "[ DECK ] Card ID: " << card->id << ", Good: " << card->good << ", Action: \"" << card->action << "\"" << endl;
+        // cout << "[ DECK ] Card ID: " << card->id << ", Good: " << card->good << ", Action: \"" << card->action << "\"" << endl;
 
         cardDeck->push(card);
     }
@@ -101,22 +101,21 @@ Hand::~Hand(){
 
 Card* Hand::exchange(int position){
 
-    int values[] = {0, 1, 1, 2, 2, 3};
-    int cardValue = values[position];
+    // int values[] = {0, 1, 1, 2, 2, 3};
+    // int cardValue = values[position];
 
     Card* card = hand->at(position);
 
     vector<Card*>::iterator it;
     for(it = hand->begin(); it != hand->end(); ++it) {
         if (*it == card) {
-            hand->erase(it);
             cout << "[ GAME HAND ] Removed card { " << (*it)->good << " : \"" << (*it)->action << "\" } from game hand."<< endl;
+            hand->erase(it);
             break;
         }
     }
 
     hand->push_back(deck->draw());
-    printHand();
 
     return card;
 }
@@ -126,7 +125,7 @@ void Hand::printHand() {
     int values[] = {0, 1, 1, 2, 2, 3};
     int count= 0;
     for(Card* c : *hand) {
-        printf("[ %d ] Card ID: %-5d Good: %-10s Action: %s\n",  values[count], c->id, c->good.c_str(), c->action.c_str());
+        printf("%d [ %d ] Card ID: %-5d Good: %-10s Action: %s\n", count+1, values[count], c->id, c->good.c_str(), c->action.c_str());
         count++;
     }
     cout << endl;
