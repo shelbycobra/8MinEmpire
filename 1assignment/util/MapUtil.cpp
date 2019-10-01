@@ -73,6 +73,7 @@ Vertex* chooseStartVertex(Player* player){
         player->printCountries();
         cout << "[ GAME ] > ";
         getline(cin, startName);
+        transform(startName.begin(), startName.end(),startName.begin(), ::toupper);
 
         if (player->getCountries()->find(startName) == player->getCountries()->end()) {
             cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
@@ -102,6 +103,7 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
 
         cout << "[ GAME ] > ";
         getline(cin, endName);
+        transform(endName.begin(), endName.end(), endName.begin(), ::toupper);
         cout << "[ GAME ] You chose < " << endName << " >." << endl;
 
         if (map->getVertices()->find(endName) == map->getVertices()->end()) {

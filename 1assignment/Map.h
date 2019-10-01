@@ -20,14 +20,14 @@ struct Vertex {
     typedef pair<Vertex*, bool> Edge;
 
     string name;
-    string abbr;
+    string vertexKey;
     set<string> owner;
     string continent;
     unordered_map<string, int> armies;
     unordered_map<string, int> cities;
     vector<Edge> edges;
 
-    Vertex(string aName, string abbr, string continent) : name(aName), abbr(abbr), continent(continent) {}
+    Vertex(string aName, string key, string continent) : name(aName), vertexKey(key), continent(continent) {}
 
     void addEdge(Vertex* vertex, bool isWaterEdge) {
         edges.push_back(Edge(vertex, isWaterEdge));

@@ -50,9 +50,9 @@ GameMap* loadMap(const string& filePath) {
                 i++;
                 // cout << results.at(i) << " ";
             }
-            string endVertex = nameMap.find(results.at(i))->second;
+            string endVertex = nameMap.find(results.at(i))->first;
             // cout << "Adding edge " << endVertex << ", waterEdge " << isWaterEdge << endl;
-            map->addEdge(startVertex, endVertex, isWaterEdge);
+            map->addEdge(key, endVertex, isWaterEdge);
         }
         // cout << endl;
         getline(mapFile, line);

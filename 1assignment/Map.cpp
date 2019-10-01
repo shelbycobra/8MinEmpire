@@ -9,7 +9,7 @@ GameMap::~GameMap() {
     vertices = NULL;
 }
 
-bool GameMap::setStartVertex(string& startVertexName){
+bool GameMap::setStartVertex(string& startVertexKey){
     Vertices::iterator it;
 
     if (*start != "none"){
@@ -17,16 +17,14 @@ bool GameMap::setStartVertex(string& startVertexName){
         return false;
     }
 
-    cout << "[ MAP ] Setting start vertex. Searching for \"" << startVertexName << "\"." << endl;
-
-    for(it = vertices->begin(); it != vertices->end(); ++it) {
-        if (startVertexName == it->second->name) {
-            *start = it->second->name;
-            cout << "[ MAP ] Start vertex is now < " << it->second->name << " >." << endl;
-            return true;
-        }
+    cout << "[ MAP ] Setting start vertex. Searching for \"" << startVertexKey << "\"." << endl;
+    if (vertices->find(startVertexKey) != vertices->end()) {
+        *start = startVertexKey;
+        cout << "[ MAP ] Start vertex is now < " << startVertexKey << " >." << endl;
+        return true;
     }
-    cout << "[ MAP ] The vertex < " << startVertexName << " > doesn't exist on the map." << endl;
+
+    cout << "[ MAP ] The vertex < " << startVertexKey << " > doesn't exist on the map." << endl;
     return false;
 }
 

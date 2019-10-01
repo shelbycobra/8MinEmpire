@@ -34,7 +34,7 @@ bool Player::payCoins(int amount){
 }
 
 bool Player::placeNewArmies(int newArmies, Vertex* country, string& start){
-    if (country->name == start || country->cities.find(*name) != country->cities.end()){
+    if (country->vertexKey == start || country->cities.find(*name) != country->cities.end()){
         if (newArmies > *armies) {
             cout << "[ "<< name <<" ] Doesn't have enough armies to place " << newArmies << " new armies on < " << country->name << " >." << endl;
             return false;
@@ -78,7 +78,7 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
 }
 
 int Player::getArmiesOnCountry(Vertex* country) {
-    if(countries->find(country->name) != countries->end()) {
+    if(countries->find(country->vertexKey) != countries->end()) {
         int numArmies = country->armies.find(*name)->second;
         string army = numArmies == 1 ? "army" : "armies";
         cout << "[ " << *name << " ] Has " << numArmies << " " << army << " on country < " << country->name << " >." << endl;
@@ -89,7 +89,7 @@ int Player::getArmiesOnCountry(Vertex* country) {
 }
 
 int Player::getCitiesOnCountry(Vertex* country){
-    if(countries->find(country->name) != countries->end()) {
+    if(countries->find(country->vertexKey) != countries->end()) {
         int numCities = country->cities.find(*name)->second;
         string city = numCities == 1 ? "city" : "cities";
         cout << "[ " << *name << " ] Has " << numCities << " " << city << " on country < " << country->name << " >." << endl;
@@ -196,12 +196,12 @@ void Player::addCardToHand(Card* card) {
 void Player::addCountry(Vertex* country){
     Vertex* v;
     v = country;
-    countries->insert(pair<string, Vertex*> (country->name, v));
+    countries->insert(pair<string, Vertex*> (country->vertexKey, v));
     cout << "[ " << *name << " ] " << "Added country < " << country->name << " > to player's countries." << endl;
 }
 
 void Player::removeCountry(Vertex* country) {
-    if(countries->find(country->name) != countries->end()) {
+    if(countries->find(country->vertexKey) != countries->end()) {
         int numArmies = 0, numCities = 0;
 
         if (country->armies.find(*name) != country->armies.end())
@@ -212,7 +212,7 @@ void Player::removeCountry(Vertex* country) {
         if (numArmies == 0 && numCities == 0) {
             country->armies.erase(*name);
             country->cities.erase(*name);
-            countries->erase(country->name);
+            countries->erase(country->vertexKey);
             cout << "[ "<< *name <<" ] " << "Removed < " << country->name << " >." << endl;
         } else
             cout << "[ "<< *name <<" ] " << "Can't remove < " << country->name << " >. The player still owns "
@@ -225,7 +225,7 @@ void Player::removeCountry(Vertex* country) {
 
 // Private
 void Player::addArmiesToCountry(Vertex* country, int numArmies) {
-    if(countries->find(country->name) == countries->end())
+    if(countries->find(country->vertexKey) == countries->end())
         addCountry(country);
     if (country->armies.find(*name) == country->armies.end()) {
         country->armies.insert(pair<string, int> (*name, numArmies));

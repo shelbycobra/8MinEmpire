@@ -190,7 +190,7 @@ bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVert
     Vertices::iterator it;
 
     for(it = countries->begin(); it != countries->end(); ++it) {
-        if (mapVertices->find(it->second->abbr) == mapVertices->end()) {
+        if (mapVertices->find(it->second->vertexKey) == mapVertices->end()) {
             cout << it->second->name << " does not exist on the map.\n" << endl;
             return false;
         } else {
