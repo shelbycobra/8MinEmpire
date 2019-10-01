@@ -12,6 +12,7 @@ enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD
 
 struct Card;
 struct Vertex;
+typedef unordered_map<string, Vertex*> Vertices;
 
 class Player {
 
@@ -31,6 +32,7 @@ class Player {
         //Copy Constructor & Assignment Overload
 
         bool payCoins(int amount);
+        bool makeBid();
         bool placeNewArmies(int newArmies, Vertex* country, string& start);
         bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
         bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
@@ -60,5 +62,7 @@ class Player {
         void increaseAvailableArmies(int amount);
         void decreaseAvailableArmies(int amount);
 };
+
+typedef unordered_map<string, Player*> Players;
 
 #endif

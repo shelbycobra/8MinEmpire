@@ -2,11 +2,17 @@
 #include "Map.h"
 #include "Cards.h"
 
-Player::Player(string& playerName, int startCoins): name(new string(playerName)),
-    armies(new int(14)), cities(new int(3)), coins(new int(startCoins)),
-    countries(new Vertices()), hand(new vector<Card*>()){
+Player::Player(string& playerName, int startCoins): name(new string(playerName)), countries(new Vertices()),
+    armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()){
         cout << "[ " << *name << " ] CREATED. (Purse = " << startCoins << ")." << endl;
     }
+    // //
+    // string* name;
+    // Vertices* countries;
+    // int* armies;
+    // int* cities;
+    // int* coins;
+    // vector<Card*>* hand;
 
 Player::~Player(){
     delete name;
