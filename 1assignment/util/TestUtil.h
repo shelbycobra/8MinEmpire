@@ -1,9 +1,9 @@
 #ifndef TESTUTIL_H
 #define TESTUTIL_H
 
-#include "Map.h"
-#include "Player.h"
-#include "Cards.h"
+#include "../Map.h"
+#include "../Player.h"
+#include "../Cards.h"
 
 using namespace std;
 

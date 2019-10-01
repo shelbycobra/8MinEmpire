@@ -1,9 +1,9 @@
 #ifndef MAPUTIL_H
 #define MAPUTIL_H
 
-#include "Map.h"
-#include "Player.h"
-#include "Cards.h"
+#include "../Map.h"
+#include "../Player.h"
+#include "../Cards.h"
 
 #include <sstream>
 

@@ -1,6 +1,6 @@
 #include "Cards.h"
-#include "MapUtil.h"
-#include "TestUtil.h"
+#include "util/MapUtil.h"
+#include "util/TestUtil.h"
 #include "Map.h"
 
 typedef unordered_map<string, Player*> Players;
