@@ -4,8 +4,6 @@
 #include "Map.h"
 #include "MapLoader.h"
 
-typedef unordered_map<string, Player*> Players;
-
 void test_PlayerChoosesBuildCityCard();
 void test_PlayerChoosesMoveArmiesOverLandCard();
 void test_PlayerChoosesMoveArmiesOverWaterCard();

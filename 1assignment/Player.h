@@ -1,18 +1,21 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Cards.h"
-#include "Map.h"
 #include <set>
 #include <string>
 #include <unordered_map>
 #include <stdio.h>
+
+#include "Cards.h"
+#include "Map.h"
+#include "Bidder.h"
 
 enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
 struct Card;
 struct Vertex;
 typedef unordered_map<string, Vertex*> Vertices;
+class Bidder;
 
 class Player {
 
@@ -22,6 +25,7 @@ class Player {
     int* cities;
     int* coins;
     vector<Card*>* hand;
+    Bidder* bidder;
 
     public:
 
@@ -32,7 +36,6 @@ class Player {
         //Copy Constructor & Assignment Overload
 
         bool payCoins(int amount);
-        bool makeBid();
         bool placeNewArmies(int newArmies, Vertex* country, string& start);
         bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
         bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
@@ -55,6 +58,7 @@ class Player {
         int getAvailableCities();
         int getCoins();
         vector<Card*>* getHand();
+        Bidder* getBidder();
 
     private:
         void addArmiesToCountry(Vertex* country, int numArmies);

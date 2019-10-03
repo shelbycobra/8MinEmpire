@@ -3,8 +3,12 @@
 3. Create test cases for MapLoader
 4. Create test cases for Cards
 5. Complete test suite for Player
-6. Documentation
+6. Documentation (diagram?)
 7. README
+8. Windows option in run_driver
+9. Method Documentation
+10. Bidder tester
+11. Copy constructor and assignment constructors
 
 Questions
 1. Do the vertex members need to be pointers even though its a struct and not a class?

@@ -34,7 +34,7 @@ struct Vertex {
     }
 
     void print() {
-        cout << "[ COUNTRY ] " << name << endl;
+        cout << "[ COUNTRY ] " << vertexKey << ":" << name << endl;
         unordered_map<string, int>::iterator it;
 
         int numArmies, numCities;

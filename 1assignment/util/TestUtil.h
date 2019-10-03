@@ -14,6 +14,7 @@ bool validateContinents(GameMap* map);
 vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
 bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* vertices);
+Players* createDummyPlayers(int numPlayers);
 
 GameMap* generateValidMap();
 GameMap* generateSmallSimpleMap();

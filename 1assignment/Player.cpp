@@ -3,7 +3,7 @@
 #include "Cards.h"
 
 Player::Player(string& playerName, int startCoins): name(new string(playerName)), countries(new Vertices()),
-    armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()){
+    armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()), bidder(new Bidder(this)){
         cout << "[ " << *name << " ] CREATED. (Purse = " << startCoins << ")." << endl;
     }
 
@@ -262,6 +262,8 @@ int Player::getAvailableCities(){return *cities;}
 int Player::getCoins(){return *coins;}
 
 vector<Card*>* Player::getHand(){return hand;}
+
+Bidder* Player::getBidder() {return bidder;}
 
 void Player::increaseAvailableArmies(int amount) {
     *armies += amount;
