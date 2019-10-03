@@ -15,40 +15,32 @@
 using namespace std;
 
 class Player;
+class Vertex;
+typedef pair<Vertex*, bool> Edge;
 
-struct Vertex {
-    typedef pair<Vertex*, bool> Edge;
+class Vertex {
+    string *name;
+    string *vertexKey;
+    set<Player*> *owners;
+    string *continent;
+    unordered_map<string, int> *armies;
+    unordered_map<string, int> *cities;
+    vector<Edge> *edges;
 
-    string name;
-    string vertexKey;
-    set<string> owner;
-    string continent;
-    unordered_map<string, int> armies;
-    unordered_map<string, int> cities;
-    vector<Edge> edges;
+public:
+    Vertex(string aName, string key, string continent);
+    ~Vertex();
 
-    Vertex(string aName, string key, string continent) : name(aName), vertexKey(key), continent(continent) {}
+    void addEdge(Vertex* vertex, bool isWaterEdge);
+    void print();
 
-    void addEdge(Vertex* vertex, bool isWaterEdge) {
-        edges.push_back(Edge(vertex, isWaterEdge));
-    }
-
-    void print() {
-        cout << "[ COUNTRY ] " << vertexKey << ":" << name << endl;
-        unordered_map<string, int>::iterator it;
-
-        int numArmies, numCities;
-        string player;
-        for(it = armies.begin(); it != armies.end(); ++it) {
-            numCities = 0;
-            numArmies = it->second;
-            player = it->first;
-            if (cities.find(player) != cities.end()) 
-                numCities = cities.find(player)->second;
-
-            printf("\t\t%-15sArmies: %-5dCities: %d\n", player.c_str(), numArmies, numCities);
-        }
-    }
+    string getName();
+    string getKey();
+    string getContinent();
+    set<Player*>* getOwners();
+    unordered_map<string, int>* getArmies();
+    unordered_map<string, int>* getCities();
+    vector<Edge>* getEdges();
 };
 
 typedef unordered_map<string, Vertex*> Vertices;

@@ -12,8 +12,8 @@
 
 enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
-struct Card;
-struct Vertex;
+class Card;
+class Vertex;
 typedef unordered_map<string, Vertex*> Vertices;
 class Bidder;
 

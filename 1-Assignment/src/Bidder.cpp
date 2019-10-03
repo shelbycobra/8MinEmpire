@@ -89,9 +89,9 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
 
     //check for duplicate bids
     for(it = bids->begin(); it != bids->end(); ++it) {
-        
+
         if (it->second == max && it->first != winner) {
-            cout << "\n[ BIDDER ] There is a tie between " << winner->getName() << " and " 
+            cout << "\n[ BIDDER ] There is a tie between " << winner->getName() << " and "
                     << it->first->getName() << " for the highest bid of " << max << ".\n";
             while(true) {
                 cout << "[ BIDDER ] Who is the younger player?\n";
@@ -104,12 +104,10 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
                     winner = players->find(youngerPlayer)->second;
                     break;
                 } else {
-                    cout << "[ BIDDER ] That name is invalid. Please choose between " << winner->getName() << " and " 
+                    cout << "[ BIDDER ] That name is invalid. Please choose between " << winner->getName() << " and "
                     << it->first->getName() << " for the highest bid of " << max << ".\n";
                 }
             }
-
-            break;
         }
     }
 

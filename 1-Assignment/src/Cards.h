@@ -5,16 +5,23 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <set>
 
 using namespace std;
 
-struct Card {
+class Card {
 
-    int id;
-    string good;
-    string action;
+    int* id;
+    string* good;
+    string* action;
 
-    Card(int theId, string theGood, string theAction): id(theId), good(theGood), action(theAction) {}
+public:
+    Card(int theId, string theGood, string theAction);
+    ~Card();
+
+    int getID();
+    string getGood();
+    string getAction();
 };
 
 class Deck {
@@ -25,6 +32,8 @@ class Deck {
         ~Deck();
         Card* draw();
         queue<Card*>* getDeck();
+    private:
+        int generateRandomInt(set<int>* nums);
 };
 
 class Hand {

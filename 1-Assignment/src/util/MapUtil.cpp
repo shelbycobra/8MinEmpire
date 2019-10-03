@@ -26,7 +26,7 @@ vector<string>* split(string& str, char delimiter) {
 int selectPositionOfCardFromGameHand(Hand* gameHand){
     string pos;
     int position;
-    
+
     gameHand->printHand();
 
     while (true) {
@@ -104,7 +104,7 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
         cout << "[ GAME ] > ";
         getline(cin, endName);
         transform(endName.begin(), endName.end(), endName.begin(), ::toupper);
-        cout << "[ GAME ] You chose < " << endName << " >." << endl;
+        cout << "[ GAME ] You chose < " << endName << " >.\n" << endl;
 
         if (map->getVertices()->find(endName) == map->getVertices()->end()) {
             cerr << "[ ERROR! ] That country doesn't exist on the map." << endl;
@@ -123,18 +123,21 @@ int chooseArmies(int maxArmies, int remainderArmies) {
     string armiesStr;
 
     while (true) {
-        cout << "[ GAME ] How many armies?" << endl;
+        string armyStr = remainderArmies == 1 ? "army" : "armies";
+
+        cout << "[ GAME ] How many armies? (MAX " << remainderArmies << " " << armyStr << ")" << endl;
         cout << "[ GAME ] > ";
         getline(cin, armiesStr);
 
         stringstream toInt(armiesStr);
         toInt >> armies;
-        
-        if (remainderArmies - armies < 0) {
-            cout << "[ GAME ] You can only choose a maximum of " << remainderArmies << " armies." << endl;
-        } else {
+
+        if (remainderArmies - armies >= 0) {
+            cout << endl;
             break;
         }
+
+        cout << "[ GAME ] You can only choose a maximum of " << remainderArmies << " " << armyStr << "." << endl;
     }
 
     return armies;
@@ -145,17 +148,17 @@ string chooseORAction(string action) {
     string firstChoice;
     string secondChoice;
 
-    int orPos = action.find("OR");\
+    int orPos = action.find("OR");
 
     while(true) {
-        cout << "[ GAME ] Which action do you want? 1 or 2 ?" << endl;
+        cout << "\n[ GAME ] Which action do you want? 1 or 2 ?" << endl;
 
         firstChoice = action.substr(0, orPos - 1);
         secondChoice = action.substr(orPos + 2);
 
         cout << "[ OPTION 1 ] " << firstChoice << endl;
         cout << "[ OPTION 2 ] " << secondChoice << endl;
-        
+
         cout << "[ GAME ] > ";
         getline(cin, answer);
 
@@ -163,8 +166,8 @@ string chooseORAction(string action) {
             return firstChoice;
         if (answer == "2")
             return secondChoice;
-        
-        cout << "[ GAME ] Invalid choice. Please enter either '1' or '2'." << endl;
+
+        cout << "[ ERROR! ] Invalid choice. Please enter either '1' or '2'." << endl;
     }
 }
 
@@ -201,10 +204,10 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
     size_t negOne = -1;
     bool overWater = action.find("water") != negOne;
     actionType type = overWater ? actionType::MOVE_OVER_WATER : actionType::MOVE_OVER_LAND;
-    string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n"; 
+    string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n";
 
 
-    cout << "\n[[ ACTION ]] Move " << maxArmies << actionSuffix << endl;
+    cout << "\n\n[[ ACTION ]] Move " << maxArmies << actionSuffix << "\n\n" << endl;
     cout << "[ GAME ] You can move " << maxArmies << " armies around the board." << endl;
 
     while(remainderArmies > 0) {
@@ -215,7 +218,6 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
         armies = chooseArmies(maxArmies, remainderArmies);
 
         if (!player->moveArmies(armies, startVertex, endVertex, overWater)) {
-            // cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
             continue;
         }
 
@@ -233,7 +235,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
     toInt >> maxArmies;
     remainderArmies = maxArmies;
 
-    cout << "\n[[ ACTION ]] Add " << maxArmies << " armies.\n" << endl;
+    cout << "\n\n[[ ACTION ]] Add " << maxArmies << " armies.\n\n" << endl;
     cout << "[ GAME ] You have the choice of adding " << maxArmies << " armies on the board." << endl;
 
     while(remainderArmies > 0) {
@@ -243,7 +245,6 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
         armies = chooseArmies(maxArmies, remainderArmies);
 
         if (!player->placeNewArmies(armies, endVertex, *map->getStartVertex())) {
-            // cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
             continue;
         }
 
@@ -254,7 +255,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
 }
 
 void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players) {
-    cout << "\n[[ ACTION ]] Destroy an army.\n" << endl;
+    cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
     Vertex* endVertex;
     string opponentName;
@@ -265,7 +266,6 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
     while(true) {
         endVertex = chooseEndVertex(player, actionType::DESTROY_ARMY, map);
         if (!player->destroyArmy(endVertex, opponent)) {
-            // cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
             continue;
         }
         break;
@@ -275,14 +275,13 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
 }
 
 void executeBuildCity(Player* player, string action, GameMap* map) {
-    cout << "\n[[ ACTION ]] Build a city.\n" << endl;
+    cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
 
     Vertex* endVertex;
 
     while (true) {
         endVertex = chooseEndVertex(player, actionType::BUILD_CITY, map);
         if (!player->buildCity(endVertex)) {
-            // cerr << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
             continue;
         }
         break;

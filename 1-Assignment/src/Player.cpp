@@ -4,7 +4,7 @@
 
 Player::Player(string& playerName, int startCoins): name(new string(playerName)), countries(new Vertices()),
     armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()), bidder(new Bidder(this)){
-        cout << "-{ " << *name << " }- CREATED. (Purse = " << startCoins << ")." << endl;
+        cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
     }
 
 Player::~Player(){
@@ -25,33 +25,34 @@ Player::~Player(){
 
 bool Player::payCoins(int amount){
     if (amount <= *coins && amount >= 0) {
+        string coinStr = amount == 1 ? "coin" : "coins";
         *coins -= amount;
-        cout << "-{ " << *name << " }- Paid " << amount << " coins. (Purse = " << *coins << ")." << endl;
+        cout << "\n{ " << *name << " } Paid " << amount << " " << coinStr << ". (Purse = " << *coins << ").\n" << endl;
         return true;
     }
-    cout << "-{ " << *name << " }- Doesn't have enough coins to pay " << amount << ". (Purse = " << *coins << ")." << endl;
+    cout << "[ ERROR! ] " << *name << " doesn't have enough coins to pay " << amount << ". (Purse = " << *coins << ")." << endl;
     return false;
 }
 
 bool Player::placeNewArmies(int newArmies, Vertex* country, string& start){
-    if (country->vertexKey == start || country->cities.find(*name) != country->cities.end()){
+    if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
         if (newArmies > *armies) {
-            cout << "[ "<< name <<" ] Doesn't have enough armies to place " << newArmies << " new armies on < " << country->name << " >." << endl;
+            cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
             return false;
         }
 
         *armies -= newArmies;
         addArmiesToCountry(country, newArmies);
 
-        cout << "-{ " << *name << " }- Added " << newArmies << " new armies to < "<< country->name << " >." << endl;
+        cout << "{ " << *name << " } Added " << newArmies << " new armies to < "<< country->getName() << " >." << endl;
         return true;
     }
-    cout << "-{ " << *name << " }- Chose an invalid country. It must be either START or contain one of the player's cities." << endl;
+    cout << "[ ERROR! ] " << *name << " Chose an invalid country. It must be either START or contain one of the player's cities->" << endl;
     return false;
 }
 
 bool Player::isAdjacent(Vertex* target, bool overWaterAllowed){
-    return isAdjacent(target->name, overWaterAllowed);
+    return isAdjacent(target->getName(), overWaterAllowed);
 }
 
 bool Player::isAdjacent(string target, bool overWaterAllowed){
@@ -62,12 +63,12 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
 
     while(it != countries->end()) {
 
-        if (it->second->name == target)
+        if (it->second->getName() == target)
             return true;
 
         if (visited.find(it->first) == visited.end())
-            for(Edge& e : it->second->edges)
-                if (e.first->name == target && (!e.second || (e.second && overWaterAllowed))) 
+            for(Edge& e : *it->second->getEdges())
+                if (e.first->getName() == target && (!e.second || (e.second && overWaterAllowed)))
                     return true;
 
         visited.insert(it->first);
@@ -78,24 +79,24 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
 }
 
 int Player::getArmiesOnCountry(Vertex* country) {
-    if(countries->find(country->vertexKey) != countries->end()) {
-        int numArmies = country->armies.find(*name)->second;
+    if(countries->find(country->getKey()) != countries->end()) {
+        int numArmies = country->getArmies()->find(*name)->second;
         string army = numArmies == 1 ? "army" : "armies";
-        cout << "-{ " << *name << " }- Has " << numArmies << " " << army << " on country < " << country->name << " >." << endl;
+        cout << "{ " << *name << " } Has " << numArmies << " " << army << " on country < " << country->getName() << " >." << endl;
         return numArmies;
     }
-    cout << "-{ " << *name << " }- Has ZERO armies on country < " << country->name << " >." << endl;
+    cout << "{ " << *name << " } Has ZERO armies on country < " << country->getName() << " >." << endl;
     return 0;
 }
 
 int Player::getCitiesOnCountry(Vertex* country){
-    if(countries->find(country->vertexKey) != countries->end()) {
-        int numCities = country->cities.find(*name)->second;
+    if(countries->find(country->getKey()) != countries->end()) {
+        int numCities = country->getCities()->find(*name)->second;
         string city = numCities == 1 ? "city" : "cities";
-        cout << "-{ " << *name << " }- Has " << numCities << " " << city << " on country < " << country->name << " >." << endl;
+        cout << "{ " << *name << " } Has " << numCities << " " << city << " on country < " << country->getName() << " >." << endl;
         return numCities;
     }
-    cout << "-{ " << *name << " }- Has ZERO cities on country < " << country->name << " >." << endl;
+    cout << "{ " << *name << " } Has ZERO cities on country < " << country->getName() << " >." << endl;
     return 0;
 }
 
@@ -108,10 +109,10 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
     //is country an adjacent country to an occupied country?
     if (isAdjacent(end, moveOverWater)) {
         //does start vertex even have armies on it?
-        if (start->armies.find(*name) != start->armies.end()) {
-            int currentArmies = start->armies.find(*name)->second;
+        if (start->getArmies()->find(*name) != start->getArmies()->end()) {
+            int currentArmies = start->getArmies()->find(*name)->second;
             if (numArmies > currentArmies) {
-                cout << "-{ " << *name << " }- Doesn't have enough armies on < " << start->name
+                cout << "[ ERROR! ] " << *name << " doesn't have enough armies on < " << start->getName()
                      << " > to move " << numArmies << "." << endl;
                 return false;
             }
@@ -119,72 +120,73 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
             addArmiesToCountry(end, numArmies);
             removeArmiesFromCountry(start, numArmies);
 
-            cout << "-{ " << *name << " }- Moved " << numArmies 
-                 << " armies from < " << start->name << " > to < " << end->name << " >." << endl;
+            cout << "{ " << *name << " } Moved " << numArmies
+                 << " armies from < " << start->getName() << " > to < " << end->getName() << " >." << endl;
             return true;
         }
 
-        cout << "-{ " << *name << " }- Doesn't have any armies on < " << start->name << " > to move." << endl;
+        cout << "[ ERROR! ] " << *name << " doesn't have any armies on < " << start->getName() << " > to move." << endl;
         return false;
     }
 
-    cout << "-{ " << *name << " }- < " << end->name << " > is not an adjacent country." << endl;
+    cout << "[ ERROR! ] " << end->getName() << " > is not an adjacent country." << endl;
     return false;
 }
 
 bool Player::buildCity(Vertex* country){
-    unordered_map<string, int> armies = country->armies;
+    unordered_map<string, int>* armies = country->getArmies();
 
     //does country belong to the player and does it contain at least one army?
-    if (armies.find(*name) != armies.end()) {
-        if (armies.find(*name)->second > 0) {
+    if (armies->find(*name) != armies->end()) {
+        if (armies->find(*name)->second > 0) {
 
             //If country contains a player owned city, increase the count
             int currentCities = 1;
-            if (country->cities.find(*name) != country->cities.end()) {
-                currentCities += country->cities.find(*name)->second;
-                country->cities.erase(*name);
-                country->cities.insert(pair<string,int>(*name, currentCities));
+            if (country->getCities()->find(*name) != country->getCities()->end()) {
+                currentCities += country->getCities()->find(*name)->second;
+                country->getCities()->erase(*name);
+                country->getCities()->insert(pair<string,int>(*name, currentCities));
             } else //Else insert new record
-                country->cities.insert(pair<string, int> (*name, currentCities));
+                country->getCities()->insert(pair<string, int> (*name, currentCities));
 
-            cout << "-{ " << *name << " }- Added an city to < " << country->name << " >. (New city count = " << currentCities << ")." << endl; 
+            cout << "{ " << *name << " } Added an city to < " << country->getName() << " >. (New city count = " << currentCities << ")." << endl;
             return true;
         }
     }
 
-    cout << "-{ " << *name << " }- Can't place city on < " << country->name << " > because the player has no armies on it." << endl; 
+    cout << "[ ERROR! ] " << *name << " can't place city on < " << country->getName() << " > because the player has no armies on it." << endl;
     return false;
 }
 
 bool Player::destroyArmy(Vertex* country, Player* opponent){
 
     if (opponent->getName() == *name) {
-        cout << "-{ " << *name << " }- Can't destroy own army." << endl;
+        cout << "\n{ " << *name << " } Can't destroy own army." << endl;
         return false;
     }
 
-    if (country->armies.find(opponent->getName()) != country->armies.end() && country->armies.find(opponent->getName())->second > 0) {
-        int currentArmies = country->armies.find(opponent->getName())->second;
+    if (country->getArmies()->find(opponent->getName()) != country->getArmies()->end()
+        && country->getArmies()->find(opponent->getName())->second > 0) {
+        int currentArmies = country->getArmies()->find(opponent->getName())->second;
         currentArmies--;
 
         //Add destroyed army back in opponents available armies
         opponent->increaseAvailableArmies(1);
 
-        country->armies.erase(opponent->getName());
+        country->getArmies()->erase(opponent->getName());
 
         if (currentArmies != 0)
-            country->armies.insert(pair<string, int> (opponent->getName(), currentArmies));
+            country->getArmies()->insert(pair<string, int> (opponent->getName(), currentArmies));
         else {
             opponent->removeCountry(country);
         }
 
-        cout << "-{ " << *name << " }- Destroyed one of " << opponent->getName() << "'s armies on < " << country->name << " >." << endl;
+        cout << "{ " << *name << " } Destroyed one of " << opponent->getName() << "'s armies on < " << country->getName() << " >." << endl;
         return true;
     }
 
 
-    cout << "-{ " << *name << " }- " << opponent->getName() << " doesn't have any armies to destroy on < " << country->name << " >." << endl;
+    cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->getName() << " >." << endl;
     return false;
 }
 
@@ -196,58 +198,58 @@ void Player::addCardToHand(Card* card) {
 void Player::addCountry(Vertex* country){
     Vertex* v;
     v = country;
-    countries->insert(pair<string, Vertex*> (country->vertexKey, v));
-    cout << "-{ " << *name << " }- " << "Added country < " << country->name << " > to player's countries." << endl;
+    countries->insert(pair<string, Vertex*> (country->getKey(), v));
+    cout << "{ " << *name << " } " << "Added country < " << country->getName() << " > to player's countries." << endl;
 }
 
 void Player::removeCountry(Vertex* country) {
-    if(countries->find(country->vertexKey) != countries->end()) {
+    if(countries->find(country->getKey()) != countries->end()) {
         int numArmies = 0, numCities = 0;
 
-        if (country->armies.find(*name) != country->armies.end())
-            numArmies = country->armies.find(*name)->second;
-        if (country->cities.find(*name) != country->cities.end())
-            numCities = country->cities.find(*name)->second;
+        if (country->getArmies()->find(*name) != country->getArmies()->end())
+            numArmies = country->getArmies()->find(*name)->second;
+        if (country->getCities()->find(*name) != country->getCities()->end())
+            numCities = country->getCities()->find(*name)->second;
 
         if (numArmies == 0 && numCities == 0) {
-            country->armies.erase(*name);
-            country->cities.erase(*name);
-            countries->erase(country->vertexKey);
-            cout << "-{ " << *name << " }- " << "Removed < " << country->name << " >." << endl;
+            country->getArmies()->erase(*name);
+            country->getCities()->erase(*name);
+            countries->erase(country->getKey());
+            cout << "{ " << *name << " } " << "Removed < " << country->getName() << " >." << endl;
         } else
-            cout << "-{ " << *name << " }- " << "Can't remove < " << country->name << " >. The player still owns "
+            cout << "[ ERROR! ] Can't remove < " << country->getName() << " >. " << *name << " still owns "
                 << numArmies << " armies and " << numCities << " cities on it." << endl;
     } else {
-        cout << "-{ " << *name << " }- " << "Doesn't have the country < " << country->name << " > available to remove." << endl;
+        cout << "[ ERROR! ] " << *name << " doesn't have the country < " << country->getName() << " > available to remove." << endl;
     }
 }
 
 
 // Private
 void Player::addArmiesToCountry(Vertex* country, int numArmies) {
-    if(countries->find(country->vertexKey) == countries->end())
+    if(countries->find(country->getKey()) == countries->end())
         addCountry(country);
-    if (country->armies.find(*name) == country->armies.end()) {
-        country->armies.insert(pair<string, int> (*name, numArmies));
+    if (country->getArmies()->find(*name) == country->getArmies()->end()) {
+        country->getArmies()->insert(pair<string, int> (*name, numArmies));
     } else {
-        int currentArmies = country->armies.find(*name)->second;
-        country->armies.erase(*name);
-        country->armies.insert(pair<string, int> (*name, currentArmies + numArmies));
+        int currentArmies = country->getArmies()->find(*name)->second;
+        country->getArmies()->erase(*name);
+        country->getArmies()->insert(pair<string, int> (*name, currentArmies + numArmies));
     }
 }
 
 // Private
 void Player::removeArmiesFromCountry(Vertex* country, int numArmies) {
-    int currentArmies = country->armies.find(*name)->second;
+    int currentArmies = country->getArmies()->find(*name)->second;
 
     // erase current record to be updated
-    country->armies.erase(*name);
+    country->getArmies()->erase(*name);
 
     // only update army count if there are still armies left on country
     if (currentArmies - numArmies > 0)
-        country->armies.insert(pair<string, int> (*name, currentArmies - numArmies));
+        country->getArmies()->insert(pair<string, int> (*name, currentArmies - numArmies));
     // remove country if resulting num armies is 0 and no cities exist
-    else if (numArmies == currentArmies && country->cities.find(*name) == country->cities.end()) 
+    else if (numArmies == currentArmies && country->getCities()->find(*name) == country->getCities()->end())
         removeCountry(country);
 }
 
@@ -278,16 +280,20 @@ void Player::decreaseAvailableArmies(int amount) {
 }
 
 void Player::printCountries(){
-    cout << "\n[ " << *name << " ] Occupied Countries:" << endl;
+
+    cout << "\n{ " << *name << " } Occupied Countries:\n" << endl;
+    cout << "--------------------------------------------------------" << endl;
     Vertices::iterator it;
     for(it = countries->begin(); it != countries->end(); ++it) {
         int numArmies = 0;
         int numCities = 0;
-        if (it->second->armies.find(*name) != it->second->armies.end())
-            numArmies = it->second->armies.find(*name)->second;
-        if (it->second->cities.find(*name) != it->second->cities.end())
-            numCities = it->second->cities.find(*name)->second;
+        if (it->second->getArmies()->find(*name) != it->second->getArmies()->end())
+            numArmies = it->second->getArmies()->find(*name)->second;
+        if (it->second->getCities()->find(*name) != it->second->getCities()->end())
+            numCities = it->second->getCities()->find(*name)->second;
 
-        printf("\t%-15s ARMIES: %-5d CITIES: %-5d\n", it->second->name.c_str(), numArmies, numCities);
+        printf("\t%-3s : %-15s ARMIES: %-5d CITIES: %-5d\n", it->second->getKey().c_str(), it->second->getName().c_str(), numArmies, numCities);
     }
+
+    cout << "--------------------------------------------------------" << endl;
 }

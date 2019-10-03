@@ -16,10 +16,10 @@ int main() {
     // Vertices* vertices = map->getVertices();
     // Vertices::iterator it;
     // for(it = vertices->begin(); it != vertices->end(); ++it) {
-    //     vector<Edge> edges = it->second->edges;
-    //     cout << "VERTEX: " << it->second->name << endl;
+    //     vector<Edge> edges = it->second->getEdges();
+    //     cout << "VERTEX: " << it->second->getName() << endl;
     //     for (Edge& edge: edges) {
-    //         cout << "EDGE: " << edge.first->name << endl;
+    //         cout << "EDGE: " << edge.first->getName() << endl;
     //     }
     //     cout << endl;
     // }

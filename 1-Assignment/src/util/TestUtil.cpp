@@ -11,8 +11,8 @@ bool isConnectedMap(GameMap* map){
     visited.insert(firstNode);
 
     //Add all edges from first node to queue
-    vector<Edge> edges = firstNode->edges;
-    for(Edge& edge: edges)
+    vector<Edge>* edges = firstNode->getEdges();
+    for(Edge& edge: *edges)
         nextToVisit.push(edge.first);
 
     //Breadth-First-Search
@@ -23,8 +23,8 @@ bool isConnectedMap(GameMap* map){
         if (visited.find(node) == visited.end()) {
             visited.insert(node);
             //Add all of current node's endpoint vertices to nextToVist
-            vector<Edge> edges = node->edges;
-            for(Edge& edge: edges)
+            vector<Edge>* edges = node->getEdges();
+            for(Edge& edge: *edges)
                 nextToVisit.push(edge.first);
         }
     }
@@ -33,7 +33,7 @@ bool isConnectedMap(GameMap* map){
     Vertices::iterator it;
     for (it = vertices->begin(); it != vertices->end(); ++it)
         if (visited.find(it->second) == visited.end()) {
-            cout << "Node " << it->second->name << " was not connected.\n" << endl;
+            cout << "Node " << it->second->getName() << " was not connected.\n" << endl;
             return false;
         }
 
@@ -56,24 +56,24 @@ bool validateContinents(GameMap* map) {
             set<string>* currentSet = *p;
 
             if (currentSet->size() == 1) {
-                cout << "ERROR: Continent size is " << currentSet->size() << ". It must contain more than one vertex.\n" << endl;
+                cout << "[ ERROR! ] Continent size is " << currentSet->size() << ". It must contain more than one vertex.\n" << endl;
                 return false;
             }
 
-            if(currentSet->find(currentNode->name) != currentSet->end()) {
+            if(currentSet->find(currentNode->getName()) != currentSet->end()) {
                 if (continentFound) {
-                    cout << "ERROR: " << currentNode-> name << " was found on TWO continents!\n" << endl;
+                    cout << "[ ERROR! ] " << currentNode->getName() << " was found on TWO continents!\n" << endl;
                     return false;
                 } else {
                     continentFound = true;
 
                     //for each edge, if water edge and if edge vertex found in continent, return false
-                    vector<Edge> edges = currentNode->edges;
-                    for(Edge& edge: edges) {
-                        if (edge.second && (currentSet->find(edge.first->name) != currentSet->end())) {
-                            cout << "ERROR: " << currentNode->continent
+                    vector<Edge> *edges = currentNode->getEdges();
+                    for(Edge& edge: *edges) {
+                        if (edge.second && (currentSet->find(edge.first->getName()) != currentSet->end())) {
+                            cout << "[ ERROR! ] " << currentNode->getContinent()
                                  << " contains an internal water edge between "
-                                 << currentNode->name << " and " << edge.first->name << endl;
+                                 << currentNode->getName() << " and " << edge.first->getName() << endl;
                             return false;
                         }
                     }
@@ -94,7 +94,7 @@ vector<set<string>* > getMapContinents(GameMap* map){
     //Create copy of all vertices in set
     Vertices::iterator it;
     for(it = vertices->begin(); it != vertices->end(); ++it)
-        notVisited.insert(it->second->name);
+        notVisited.insert(it->second->getName());
 
     int continentIndex = -1;
     string continentName;
@@ -114,19 +114,19 @@ vector<set<string>* > getMapContinents(GameMap* map){
             notVisited.erase(name);
 
             //Create New continent and add first node.
-            continentName = firstNode->continent;
+            continentName = firstNode->getContinent();
             newContinent->insert(name);
             continents.push_back(newContinent);
             continentIndex++;
 
-            // cout << firstNode->name << " ";
+            // cout << firstNode->getName() << " ";
 
             //add edgevertices to nextToVist
-            vector<Edge> edges = firstNode->edges;
-            for(Edge& edge: edges)
+            vector<Edge>* edges = firstNode->getEdges();
+            for(Edge& edge: *edges)
                 //Only add edge vertex if not a water edge and currently in notVisited
-                if (!edge.second && (notVisited.find(edge.first->name)!=notVisited.end()))
-                    nextToVisit.push(edge.first->name);
+                if (!edge.second && (notVisited.find(edge.first->getName())!=notVisited.end()))
+                    nextToVisit.push(edge.first->getName());
         } else { //Still in a continent
             string currentNodeName = nextToVisit.front();
             nextToVisit.pop();
@@ -137,20 +137,20 @@ vector<set<string>* > getMapContinents(GameMap* map){
                 cout << currentNodeName << " ";
 
                 // allows for nodes to be put in multiple continents
-                if (currentNode->continent == continentName) {
+                if (currentNode->getContinent() == continentName) {
                     notVisited.erase(currentNodeName);
                     continents.at(continentIndex)->insert(currentNodeName);
 
                     //add edgevertices to nextToVist
-                    vector<Edge> edges = currentNode->edges;
+                    vector<Edge> *edges = currentNode->getEdges();
 
-                    for(Edge& edge: edges)
+                    for(Edge& edge: *edges)
                         //Only add edge vertex if not a water edge and currently in notVisited
-                        if (!edge.second && (notVisited.find(edge.first->name)!=notVisited.end()))
-                            nextToVisit.push(edge.first->name);
+                        if (!edge.second && (notVisited.find(edge.first->getName())!=notVisited.end()))
+                            nextToVisit.push(edge.first->getName());
                 } else {
                     continents.at(continentIndex)->insert(currentNodeName);
-                    cout << "\nWARNING: " << currentNodeName << " had a different continent name: " << currentNode->continent;
+                    cout << "\nWARNING: " << currentNodeName << " had a different continent name: " << currentNode->getContinent();
                 }
             }
         }
@@ -165,21 +165,21 @@ bool validateEdges(GameMap* map){
     //for each vertex, create new set, add edgevertex names
     Vertices::iterator it;
     for(it = vertices->begin(); it != vertices->end(); ++it) {
-        // cout << "Vertex: " << it->second->name << endl;
+        // cout << "Vertex: " << it->second->getName() << endl;
         set<string> edgeVertices;
-        vector<Edge> edges = it->second->edges;
-        for (Edge& edge: edges) {
-            // cout << "Current Edge = " << edge.first->name << endl;
-            if (edgeVertices.find(edge.first->name)!= edgeVertices.end()) {
-                cout << "ERROR: " << it->second->name << " points twice to " << edge.first->name << endl;
+        vector<Edge>* edges = it->second->getEdges();
+        for (Edge& edge: *edges) {
+            // cout << "Current Edge = " << edge.first->getName() << endl;
+            if (edgeVertices.find(edge.first->getName())!= edgeVertices.end()) {
+                cout << "[ ERROR! ] " << it->second->getName() << " points twice to " << edge.first->getName() << endl;
                 return false;
             }
-            if (edge.first->name == it->second->name) {
-                cout << "ERROR: " << it->second->name << " points to itself. \n" << endl;
+            if (edge.first->getName() == it->second->getName()) {
+                cout << "[ ERROR! ] " << it->second->getName() << " points to itself. \n" << endl;
                 return false;
             }
-            // cout << "Adding " << edge.first->name << " to edgeVertices.\n" << endl;
-            edgeVertices.insert(edge.first->name);
+            // cout << "Adding " << edge.first->getName() << " to edgeVertices.\n" << endl;
+            edgeVertices.insert(edge.first->getName());
         }
     }
 
@@ -190,17 +190,18 @@ bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVert
     Vertices::iterator it;
 
     for(it = countries->begin(); it != countries->end(); ++it) {
-        if (mapVertices->find(it->second->vertexKey) == mapVertices->end()) {
-            cout << it->second->name << " does not exist on the map.\n" << endl;
+        if (mapVertices->find(it->second->getKey()) == mapVertices->end()) {
+            cout << it->second->getName() << " does not exist on the map.\n" << endl;
             return false;
         } else {
-            cout << it->second->name << " exists on the map!\n" << endl;
+            cout << it->second->getName() << " exists on the map!\n" << endl;
         }
     }
     return true;
 }
 
 Players* createDummyPlayers(int numPlayers){
+    cout << "\n[ TEST UTIL ] Creating " << numPlayers << " dummy playeres.\n" << endl;
     Players* players =  new Players();
 
     if (numPlayers < 2 || numPlayers > 5) {

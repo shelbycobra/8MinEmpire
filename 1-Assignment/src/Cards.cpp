@@ -8,7 +8,21 @@
 
 using namespace std;
 
-int generateRandomInt(set<int>* nums);
+Card::Card(int theId, string theGood, string theAction): id(new int(theId)), good(new string(theGood)), action(new string(theAction)) {}
+
+Card::~Card() {
+    delete id;
+    delete good;
+    delete action;
+
+    id = NULL;
+    good = NULL;
+    action = NULL;
+}
+
+int Card::getID(){return *id;}
+string Card::getGood(){return *good;}
+string Card::getAction(){return *action;}
 
 Deck::Deck(){
     string resources[] = {"GEM", "IRON", "STONE", "WOOD", "CARROT"};
@@ -62,8 +76,6 @@ Deck::Deck(){
     while(nums->size() < 42) {
         int rand = generateRandomInt(nums);
         Card* card = cards->find(rand)->second;
-        // cout << "[ DECK ] Card ID: " << card->id << ", Good: " << card->good << ", Action: \"" << card->action << "\"" << endl;
-
         cardDeck->push(card);
     }
 
@@ -77,12 +89,24 @@ Deck::~Deck(){
 Card* Deck::draw(){
     Card* card = cardDeck->front();
     cardDeck->pop();
-    cout << "[ DECK ] Drew card { " << card->good << " : \"" << card->action << "\" } from the deck." << endl;
+    cout << "[ DECK ] Drew card { " << card->getGood() << " : \"" << card->getAction() << "\" } from the deck." << endl;
     return card;
 }
 
 queue<Card*>* Deck::getDeck(){
     return cardDeck;
+}
+
+int Deck::generateRandomInt(set<int>* nums){
+    srand (time(NULL));
+
+    while (true){
+        int num = rand() % 42;
+        if(nums->find(num) == nums->end()) {
+            nums->insert(num);
+            return num;
+        }
+    }
 }
 
 Hand::Hand() {
@@ -110,7 +134,7 @@ Card* Hand::exchange(int position){
     vector<Card*>::iterator it;
     for(it = hand->begin(); it != hand->end(); ++it) {
         if (*it == card) {
-            cout << "[ GAME HAND ] Removed card { " << (*it)->good << " : \"" << (*it)->action << "\" } from game hand."<< endl;
+            cout << "[ GAME HAND ] Removed card { " << (*it)->getGood() << " : \"" << (*it)->getAction() << "\" } from game hand."<< endl;
             hand->erase(it);
             break;
         }
@@ -126,22 +150,10 @@ void Hand::printHand() {
     int values[] = {0, 1, 1, 2, 2, 3};
     int count= 0;
     for(Card* c : *hand) {
-        printf("%d [ %d ] Card ID: %-5d Good: %-10s Action: %s\n", count+1, values[count], c->id, c->good.c_str(), c->action.c_str());
+        printf("%d [ %d ] Card ID: %-5d Good: %-10s Action: %s\n", count+1, values[count], c->getID(), c->getGood().c_str(), c->getAction().c_str());
         count++;
     }
     cout << endl;
 }
 
 vector<Card*>* Hand::getHand(){return hand;}
-
-int generateRandomInt(set<int>* nums){
-    srand (time(NULL));
-
-    while (true){
-        int num = rand() % 42;
-        if(nums->find(num) == nums->end()) {
-            nums->insert(num);
-            return num;
-        }
-    }
-}
