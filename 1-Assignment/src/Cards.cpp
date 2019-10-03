@@ -1,4 +1,5 @@
 #include "Cards.h"
+#include "util/MapUtil.h"
 
 #include <stdio.h>
 #include <set>
@@ -124,25 +125,51 @@ Hand::~Hand(){
     hand = NULL;
 }
 
-Card* Hand::exchange(int position){
+Card* Hand::exchange(Player* player){
+    int position;
+    int values[] = {0, 1, 1, 2, 2, 3};
 
-    // int values[] = {0, 1, 1, 2, 2, 3};
-    // int cardValue = values[position];
+    while(true) {
+        position = selectPositionOfCardFromGameHand();
+        if (player->payCoins(values[position])) {
 
-    Card* card = hand->at(position);
+            Card* card = hand->at(position);
 
-    vector<Card*>::iterator it;
-    for(it = hand->begin(); it != hand->end(); ++it) {
-        if (*it == card) {
-            cout << "[ GAME HAND ] Removed card { " << (*it)->getGood() << " : \"" << (*it)->getAction() << "\" } from game hand."<< endl;
-            hand->erase(it);
-            break;
+            vector<Card*>::iterator it;
+            for(it = hand->begin(); it != hand->end(); ++it) {
+                if (*it == card) {
+                    cout << "[ GAME HAND ] Removed card { " << (*it)->getGood() << " : \"" << (*it)->getAction() << "\" } from game hand."<< endl;
+                    hand->erase(it);
+                    break;
+                }
+            }
+
+            hand->push_back(deck->draw());
+            player->addCardToHand(card);
+
+            return card;
         }
     }
+}
 
-    hand->push_back(deck->draw());
+int Hand::selectPositionOfCardFromGameHand(){
+    string pos;
+    int position;
 
-    return card;
+    printHand();
+
+    while (true) {
+        cout << "[ GAME HAND ] Please choose a card from the game hand." << endl;
+        cout << "[ GAME HAND ] > ";
+        getline(cin, pos);
+
+        stringstream toInt(pos);
+        toInt >> position;
+
+        if (position < 7 && position > 0)
+            return position - 1;
+        cout << "[ ERROR! ] You can only choose numbers between [1, 6]. Please try again." << endl;
+    }
 }
 
 void Hand::printHand() {

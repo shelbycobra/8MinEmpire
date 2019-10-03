@@ -20,7 +20,6 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map);
 int chooseArmies(int maxArmies, int remainderArmies);
 string chooseORAction(string action);
 Player* chooseOpponent(Players* players, Player* currentPlayer);
-int selectPositionOfCardFromGameHand(Hand* gameHand);
 void executeMoveArmies(Player* player,string action, GameMap* map);
 void executeAddArmies(Player* player, string action, GameMap* map);
 void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players);

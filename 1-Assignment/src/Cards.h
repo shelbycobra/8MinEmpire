@@ -1,6 +1,8 @@
 #ifndef CARDS_H
 #define CARDS_H
 
+#include "Player.h"
+
 #include <string>
 #include <vector>
 #include <queue>
@@ -8,6 +10,8 @@
 #include <set>
 
 using namespace std;
+
+class Player;
 
 class Card {
 
@@ -45,9 +49,10 @@ class Hand {
         Hand();
         ~Hand();
 
-        Card* exchange(int position);
+        Card* exchange(Player* player);
         void printHand();
         vector<Card*>* getHand();
+        int selectPositionOfCardFromGameHand();
 };
 
 #endif

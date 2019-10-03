@@ -25,9 +25,6 @@ int main() {
         nextTurn->push(player.second);
     }
 
-    int cardValues[] = {0, 1, 1, 2, 2, 3};
-    int position;
-
     while(true) {
         Player* currentPlayer = nextTurn->front();
         nextTurn->pop();
@@ -35,12 +32,7 @@ int main() {
 
         cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
 
-        position = selectPositionOfCardFromGameHand(gameHand);
-
-        if (currentPlayer->payCoins(cardValues[position])) {
-            Card* card = gameHand->exchange(position);
-            currentPlayer->addCardToHand(card);
-            performCardAction(currentPlayer, card->getAction(), map, players);
-        }
+        Card* card = gameHand->exchange(currentPlayer);
+        performCardAction(currentPlayer, card->getAction(), map, players);
     }
 }

@@ -1,40 +1,25 @@
-1. Add image loading function in MapLoader
-2. Add image in got.text
+1. (DONE) Add image loading function in MapLoader
+2. (DONE) Add image in got.text
 3. Create test cases for MapLoader
-4. Create test cases for Cards
+4. (NO NEED) Create test cases for Cards
 5. Complete test suite for Player
 6. Documentation (diagram?)
 7. README
 8. Windows option in run_driver
 9. Method Documentation
-10. Bidder tester
+10. (DONE) Bidder tester
 11. Copy constructor and assignment constructors
 
 Questions
-1. Do the vertex members need to be pointers even though its a struct and not a class?
+
 2. Hand exchange method: Is it supposed to act upon a player object causing it?
 3. Does the naming have to be exactly as the requirements?
 4. Does each cpp file have to be a class? or can they be just methods?
 5. CardsDriver test cases?
 
-1. Going based off of the assignment requirements, yes! Also, structs are basically classes,
-but just have their default visibility to public instead of private (in classes)!
 
 2. The assignment requirements seem to make it sound like it should be inside the exchange()
 function! I hope this won't cause too much refactoring!
-
-3. I don't think we'll be super strict on this, but it would be a lot better if it did
-match the names from the assignment, or very closely resembled them if not.
-
-4. Based off the words of "biding facility objects", I would indeed make a class for Bidding, for the functions!
-->Each class unit should be its own a .h/.cpp. For the first assignment,
-we won't be too strict on having more than one class (so long as it makes sense) to be coupled in
-particular .h/.cpp, but this will probably need to be refactored later on to avoid high coupling within files in terms of game design!
-
-5.  It just needs to be as the assignment specifies! "Driver creates a deck of cards.
-Creates a hand object that is filled by face up cards from and that return the each card with
-its goods and action characteristics." In A2 and beyond, there will probably be a shuffle method
-(there normally is one in these games) associated with this deck, but for A1, we only expect what the driver is asking for!
 
 6. Since this is not really the full-fledged game with its gaming loop, we expect just enough interaction
 to show the proper functionalities of each part! It does not have to be super elaborate, but should have some

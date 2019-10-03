@@ -23,25 +23,6 @@ vector<string>* split(string& str, char delimiter) {
     return arr;
 }
 
-int selectPositionOfCardFromGameHand(Hand* gameHand){
-    string pos;
-    int position;
-
-    gameHand->printHand();
-
-    while (true) {
-        cout << "[ GAME HAND ] Please choose a card from the game hand." << endl;
-        cout << "[ GAME HAND ] > ";
-        getline(cin, pos);
-
-        stringstream toInt(pos);
-        toInt >> position;
-
-        if (position < 7 && position > 0)
-            return position - 1;
-        cout << "[ ERROR! ] You can only choose numbers between [1, 6]. Please try again." << endl;
-    }
-}
 
 void performCardAction(Player* player, string action, GameMap* map, Players* players) {
     //if action contains OR -> ask player which to use
