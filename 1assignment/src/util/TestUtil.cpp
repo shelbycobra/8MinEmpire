@@ -208,7 +208,7 @@ Players* createDummyPlayers(int numPlayers){
         return NULL;
     }
 
-    //Following the rules of the game.
+    //Follows the rules of the game for distributing coins per player.
     int coins = 18 - numPlayers * 2;
     if (numPlayers == 3 || numPlayers == 4)
         coins--;

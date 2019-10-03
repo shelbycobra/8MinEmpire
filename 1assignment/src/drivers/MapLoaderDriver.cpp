@@ -1,5 +1,5 @@
-#include "MapLoader.h"
-#include "util/TestUtil.h"
+#include "../MapLoader.h"
+#include "../util/TestUtil.h"
 
 void test_ReadValidMapFiles();
 void test_CreateValidGraphFromMap();

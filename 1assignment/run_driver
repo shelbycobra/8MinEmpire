@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 CPP_STD="-std=c++14"
-CPP_FILES="Cards.cpp Player.cpp Map.cpp MapLoader.cpp Bidder.cpp util/*.cpp $1Driver.cpp"
+CPP_FILES="src/*.cpp src/util/*.cpp src/drivers/$1Driver.cpp"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     COMPILER="g++" 

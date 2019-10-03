@@ -1,8 +1,8 @@
-#include "Cards.h"
-#include "util/MapUtil.h"
-#include "util/TestUtil.h"
-#include "Map.h"
-#include "MapLoader.h"
+#include "../Cards.h"
+#include "../util/MapUtil.h"
+#include "../util/TestUtil.h"
+#include "../Map.h"
+#include "../MapLoader.h"
 
 void test_PlayerChoosesBuildCityCard();
 void test_PlayerChoosesMoveArmiesOverLandCard();

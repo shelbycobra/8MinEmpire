@@ -1,5 +1,5 @@
 #include "Bidder.h"
-#include "util/TestUtil.h"
+#include "../util/TestUtil.h"
 
 int main() {
 

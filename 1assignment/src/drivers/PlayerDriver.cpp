@@ -1,6 +1,6 @@
-#include "Player.h"
-#include "MapLoader.h"
-#include "util/TestUtil.h"
+#include "../Player.h"
+#include "../MapLoader.h"
+#include "../util/TestUtil.h"
 #include <cassert>
 
 void test_PlayerOwnsValidSetOfRegions();
