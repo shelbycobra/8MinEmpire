@@ -14,51 +14,65 @@ youngest player win.
 #include "Bidder.h"
 #include <unistd.h>
 
-Bidder::Bidder(Player* player): madeBid(new bool(false)), amount(new int(-1)), player(player) {}
+Bidder::Bidder(Player* player): madeBid(new bool(false)), player(player) {}
 
 Bidder::~Bidder(){
     delete madeBid;
-    delete amount;
     delete player;
 
     madeBid = NULL;
-    amount = NULL;
     player = NULL;
 }
 
-void Bidder::bid(){
-    cout << "[ " << player->getName() << " ] Is placing bid." << endl;
+int Bidder::bid() {
+    int bid = -1;
+    string bidStr;
+
+    if (!*madeBid) {
+        
+        while(true) {
+
+            cout << "[ BIDDING ] " << player->getName() << ", please select your bid."
+                    << " You have " << player->getCoins() << " coins." << endl;
+            cout << "[ BIDDING ] > ";
+            getline(cin, bidStr);
+
+            stringstream toInt(bidStr);
+            toInt >> bid;
+
+            if (bid <= player->getCoins()) 
+                break;
+
+            cout << "[ ERROR! ] You don't have enough coins to make that big. Please try again." << endl; 
+
+        }
+    } else {
+        cout << "[ ERROR! ] A bid has already been made for " << player->getName() << endl;
+    }
+
+    *madeBid = true;
+
+    return bid;
 }
 
-void startBid(Players* players) {
+void Bidder::startBid(Players* players) {
     cout << "\n[ BIDDER ] STARTING BID!\n" << endl;
 
     unordered_map<Player*, int>* bids = new unordered_map<Player*, int>();
 
     Players::iterator it;
     for(it = players->begin(); it != players->end(); ++it){
-        int bid;
-        string bidStr;
-
-        cout << "[ BIDDING ] " << it->first << ", please select your bid."
-             << " You have " << it->second->getCoins() << " coins." << endl;
-        cout << "[ BIDDING ] > ";
-        getline(cin, bidStr);
-
-        stringstream toInt(bidStr);
-        toInt >> bid;
+        int bid = it->second->getBidder()->bid();
 
         bids->insert(pair<Player*, int>(it->second, bid));
-
-        cout << "\n";
     }
 
-    Player* winner = calculateWinner(bids, players);
+    Player* winner = Bidder::calculateWinner(bids, players);
 
     winner->payCoins(bids->find(winner)->second);
  }
 
-Player* calculateWinner(unordered_map<Player*, int>* bids, Players* players) {
+Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* players) {
 
     cout << "\n[ BIDDER ] Finding winning bid ... \n\n";
 

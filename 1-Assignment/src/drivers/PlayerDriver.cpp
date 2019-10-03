@@ -15,14 +15,14 @@ void test_DestroyArmy();
 
 int main() {
     test_PlayerOwnsValidSetOfRegions();
-    // test_PlayerOwnsValidHand();
-    // test_PlayerHasValidBidding();
     test_PayCoins();
     test_PlaceNewArmies();
     test_MoveArmies();
     test_MoveOverLand();
     test_BuildCity();
     test_DestroyArmy();
+    test_PlayerOwnsValidHand();
+    test_PlayerHasValidBidding();
 }
 
 void test_PlayerOwnsValidSetOfRegions() {
@@ -35,7 +35,7 @@ void test_PlayerOwnsValidSetOfRegions() {
 
     GameMap* map = generateValidMap();
     Vertices* vertices = map->getVertices();
-    Vertex* england = new Vertex("England", "Europe");
+    Vertex* england = new Vertex("England", "ENG", "Europe");
 
     cout << "\nTEST: Player occupies a country that doesn't exist on the map.\n" << endl;
 

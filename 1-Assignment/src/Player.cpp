@@ -4,7 +4,7 @@
 
 Player::Player(string& playerName, int startCoins): name(new string(playerName)), countries(new Vertices()),
     armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()), bidder(new Bidder(this)){
-        cout << "[ " << *name << " ] CREATED. (Purse = " << startCoins << ")." << endl;
+        cout << "-{ " << *name << " }- CREATED. (Purse = " << startCoins << ")." << endl;
     }
 
 Player::~Player(){
@@ -26,10 +26,10 @@ Player::~Player(){
 bool Player::payCoins(int amount){
     if (amount <= *coins && amount >= 0) {
         *coins -= amount;
-        cout << "[ "<< *name <<" ] Paid " << amount << " coins. (Purse = " << *coins << ")." << endl;
+        cout << "-{ " << *name << " }- Paid " << amount << " coins. (Purse = " << *coins << ")." << endl;
         return true;
     }
-    cout << "[ "<< *name <<" ] Doesn't have enough coins to pay " << amount << ". (Purse = " << *coins << ")." << endl;
+    cout << "-{ " << *name << " }- Doesn't have enough coins to pay " << amount << ". (Purse = " << *coins << ")." << endl;
     return false;
 }
 
@@ -43,10 +43,10 @@ bool Player::placeNewArmies(int newArmies, Vertex* country, string& start){
         *armies -= newArmies;
         addArmiesToCountry(country, newArmies);
 
-        cout << "[ " << *name << " ] Added " << newArmies << " new armies to < "<< country->name << " >." << endl;
+        cout << "-{ " << *name << " }- Added " << newArmies << " new armies to < "<< country->name << " >." << endl;
         return true;
     }
-    cout << "[ " << *name << " ] Chose an invalid country. It must be either START or contain one of the player's cities." << endl;
+    cout << "-{ " << *name << " }- Chose an invalid country. It must be either START or contain one of the player's cities." << endl;
     return false;
 }
 
@@ -81,10 +81,10 @@ int Player::getArmiesOnCountry(Vertex* country) {
     if(countries->find(country->vertexKey) != countries->end()) {
         int numArmies = country->armies.find(*name)->second;
         string army = numArmies == 1 ? "army" : "armies";
-        cout << "[ " << *name << " ] Has " << numArmies << " " << army << " on country < " << country->name << " >." << endl;
+        cout << "-{ " << *name << " }- Has " << numArmies << " " << army << " on country < " << country->name << " >." << endl;
         return numArmies;
     }
-    cout << "[ " << *name << " ] Has ZERO armies on country < " << country->name << " >." << endl;
+    cout << "-{ " << *name << " }- Has ZERO armies on country < " << country->name << " >." << endl;
     return 0;
 }
 
@@ -92,10 +92,10 @@ int Player::getCitiesOnCountry(Vertex* country){
     if(countries->find(country->vertexKey) != countries->end()) {
         int numCities = country->cities.find(*name)->second;
         string city = numCities == 1 ? "city" : "cities";
-        cout << "[ " << *name << " ] Has " << numCities << " " << city << " on country < " << country->name << " >." << endl;
+        cout << "-{ " << *name << " }- Has " << numCities << " " << city << " on country < " << country->name << " >." << endl;
         return numCities;
     }
-    cout << "[ " << *name << " ] Has ZERO cities on country < " << country->name << " >." << endl;
+    cout << "-{ " << *name << " }- Has ZERO cities on country < " << country->name << " >." << endl;
     return 0;
 }
 
@@ -111,7 +111,7 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
         if (start->armies.find(*name) != start->armies.end()) {
             int currentArmies = start->armies.find(*name)->second;
             if (numArmies > currentArmies) {
-                cout << "[ " << *name << " ] Doesn't have enough armies on < " << start->name
+                cout << "-{ " << *name << " }- Doesn't have enough armies on < " << start->name
                      << " > to move " << numArmies << "." << endl;
                 return false;
             }
@@ -119,16 +119,16 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
             addArmiesToCountry(end, numArmies);
             removeArmiesFromCountry(start, numArmies);
 
-            cout << "[ " << *name << " ] Moved " << numArmies 
+            cout << "-{ " << *name << " }- Moved " << numArmies 
                  << " armies from < " << start->name << " > to < " << end->name << " >." << endl;
             return true;
         }
 
-        cout << "[ " << *name << " ] Doesn't have any armies on < " << start->name << " > to move." << endl;
+        cout << "-{ " << *name << " }- Doesn't have any armies on < " << start->name << " > to move." << endl;
         return false;
     }
 
-    cout << "[ "<< *name <<" ] < " << end->name << " > is not an adjacent country." << endl;
+    cout << "-{ " << *name << " }- < " << end->name << " > is not an adjacent country." << endl;
     return false;
 }
 
@@ -148,19 +148,19 @@ bool Player::buildCity(Vertex* country){
             } else //Else insert new record
                 country->cities.insert(pair<string, int> (*name, currentCities));
 
-            cout << "[ " << *name << " ] Added an city to < " << country->name << " >. (New city count = " << currentCities << ")." << endl; 
+            cout << "-{ " << *name << " }- Added an city to < " << country->name << " >. (New city count = " << currentCities << ")." << endl; 
             return true;
         }
     }
 
-    cout << "[ " << *name << " ] Can't place city on < " << country->name << " > because the player has no armies on it." << endl; 
+    cout << "-{ " << *name << " }- Can't place city on < " << country->name << " > because the player has no armies on it." << endl; 
     return false;
 }
 
 bool Player::destroyArmy(Vertex* country, Player* opponent){
 
     if (opponent->getName() == *name) {
-        cout << "[ " << *name << " ] Can't destroy own army." << endl;
+        cout << "-{ " << *name << " }- Can't destroy own army." << endl;
         return false;
     }
 
@@ -179,12 +179,12 @@ bool Player::destroyArmy(Vertex* country, Player* opponent){
             opponent->removeCountry(country);
         }
 
-        cout << "[ " << *name << " ] Destroyed one of " << opponent->getName() << "'s armies on < " << country->name << " >." << endl;
+        cout << "-{ " << *name << " }- Destroyed one of " << opponent->getName() << "'s armies on < " << country->name << " >." << endl;
         return true;
     }
 
 
-    cout << "[ " << *name << " ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->name << " >." << endl;
+    cout << "-{ " << *name << " }- " << opponent->getName() << " doesn't have any armies to destroy on < " << country->name << " >." << endl;
     return false;
 }
 
@@ -197,7 +197,7 @@ void Player::addCountry(Vertex* country){
     Vertex* v;
     v = country;
     countries->insert(pair<string, Vertex*> (country->vertexKey, v));
-    cout << "[ " << *name << " ] " << "Added country < " << country->name << " > to player's countries." << endl;
+    cout << "-{ " << *name << " }- " << "Added country < " << country->name << " > to player's countries." << endl;
 }
 
 void Player::removeCountry(Vertex* country) {
@@ -213,12 +213,12 @@ void Player::removeCountry(Vertex* country) {
             country->armies.erase(*name);
             country->cities.erase(*name);
             countries->erase(country->vertexKey);
-            cout << "[ "<< *name <<" ] " << "Removed < " << country->name << " >." << endl;
+            cout << "-{ " << *name << " }- " << "Removed < " << country->name << " >." << endl;
         } else
-            cout << "[ "<< *name <<" ] " << "Can't remove < " << country->name << " >. The player still owns "
+            cout << "-{ " << *name << " }- " << "Can't remove < " << country->name << " >. The player still owns "
                 << numArmies << " armies and " << numCities << " cities on it." << endl;
     } else {
-        cout << "[ " << *name << " ] " << "Doesn't have the country < " << country->name << " > available to remove." << endl;
+        cout << "-{ " << *name << " }- " << "Doesn't have the country < " << country->name << " > available to remove." << endl;
     }
 }
 
