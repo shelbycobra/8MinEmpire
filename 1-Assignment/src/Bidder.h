@@ -14,10 +14,16 @@ class Bidder {
     Player* player;
 
 public:
+    Bidder();
     Bidder(Player* player);
+    Bidder(Bidder* bidder);
+    Bidder& operator=(Bidder& bidder);
     ~Bidder();
+
     int bid();
     static void startBid(Players* players);
+    bool getMadeBid();
+    Player* getPlayer();
 
 private:
     static Player* calculateWinner(unordered_map<Player*, int>* bids, Players* players);

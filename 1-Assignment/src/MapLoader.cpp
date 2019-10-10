@@ -4,8 +4,27 @@
 #include <sstream>
 #include <iterator>
 
-GameMap* loadMap(const string& filePath) {
-    ifstream mapFile(filePath);
+
+MapLoader::MapLoader() : mapFilePath(new string(".")){}
+
+MapLoader::MapLoader(const string& filePath): mapFilePath(new string(filePath)){}
+
+MapLoader::MapLoader(MapLoader* mapLoader){
+    mapFilePath = new string(mapLoader->getMapFilePath());
+}
+
+MapLoader& MapLoader::operator=(MapLoader& mapLoader){
+    mapFilePath = new string(mapLoader.getMapFilePath());
+    return *this;
+}
+
+MapLoader::~MapLoader(){
+    delete mapFilePath;
+    mapFilePath = 0;
+}
+
+GameMap* MapLoader::generateMap(){
+    ifstream mapFile(*mapFilePath);
     GameMap* map = new GameMap();
     unordered_map<string, string> nameMap;
 
@@ -74,3 +93,5 @@ GameMap* loadMap(const string& filePath) {
 
     return map;
 }
+
+string MapLoader::getMapFilePath(){return *mapFilePath;}

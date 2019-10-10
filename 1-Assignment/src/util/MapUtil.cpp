@@ -79,7 +79,7 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
             map->printMap();
         else {
             cerr << "[ ERROR! ] Invalid action type." << endl;
-            return NULL;
+            return 0;
         }
 
         cout << "[ GAME ] > ";
@@ -225,7 +225,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
         endVertex = chooseEndVertex(player, actionType::ADD_ARMY, map);
         armies = chooseArmies(maxArmies, remainderArmies);
 
-        if (!player->placeNewArmies(armies, endVertex, *map->getStartVertex())) {
+        if (!player->placeNewArmies(armies, endVertex, map->getStartVertex())) {
             continue;
         }
 

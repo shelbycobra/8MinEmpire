@@ -3,7 +3,7 @@
 
 int main() {
 
-    Players* players = createDummyPlayers(3);
+    Players players = createDummyPlayers(3);
 
-    Bidder::startBid(players);
+    Bidder::startBid(&players);
 }

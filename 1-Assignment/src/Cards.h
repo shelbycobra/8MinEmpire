@@ -20,7 +20,10 @@ class Card {
     string* action;
 
 public:
+    Card();
     Card(int theId, string theGood, string theAction);
+    Card(Card* card);
+    Card& operator=(Card& card);
     ~Card();
 
     int getID();
@@ -31,13 +34,16 @@ public:
 class Deck {
     queue<Card*>* cardDeck;
 
-    public:
-        Deck();
-        ~Deck();
-        Card* draw();
-        queue<Card*>* getDeck();
-    private:
-        int generateRandomInt(set<int>* nums);
+public:
+    Deck();
+    Deck(Deck* deck);
+    Deck& operator=(Deck& deck);
+    ~Deck();
+
+    Card* draw();
+    queue<Card*>* getDeck();
+private:
+    int generateRandomInt(set<int>* nums);
 };
 
 class Hand {
@@ -45,14 +51,17 @@ class Hand {
     vector<Card*>* hand;
     Deck* deck;
 
-    public:
-        Hand();
-        ~Hand();
+public:
+    Hand();
+    Hand(Hand* hand);
+    Hand& operator=(Hand& hand);
+    ~Hand();
 
-        Card* exchange(Player* player);
-        void printHand();
-        vector<Card*>* getHand();
-        int selectPositionOfCardFromGameHand();
+    Card exchange(Player* player);
+    void printHand();
+    vector<Card*>* getHand();
+    Deck* getDeck();
+    int selectPositionOfCardFromGameHand();
 };
 
 #endif

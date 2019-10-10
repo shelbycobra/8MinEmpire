@@ -200,13 +200,13 @@ bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVert
     return true;
 }
 
-Players* createDummyPlayers(int numPlayers){
+Players createDummyPlayers(int numPlayers){
     cout << "\n[ TEST UTIL ] Creating " << numPlayers << " dummy playeres.\n" << endl;
-    Players* players =  new Players();
+    Players players;
 
     if (numPlayers < 2 || numPlayers > 5) {
         cout << "[ ERROR! ] Invalid number of players selected. Must be 2, 3, 4, or 5 players." << endl;
-        return NULL;
+        return players;
     }
 
     //Follows the rules of the game for distributing coins per player.
@@ -217,7 +217,7 @@ Players* createDummyPlayers(int numPlayers){
     for(int i = 1; i <= numPlayers; i++) {
         string name = "Player " + to_string(i);
         Player* player = new Player(name, coins);
-        players->insert(pair<string, Player*>(name, player));
+        players.insert(pair<string, Player*>(name, player));
     }
 
     return players;

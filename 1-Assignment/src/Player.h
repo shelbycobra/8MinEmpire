@@ -27,44 +27,42 @@ class Player {
     vector<Card*>* hand;
     Bidder* bidder;
 
-    public:
+public:
+    Player();
+    Player(string &name,int startCoins);
+    Player(Player* player);
+    ~Player();
 
-        //Constructors & Destructors
-        Player(string &name,int startCoins);
-        ~Player();
+    bool payCoins(int amount);
+    bool placeNewArmies(int newArmies, Vertex* country, string start);
+    bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
+    bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
+    bool buildCity(Vertex* country);
+    bool destroyArmy(Vertex* country, Player* opponent);
 
-        //Copy Constructor & Assignment Overload
+    void addCardToHand(Card* card);
+    void addCountry(Vertex* country);
+    void removeCountry(Vertex* country);
+    void printCountries();
+    bool isAdjacent(Vertex* country, bool overWaterAllowed);
+    bool isAdjacent(string countryName, bool overWaterAllowed);
 
-        bool payCoins(int amount);
-        bool placeNewArmies(int newArmies, Vertex* country, string& start);
-        bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
-        bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
-        bool buildCity(Vertex* country);
-        bool destroyArmy(Vertex* country, Player* opponent);
+    // Getters
+    int getArmiesOnCountry(Vertex* country);
+    int getCitiesOnCountry(Vertex* country);
+    string getName();
+    Vertices* getCountries();
+    int getArmies();
+    int getCities();
+    int getCoins();
+    vector<Card*>* getHand();
+    Bidder* getBidder();
 
-        void addCardToHand(Card* card);
-        void addCountry(Vertex* country);
-        void removeCountry(Vertex* country);
-        void printCountries();
-        bool isAdjacent(Vertex* country, bool overWaterAllowed);
-        bool isAdjacent(string countryName, bool overWaterAllowed);
-
-        // Getters
-        int getArmiesOnCountry(Vertex* country);
-        int getCitiesOnCountry(Vertex* country);
-        string getName();
-        Vertices* getCountries();
-        int getAvailableArmies();
-        int getAvailableCities();
-        int getCoins();
-        vector<Card*>* getHand();
-        Bidder* getBidder();
-
-    private:
-        void addArmiesToCountry(Vertex* country, int numArmies);
-        void removeArmiesFromCountry(Vertex* country, int numArmies);
-        void increaseAvailableArmies(int amount);
-        void decreaseAvailableArmies(int amount);
+private:
+    void addArmiesToCountry(Vertex* country, int numArmies);
+    void removeArmiesFromCountry(Vertex* country, int numArmies);
+    void increaseAvailableArmies(int amount);
+    void decreaseAvailableArmies(int amount);
 };
 
 typedef unordered_map<string, Player*> Players;

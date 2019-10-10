@@ -14,14 +14,30 @@ youngest player win.
 #include "Bidder.h"
 #include <unistd.h>
 
-Bidder::Bidder(Player* player): madeBid(new bool(false)), player(player) {}
+Bidder::Bidder(): 
+    madeBid(new bool(false)),
+    player(new Player()) {}
+
+Bidder::Bidder(Player* player): 
+    madeBid(new bool(false)), 
+    player(player) {}
+
+Bidder::Bidder(Bidder* bidder) {
+    madeBid = new bool(bidder->getMadeBid());
+    player = new Player(bidder->getPlayer());
+}
+
+Bidder& Bidder::operator=(Bidder& bidder) {
+    madeBid = new bool(bidder.getMadeBid());
+    player = new Player(bidder.getPlayer());
+}
 
 Bidder::~Bidder(){
     delete madeBid;
     delete player;
 
-    madeBid = NULL;
-    player = NULL;
+    madeBid = 0;
+    player = 0;
 }
 
 int Bidder::bid() {
@@ -116,3 +132,6 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
     return winner;
 
 }
+
+bool Bidder::getMadeBid(){return *madeBid;}
+Player* Bidder::getPlayer(){return player;}

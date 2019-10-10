@@ -28,12 +28,14 @@ class Vertex {
     vector<Edge> *edges;
 
 public:
+    Vertex();
     Vertex(string aName, string key, string continent);
+    Vertex(Vertex* vertex);
+    Vertex& operator =(Vertex& vertex);
     ~Vertex();
 
     void addEdge(Vertex* vertex, bool isWaterEdge);
     void print();
-
     string getName();
     string getKey();
     string getContinent();
@@ -52,11 +54,15 @@ class GameMap {
 
 public:
     GameMap();
+    GameMap(GameMap* map);
+    GameMap& operator=(GameMap& map);
     ~GameMap();
+
     void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     Vertices* getVertices();
-    string* getStartVertex();
+    string getStartVertex();
+    string getImage();
     bool setStartVertex(string& startVertexName);
     void printMap();
     void setImage(string& newImage);

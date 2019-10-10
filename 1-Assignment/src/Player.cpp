@@ -2,10 +2,36 @@
 #include "Map.h"
 #include "Cards.h"
 
-Player::Player(string& playerName, int startCoins): name(new string(playerName)), countries(new Vertices()),
-    armies(new int(14)), cities(new int(3)), coins(new int(startCoins)), hand(new vector<Card*>()), bidder(new Bidder(this)){
-        cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
-    }
+Player::Player(): 
+    name(new string("No name")), 
+    countries(new Vertices()), 
+    armies(new int(14)), 
+    cities(new int(3)), 
+    coins(new int(0)), 
+    hand(new vector<Card*>()), 
+    bidder(new Bidder(this)) {}
+
+Player::Player(string& playerName, int startCoins): 
+    name(new string(playerName)), 
+    countries(new Vertices()),
+    armies(new int(14)), 
+    cities(new int(3)), 
+    coins(new int(startCoins)), 
+    hand(new vector<Card*>()), 
+    bidder(new Bidder(this)) 
+{
+    cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
+}
+
+Player::Player(Player* player){
+    name = new string(player->getName());
+    countries = new Vertices(*player->getCountries());
+    armies = new int(player->getArmies());
+    cities = new int(player->getCities());
+    coins = new int(player->getCoins());
+    hand = new vector<Card*>(*player->getHand());
+    bidder = new Bidder(player->getBidder());
+}
 
 Player::~Player(){
     delete name;
@@ -15,12 +41,12 @@ Player::~Player(){
     delete coins;
     delete hand;
 
-    name = NULL;
-    countries = NULL;
-    armies = NULL;
-    cities = NULL;
-    coins = NULL;
-    hand = NULL;
+    name = 0;
+    countries = 0;
+    armies = 0;
+    cities = 0;
+    coins = 0;
+    hand = 0;
 }
 
 bool Player::payCoins(int amount){
@@ -34,7 +60,7 @@ bool Player::payCoins(int amount){
     return false;
 }
 
-bool Player::placeNewArmies(int newArmies, Vertex* country, string& start){
+bool Player::placeNewArmies(int newArmies, Vertex* country, string start){
     if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
         if (newArmies > *armies) {
             cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
@@ -257,9 +283,9 @@ string Player::getName(){return *name;}
 
 Vertices* Player::getCountries(){return countries;}
 
-int Player::getAvailableArmies(){return *armies;}
+int Player::getArmies(){return *armies;}
 
-int Player::getAvailableCities(){return *cities;}
+int Player::getCities(){return *cities;}
 
 int Player::getCoins(){return *coins;}
 

@@ -9,16 +9,37 @@
 
 using namespace std;
 
-Card::Card(int theId, string theGood, string theAction): id(new int(theId)), good(new string(theGood)), action(new string(theAction)) {}
+Card::Card():
+    id(new int(0)), 
+    good(new string("No good")), 
+    action(new string("No action")) {}
+
+Card::Card(int theId, string theGood, string theAction): 
+    id(new int(theId)), 
+    good(new string(theGood)), 
+    action(new string(theAction)) {}
+
+Card::Card(Card* card) {
+    id = new int(card->getID());
+    good = new string(card->getGood());
+    action = new string(card->getAction());
+}
+
+Card& Card::operator =(Card& card){
+    id = new int(card.getID());
+    good = new string(card.getGood());
+    action = new string(card.getAction());
+    return *this;
+}
 
 Card::~Card() {
     delete id;
     delete good;
     delete action;
 
-    id = NULL;
-    good = NULL;
-    action = NULL;
+    id = 0;
+    good = 0;
+    action = 0;
 }
 
 int Card::getID(){return *id;}
@@ -82,9 +103,18 @@ Deck::Deck(){
 
 }
 
+Deck::Deck(Deck* deck) {
+    cardDeck = new queue<Card*>(*deck->getDeck());
+}
+
+Deck& Deck::operator =(Deck& deck) {
+    cardDeck = new queue<Card*>(*deck.getDeck());
+    return *this;
+}
+
 Deck::~Deck(){
     delete cardDeck;
-    cardDeck = NULL;
+    cardDeck = 0;
 }
 
 Card* Deck::draw(){
@@ -99,7 +129,7 @@ queue<Card*>* Deck::getDeck(){
 }
 
 int Deck::generateRandomInt(set<int>* nums){
-    srand (time(NULL));
+    srand (time(0));
 
     while (true){
         int num = rand() % 42;
@@ -110,22 +140,29 @@ int Deck::generateRandomInt(set<int>* nums){
     }
 }
 
-Hand::Hand() {
-    hand = new vector<Card*>();
-    deck = new Deck();
-
+Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {
     //Populate game hand
     for(int i = 0; i < 6; i++) {
         hand->push_back(deck->draw());
     }
 }
 
-Hand::~Hand(){
-    delete hand;
-    hand = NULL;
+Hand::Hand(Hand* otherGameHand) {
+    hand = new vector<Card*>(*otherGameHand->getHand());
+    deck = new Deck(otherGameHand->getDeck());
 }
 
-Card* Hand::exchange(Player* player){
+Hand& Hand::operator=(Hand& otherGameHand) {
+    hand = new vector<Card*>(*otherGameHand.getHand());
+    deck = new Deck(otherGameHand.getDeck());
+}
+
+Hand::~Hand(){
+    delete hand;
+    hand = 0;
+}
+
+Card Hand::exchange(Player* player){
     int position;
     int values[] = {0, 1, 1, 2, 2, 3};
 
@@ -147,7 +184,7 @@ Card* Hand::exchange(Player* player){
             hand->push_back(deck->draw());
             player->addCardToHand(card);
 
-            return card;
+            return *card;
         }
     }
 }
@@ -184,3 +221,16 @@ void Hand::printHand() {
 }
 
 vector<Card*>* Hand::getHand(){return hand;}
+Deck* Hand::getDeck(){return deck;}
+
+int generateRandomInt(set<int>* nums){
+    srand (time(0));
+
+    while (true){
+        int num = rand() % 42;
+        if(nums->find(num) == nums->end()) {
+            nums->insert(num);
+            return num;
+        }
+    }
+}

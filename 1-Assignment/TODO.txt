@@ -1,6 +1,6 @@
 1. (DONE) Add image loading function in MapLoader
 2. (DONE) Add image in got.text
-3. Create test cases for MapLoader
+3. Create test cases for MapLoader (bad text files)
 4. (NO NEED) Create test cases for Cards
 5. Complete test suite for Player
 6. Documentation (diagram?)

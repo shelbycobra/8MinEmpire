@@ -5,6 +5,18 @@
 
 using namespace std;
 
-GameMap* loadMap(const string& filePath);
+class MapLoader {
+    string* mapFilePath;
+
+public:
+    MapLoader();
+    MapLoader(const string& filePath);
+    MapLoader(MapLoader* mapLoader);
+    MapLoader& operator=(MapLoader& mapLoader);
+    ~MapLoader();
+    GameMap* generateMap();
+
+    string getMapFilePath();
+};
 
 #endif

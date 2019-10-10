@@ -1,11 +1,42 @@
 #include "Map.h"
 
+Vertex::Vertex():
+    name(new string("None")), 
+    vertexKey(new string("None")),
+    owners(new set<Player*>()),
+    continent(new string("None")),
+    armies(new unordered_map<string, int>()),
+    cities(new unordered_map<string, int>()),
+    edges(new vector<Edge>()) {}
+
 Vertex::Vertex(string aName, string key, string continent):
-    name(new string(aName)), vertexKey(new string(key)), continent(new string(continent)) {
-        owners = new set<Player*>();
-        armies = new unordered_map<string, int>();
-        cities = new unordered_map<string, int>();
-        edges = new vector<Edge>();
+    name(new string(aName)), 
+    vertexKey(new string(key)), 
+    owners(new set<Player*>()),
+    continent(new string(continent)),
+    armies(new unordered_map<string, int>()),
+    cities(new unordered_map<string, int>()),
+    edges(new vector<Edge>()) {}
+
+Vertex::Vertex(Vertex* vertex){
+    name = new string(vertex->getName());
+    vertexKey = new string(vertex->getKey());
+    continent = new string(vertex->getContinent());
+    owners = new set<Player*>(*vertex->getOwners());
+    armies = new unordered_map<string, int>(*vertex->getArmies());
+    cities = new unordered_map<string, int>(*vertex->getCities());
+    edges = new vector<Edge>(*vertex->getEdges());
+}
+
+Vertex& Vertex::operator=(Vertex& vertex) {
+    name = new string(vertex.getName());
+    vertexKey = new string(vertex.getKey());
+    continent = new string(vertex.getContinent());
+    owners = new set<Player*>(*vertex.getOwners());
+    armies = new unordered_map<string, int>(*vertex.getArmies());
+    cities = new unordered_map<string, int>(*vertex.getCities());
+    edges = new vector<Edge>(*vertex.getEdges());
+    return *this;
 }
 
 Vertex::~Vertex(){
@@ -17,13 +48,13 @@ Vertex::~Vertex(){
     delete cities;
     delete edges;
 
-    name = NULL;
-    vertexKey = NULL;
-    owners = NULL;
-    continent = NULL;
-    armies = NULL;
-    cities = NULL;
-    edges = NULL;
+    name = 0;
+    vertexKey = 0;
+    owners = 0;
+    continent = 0;
+    armies = 0;
+    cities = 0;
+    edges = 0;
 }
 
 void Vertex::addEdge(Vertex* vertex, bool isWaterEdge) {
@@ -55,13 +86,26 @@ unordered_map<string, int>* Vertex::getArmies(){return armies;}
 unordered_map<string, int>* Vertex::getCities(){return cities;}
 vector<Edge>* Vertex::getEdges(){return edges;}
 
-GameMap::GameMap(): start(new string("none")), image(new string("")) {
-    vertices = new Vertices();
+GameMap::GameMap(): 
+    vertices(new Vertices()),
+    start(new string("none")), 
+    image(new string("")) {}
+
+GameMap::GameMap(GameMap* map) {
+    vertices = new Vertices(*map->getVertices());
+    start = new string(map->getStartVertex());
+    image = new string(map->getImage());
+}
+
+GameMap& GameMap::operator=(GameMap& map) {
+    vertices = new Vertices(*map.getVertices());
+    start = new string(map.getStartVertex());
+    image = new string(map.getImage());
 }
 
 GameMap::~GameMap() {
     delete vertices;
-    vertices = NULL;
+    vertices = 0;
 }
 
 bool GameMap::setStartVertex(string& startVertexKey){
@@ -83,7 +127,8 @@ bool GameMap::setStartVertex(string& startVertexKey){
     return false;
 }
 
-string* GameMap::getStartVertex(){return start;}
+string GameMap::getStartVertex(){return *start;}
+string GameMap::getImage(){return *image;}
 Vertices* GameMap::getVertices(){return vertices;}
 
 void GameMap::addVertex(const string& key, const string& name, const string& continent) {
