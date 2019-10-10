@@ -23,11 +23,8 @@ int main() {
     test_DestroyArmy();
     test_PlayerOwnsValidHand();
     test_PlayerHasValidBidding();
-<<<<<<< HEAD
-=======
 
 	return 0;
->>>>>>> Modified to work in Windows
 }
 
 void test_PlayerOwnsValidSetOfRegions() {
@@ -47,7 +44,7 @@ void test_PlayerOwnsValidSetOfRegions() {
     player->addCountry(england);
 
     bool result = playerOccupiedCountriesAreFoundOnMap(player->getCountries(), vertices);
-    assert( result == false );
+    assert( result == 0 );
 
     cout << "\nTEST: Player occupies two countries that exist on the map.\n" << endl;
 
@@ -56,16 +53,16 @@ void test_PlayerOwnsValidSetOfRegions() {
     player->addCountry(map->getVertices()->find("X")->second);
 
     result = playerOccupiedCountriesAreFoundOnMap(player->getCountries(), vertices);
-    assert( result == true );
+    assert( result == 1 );
 
     delete player;
     delete map;
     delete england;
 
-    player = 0;
-    map = 0;
-    vertices = 0;
-    england = 0;
+    player = nullptr;
+    map = nullptr;
+    vertices = nullptr;
+    england = nullptr;
 }
 
 void test_PlayerOwnsValidHand(){}
@@ -82,39 +79,39 @@ void test_PayCoins(){
     Player* player = new Player(name, 9);
     //9 - 5
     bool result = player->payCoins(5);
-    assert (result == true);
+    assert (result == 1);
 
     //4 - 4
     result = player->payCoins(4);
-    assert (result == true);
+    assert (result == 1);
 
     //0 - 0
     result = player->payCoins(0);
-    assert (result == true);
+    assert (result == 1);
 
     cout << "\nTEST: Player pays coins unsuccessfully.\n" << endl;
 
     //0 - -1
     result = player->payCoins(-1);
-    assert (result == false);
+    assert (result == 0);
 
     //5 - 6
     string name2 = "player2";
     Player* player2 = new Player(name2, 5);
     result = player2->payCoins(6);
-    assert (result == false);
+    assert (result == 0);
 
     player2->payCoins(5);
 
     //0 - 7
     result = player2->payCoins(7);
-    assert (result == false);
+    assert (result == 0);
 
     delete player;
     delete player2;
 
-    player = 0;
-    player2 = 0;
+    player = nullptr;
+    player2 = nullptr;
 }
 
 void test_PlaceNewArmies(){
@@ -138,7 +135,7 @@ void test_PlaceNewArmies(){
     bool result = player1->placeNewArmies(3, startVertex, startName);
     startArmies = player1->getArmiesOnCountry(startVertex);
 
-    assert (result == true && startArmies == 3);
+    assert (result == 1 && startArmies == 3);
 
     cout << "\nTEST: Player places new armies on invalid country \"X\".\n" << endl;
 
@@ -150,7 +147,7 @@ void test_PlaceNewArmies(){
     result = player1->placeNewArmies(2, xVertex, startName);
     xArmies = player1->getArmiesOnCountry(xVertex);
 
-    assert ( result == false && xArmies == 0 );
+    assert ( result == 0 && xArmies == 0 );
 
     cout << "\nTEST: Player places new armies on adjacent country \"X\".\n" << endl;
 
@@ -160,15 +157,15 @@ void test_PlaceNewArmies(){
     result = result && player1->placeNewArmies(2, xVertex, startName);
     xArmies = player1->getArmiesOnCountry(xVertex);
 
-    assert ( result == true && xArmies == 3 );
+    assert ( result == 1 && xArmies == 3 );
 
     delete map;
     delete player1;
 
-    map = 0;
-    player1 = 0;
-    startVertex = 0;
-    xVertex = 0;
+    map = nullptr;
+    player1 = nullptr;
+    startVertex = nullptr;
+    xVertex = nullptr;
 }
 
 void test_MoveArmies(){
@@ -199,7 +196,7 @@ void test_MoveArmies(){
     xArmies = player->getArmiesOnCountry(xVertex);
     startArmies = player->getArmiesOnCountry(startVertex);
 
-    assert( result == true && xArmies == 2 && startArmies == 1 );
+    assert( result == 1 && xArmies == 2 && startArmies == 1 );
 
     cout << "\nTEST: Player moves armies over water successfully from \"X\" to \"C\".\n" << endl;
 
@@ -211,7 +208,7 @@ void test_MoveArmies(){
     xArmies = player->getArmiesOnCountry(xVertex);
     cArmies = player->getArmiesOnCountry(cVertex);
 
-    assert( result == true && cArmies == 1 && xArmies == 1 );
+    assert( result == 1 && cArmies == 1 && xArmies == 1 );
 
     cout << "\nTEST: Player moves armies unsuccessfully from \"X\" to \"B\".\n" << endl;
 
@@ -223,7 +220,7 @@ void test_MoveArmies(){
     xArmies = player->getArmiesOnCountry(xVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
-    assert( result == false && xArmies == 1 && bArmies == 0 );
+    assert( result == 0 && xArmies == 1 && bArmies == 0 );
 
     cout << "\nTEST: Player moves armies unsuccessfully from START to \"B\".\n" << endl;
 
@@ -231,17 +228,17 @@ void test_MoveArmies(){
     startArmies = player->getArmiesOnCountry(startVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
-    assert( result == false && startArmies == 1 && bArmies == 0 );
+    assert( result == 0 && startArmies == 1 && bArmies == 0 );
 
     delete map;
     delete player;
 
-    map = 0;
-    startVertex = 0;
-    player = 0;
-    xVertex = 0;
-    cVertex = 0;
-    bVertex = 0;
+    map = nullptr;
+    startVertex = nullptr;
+    player = nullptr;
+    xVertex = nullptr;
+    cVertex = nullptr;
+    bVertex = nullptr;
 }
 
 void test_MoveOverLand(){
@@ -272,7 +269,7 @@ void test_MoveOverLand(){
     startArmies = player->getArmiesOnCountry(startVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
-    assert( result == true && startArmies == 2 && bArmies == 1 );
+    assert( result == 1 && startArmies == 2 && bArmies == 1 );
 
     cout << "\nTEST: Player moves armies successfully from START to \"C\".\n" << endl;
 
@@ -284,7 +281,7 @@ void test_MoveOverLand(){
     startArmies = player->getArmiesOnCountry(startVertex);
     cArmies = player->getArmiesOnCountry(cVertex);
 
-    assert( result == true && startArmies == 1 && cArmies == 1 );
+    assert( result == 1 && startArmies == 1 && cArmies == 1 );
 
     cout << "\nTEST: Player moves armies unsuccessfully over water from \"C\" to \"X\".\n" << endl;
 
@@ -296,16 +293,16 @@ void test_MoveOverLand(){
     cArmies = player->getArmiesOnCountry(cVertex);
     xArmies = player->getArmiesOnCountry(xVertex);
 
-    assert( result == false && cArmies == 1 && xArmies == 0 );
+    assert( result == 0 && cArmies == 1 && xArmies == 0 );
     delete map;
     delete player;
 
-    map = 0;
-    startVertex = 0;
-    player = 0;
-    xVertex = 0;
-    cVertex = 0;
-    bVertex = 0;
+    map = nullptr;
+    startVertex = nullptr;
+    player = nullptr;
+    xVertex = nullptr;
+    cVertex = nullptr;
+    bVertex = nullptr;
 }
 
 void test_BuildCity(){
@@ -332,11 +329,7 @@ void test_BuildCity(){
     result = player->buildCity(startVertex);
     startCities = player->getCitiesOnCountry(startVertex);
 
-<<<<<<< HEAD
-    assert( result == true && startCities == 1 );
-=======
     assert( result == 1 && startCities == 1 );
->>>>>>> Modified to work in Windows
 
     cout << "\nTEST: Player builds two cities on valid country \"P\".\n" << endl;
 
@@ -349,7 +342,7 @@ void test_BuildCity(){
     result = result && player->buildCity(pVertex);
     pCities = player->getCitiesOnCountry(pVertex);
 
-    assert( result == true && pCities == 2 );
+    assert( result == 1 && pCities == 2 );
 
     cout << "\nTEST: Player fails to build a city on invalid country \"R\".\n" << endl;
 
@@ -360,16 +353,16 @@ void test_BuildCity(){
     result = player->buildCity(rVertex);
     rCities = player->getCitiesOnCountry(rVertex);
 
-    assert( result == false && rCities == 0 );
+    assert( result == 0 && rCities == 0 );
 
     delete map;
     delete player;
 
-    map = 0;
-    startVertex = 0;
-    player = 0;
-    pVertex = 0;
-    rVertex = 0;
+    map = nullptr;
+    startVertex = nullptr;
+    player = nullptr;
+    pVertex = nullptr;
+    rVertex = nullptr;
 }
 
 void test_DestroyArmy(){
@@ -402,7 +395,7 @@ void test_DestroyArmy(){
     result = player1->destroyArmy(startVertex, player2);
     startArmies = player2->getArmiesOnCountry(startVertex);
 
-    assert( result == true && startArmies == 2 );
+    assert( result == 1 && startArmies == 2 );
 
     cout << "\nTEST: Player 1 fails destroys own army on START.\n" << endl;
 
@@ -410,7 +403,7 @@ void test_DestroyArmy(){
     result = player1->destroyArmy(startVertex, player1);
     startArmies = player1->getArmiesOnCountry(startVertex);
 
-    assert( result == false && startArmies == 3 );
+    assert( result == 0 && startArmies == 3 );
 
     cout << "\nTEST: Player 1 destroys an army on \"P\" from Player 3.\n" << endl;
 
@@ -423,7 +416,7 @@ void test_DestroyArmy(){
     result = result && player1->destroyArmy(pVertex, player3);
     pArmies = player3->getArmiesOnCountry(pVertex);
 
-    assert( result == true && pArmies == 0 );
+    assert( result == 1 && pArmies == 0 );
 
     cout << "\nTEST: Player 1 fails to destroy an army on \"P\" from Player 2.\n" << endl;
 
@@ -431,7 +424,7 @@ void test_DestroyArmy(){
     result = player1->destroyArmy(pVertex, player2);
     pArmies = player2->getArmiesOnCountry(pVertex);
 
-    assert( result == false && pArmies == 0);
+    assert( result == 0 && pArmies == 0);
 
     cout << "\nTEST: Player 1 fails to destroy own army on \"P\".\n" << endl;
 
@@ -440,17 +433,17 @@ void test_DestroyArmy(){
     result = result && player1->destroyArmy(pVertex, player1);
     pArmies = player1->getArmiesOnCountry(pVertex);
 
-    assert( result == false && pArmies == 1 );
+    assert( result == 0 && pArmies == 1 );
 
     delete map;
     delete player1;
     delete player2;
     delete player3;
 
-    map = 0;
-    startVertex = 0;
-    player1 = 0;
-    player2 = 0;
-    player3 = 0;
-    pVertex = 0;
+    map = nullptr;
+    startVertex = nullptr;
+    player1 = nullptr;
+    player2 = nullptr;
+    player3 = nullptr;
+    pVertex = nullptr;
 }

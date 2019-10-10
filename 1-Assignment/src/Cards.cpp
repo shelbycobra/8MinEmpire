@@ -37,9 +37,9 @@ Card::~Card() {
     delete good;
     delete action;
 
-    id = 0;
-    good = 0;
-    action = 0;
+    id = nullptr;
+    good = nullptr;
+    action = nullptr;
 }
 
 int Card::getID(){return *id;}
@@ -120,7 +120,7 @@ Deck::~Deck(){
     }
 
     delete cardDeck;
-    cardDeck = 0;
+    cardDeck = nullptr;
 }
 
 Card* Deck::draw(){
@@ -173,8 +173,8 @@ Hand::~Hand(){
     delete hand;
     delete deck;
 
-    hand = 0;
-    deck = 0;
+    hand = nullptr;
+    deck = nullptr;
 }
 
 Card Hand::exchange(Player* player){
@@ -186,10 +186,7 @@ Card Hand::exchange(Player* player){
         if (player->payCoins(values[position])) {
 
             Card* card = hand->at(position);
-<<<<<<< HEAD
-=======
 			player->addCardToHand(card);
->>>>>>> Modified to work in Windows
 
             vector<Card*>::iterator it;
             for(it = hand->begin(); it != hand->end(); ++it) {
@@ -201,10 +198,6 @@ Card Hand::exchange(Player* player){
             }
 
             hand->push_back(deck->draw());
-<<<<<<< HEAD
-            player->addCardToHand(card);
-=======
->>>>>>> Modified to work in Windows
 
             return *card;
         }

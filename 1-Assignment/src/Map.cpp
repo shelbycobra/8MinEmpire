@@ -48,13 +48,13 @@ Vertex::~Vertex(){
     delete cities;
     delete edges;
 
-    name = 0;
-    vertexKey = 0;
-    owners = 0;
-    continent = 0;
-    armies = 0;
-    cities = 0;
-    edges = 0;
+    name = nullptr;
+    vertexKey = nullptr;
+    owners = nullptr;
+    continent = nullptr;
+    armies = nullptr;
+    cities = nullptr;
+    edges = nullptr;
 }
 
 void Vertex::addEdge(Vertex* vertex, bool isWaterEdge) {
@@ -114,9 +114,9 @@ GameMap::~GameMap() {
     delete start;
     delete image;
 
-    vertices = 0;
-    start = 0;
-    image = 0;
+    vertices = nullptr;
+    start = nullptr;
+    image = nullptr;
 }
 
 bool GameMap::setStartVertex(string& startVertexKey){

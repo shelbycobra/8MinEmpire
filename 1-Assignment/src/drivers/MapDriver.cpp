@@ -29,23 +29,23 @@ void test_ConnectedMap(){
     cout << "\nTEST: .\n" << endl;
 
     bool result1 = isConnectedMap(generateValidMap());
-    assert(result1 == true);
+    assert(result1 == 1);
     cout << "Map 1 is connected." << "\n" << endl;
 
     bool result2 = isConnectedMap(generateSmallSimpleMap());
-    assert(result2 == true);
+    assert(result2 == 1);
     cout << "Map 2 is connected." << "\n" << endl;
 
     bool result3 = isConnectedMap(generateValidMapContainingNodeWithTwoWaterEdges());
-    assert(result3 == true);
+    assert(result3 == 1);
     cout << "Map 3 is connected." << "\n" << endl;
 
     bool result4 = isConnectedMap(generateDisconnectedMap());
-    assert(result4 == false);
+    assert(result4 == 0);
     cout << "Map 4 is not connected." << "\n" << endl;
 
     bool result5 = isConnectedMap(generateCompletelyDisconnectedMap());
-    assert(result5 == false);
+    assert(result5 == 0);
     cout << "Map 5 is not connected." << "\n" << endl;
 }
 
@@ -60,7 +60,7 @@ void test_EachCountryBelongsToOneContinent(){
     cout << "Map 1 has valid continents." << "\n" << endl;
 
     delete map;
-    map = 0;
+    map = nullptr;
 
     GameMap* map1 = generateMapWithInternalWaterEdge();
     bool result1 = validateContinents(map1);
@@ -68,7 +68,7 @@ void test_EachCountryBelongsToOneContinent(){
     cout << "Map 1 has invalid continents." << "\n" << endl;
 
     delete map1;
-    map1 = 0;
+    map1 = nullptr;
 
     GameMap* map2 = generateInvalidContinentMap();
     bool result2= validateContinents(map2);
@@ -76,7 +76,7 @@ void test_EachCountryBelongsToOneContinent(){
     cout << "Map 2 has invalid continents." << "\n" << endl;
 
     delete map2;
-    map2 = 0;
+    map2 = nullptr;
 
     GameMap* map3 = generateInvalidContinentMap2();
     bool result3 = validateContinents(map3);
@@ -84,7 +84,7 @@ void test_EachCountryBelongsToOneContinent(){
     cout << "Map 3 has invalid continents." << "\n" << endl;
 
     delete map3;
-    map3 = 0;
+    map3 = nullptr;
 
     GameMap* map4 = generateInvalidContinentMap3();
     bool result4 = validateContinents(map4);
@@ -92,7 +92,7 @@ void test_EachCountryBelongsToOneContinent(){
     cout << "Map 4 has invalid continents." << "\n" << endl;
 
     delete map4;
-    map4 = 0;
+    map4 = nullptr;
 }
 
 void test_ValidEdges(){
@@ -106,7 +106,7 @@ void test_ValidEdges(){
     cout << "Map 1 has valid edges." << "\n" << endl;
 
     delete map1;
-    map1 = 0;
+    map1 = nullptr;
 
     GameMap* map2 = generateDuplicateEdgesMap();
     bool result2 = validateEdges(map2);
@@ -114,7 +114,7 @@ void test_ValidEdges(){
     cout << "Map 2 has invalid edges." << "\n" << endl;
 
     delete map2;
-    map2 = 0;
+    map2 = nullptr;
 
     GameMap* map3 = generateSelfLoopMap();
     bool result3= validateEdges(map3);
@@ -122,7 +122,7 @@ void test_ValidEdges(){
     cout << "Map 3 has invalid edges." << "\n" << endl;
 
     delete map3;
-    map3 = 0;
+    map3 = nullptr;
 }
 
 void test_SettingAndGettingStartVertex(){
@@ -155,5 +155,5 @@ void test_SettingAndGettingStartVertex(){
     cout << "Success! Start == " << start << " and not the excepted \"" << startName << "\"" << endl;
 
     delete map;
-    map = 0;
+    map = nullptr;
 }

@@ -45,12 +45,12 @@ Player::~Player(){
     delete coins;
     delete hand;
 
-    name = 0;
-    countries = 0;
-    armies = 0;
-    cities = 0;
-    coins = 0;
-    hand = 0;
+    name = nullptr;
+    countries = nullptr;
+    armies = nullptr;
+    cities = nullptr;
+    coins = nullptr;
+    hand = nullptr;
 }
 
 bool Player::payCoins(int amount){
@@ -66,11 +66,7 @@ bool Player::payCoins(int amount){
 
 bool Player::placeNewArmies(int newArmies, Vertex* country, string start){
     if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
-<<<<<<< HEAD
-        if (newArmies > *armies) {
-=======
         if (newArmies > *armies || newArmies < 0) {
->>>>>>> Modified to work in Windows
             cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
             return false;
         }
@@ -225,12 +221,8 @@ bool Player::destroyArmy(Vertex* country, Player* opponent){
 }
 
 void Player::addCardToHand(Card* card) {
-<<<<<<< HEAD
-    hand->push_back(card);
-=======
 	Card *newCard = new Card(card);
     hand->push_back(newCard);
->>>>>>> Modified to work in Windows
 }
 
 
