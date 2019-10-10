@@ -1,7 +1,7 @@
 1. (DONE) Add image loading function in MapLoader
 2. (DONE) Add image in got.text
 3. Create test cases for MapLoader (bad text files)
-4. (NO NEED) Create test cases for Cards
+4. Create test cases for Cards
 5. Complete test suite for Player
 6. Documentation (diagram?)
 7. README
@@ -9,8 +9,9 @@
 9. Method Documentation
 10. (DONE) Bidder tester
 11. (DONE) Copy constructor and assignment constructors
-11. memory leaks
+11. (DONE) memory leaks
 12. (DONE) Default constructors
+13. Add test headers in MapDriver.cpp
 
 Questions
 
