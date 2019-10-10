@@ -34,7 +34,11 @@ GameMap* MapLoader::generateMap(){
     //Add vertices
     string continent;
     while (line != "&") {
+<<<<<<< HEAD
         // cout << line << endl;
+=======
+        cout << line << endl;
+>>>>>>> Modified to work in Windows
         if (line.at(0) == '$') {
             continent=line.substr(1);
         }

@@ -5,7 +5,12 @@
 #include "../MapLoader.h"
 
 int main() {
+<<<<<<< HEAD
     MapLoader loader("../maps/gotmap/got.map");
+=======
+
+    MapLoader loader("maps/gotmap/got.map");
+>>>>>>> Modified to work in Windows
     GameMap* map = loader.generateMap();
     Hand* gameHand = new Hand();
     Players players = createDummyPlayers(3);
@@ -43,7 +48,11 @@ int main() {
         
         count++;
 
+<<<<<<< HEAD
         cout << "CONTINUE?" << endl;
+=======
+        cout << "CONTINUE DEMO?" << endl;
+>>>>>>> Modified to work in Windows
         cout << "'y' or 'Y' to continue > ";
         getline(cin, cont);
     }
@@ -51,7 +60,10 @@ int main() {
     // Deallocate heap memory
     delete gameHand;
     delete map;
+<<<<<<< HEAD
     delete startVertex;
+=======
+>>>>>>> Modified to work in Windows
     for (pair<string, Player*> player: players) {
         delete player.second;
     }

@@ -23,6 +23,11 @@ int main() {
     test_DestroyArmy();
     test_PlayerOwnsValidHand();
     test_PlayerHasValidBidding();
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> Modified to work in Windows
 }
 
 void test_PlayerOwnsValidSetOfRegions() {
@@ -327,7 +332,11 @@ void test_BuildCity(){
     result = player->buildCity(startVertex);
     startCities = player->getCitiesOnCountry(startVertex);
 
+<<<<<<< HEAD
     assert( result == true && startCities == 1 );
+=======
+    assert( result == 1 && startCities == 1 );
+>>>>>>> Modified to work in Windows
 
     cout << "\nTEST: Player builds two cities on valid country \"P\".\n" << endl;
 

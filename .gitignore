@@ -1,4 +1,19 @@
 **/a.out
+<<<<<<< HEAD
 **/**.gch
 **/.vscode/
 .vscode/**
+=======
+
+**/**.gch
+
+**/.vscode
+/
+.vscode/**
+**/.vs
+**/Debug/**
+**/Release/**
+**.vcxproj**
+**/enc_temp_folder/**
+**.sln
+>>>>>>> Modified to work in Windows

@@ -7,7 +7,11 @@ void test_ReadInvalidMapFiles();
 void test_CreateInvalidGraphFromMap();
 
 int main() {
+<<<<<<< HEAD
     MapLoader loader("../gotmap/got.map");
+=======
+    MapLoader loader("maps\\gotmap\\got.map");
+>>>>>>> Modified to work in Windows
     GameMap* map = loader.generateMap();
     cout << map->getVertices()->size() << endl;
 

@@ -42,7 +42,11 @@ bool isConnectedMap(GameMap* map){
 
 bool validateContinents(GameMap* map) {
     vector<set<string>* > continents = getMapContinents(map);
+<<<<<<< HEAD
     cout << "\nNumber of continents: " << continents.size() << endl;
+=======
+    cout << "\n\nNumber of continents: " << continents.size() << endl;
+>>>>>>> Modified to work in Windows
     Vertices* vertices = map->getVertices();
     Vertices::iterator it;
 
@@ -94,7 +98,11 @@ vector<set<string>* > getMapContinents(GameMap* map){
     //Create copy of all vertices in set
     Vertices::iterator it;
     for(it = vertices->begin(); it != vertices->end(); ++it)
+<<<<<<< HEAD
         notVisited.insert(it->second->getName());
+=======
+        notVisited.insert(it->first);
+>>>>>>> Modified to work in Windows
 
     int continentIndex = -1;
     string continentName;
@@ -105,6 +113,7 @@ vector<set<string>* > getMapContinents(GameMap* map){
 
         //nextToVisit will be empty when a new continent starts
         if (nextToVisit.empty()) {
+<<<<<<< HEAD
             cout << "\nNew Continent!\n" << endl;
             set<string>* newContinent = new set<string>;
 
@@ -120,11 +129,30 @@ vector<set<string>* > getMapContinents(GameMap* map){
             continentIndex++;
 
             // cout << firstNode->getName() << " ";
+=======
+            cout << "\n\nNew Continent! : ";
+            set<string>* newContinent = new set<string>;
+
+            //Get front node from notVisited and remove it.
+            string key = *notVisited.begin();
+            Vertex* firstNode = vertices->find(key)->second;
+            notVisited.erase(key);
+
+            //Create New continent and add first node.
+            continentName = firstNode->getContinent();
+            newContinent->insert(key);
+            continents.push_back(newContinent);
+            continentIndex++;
+
+			cout << continentName << endl;
+            cout << firstNode->getKey() << " ";
+>>>>>>> Modified to work in Windows
 
             //add edgevertices to nextToVist
             vector<Edge>* edges = firstNode->getEdges();
             for(Edge& edge: *edges)
                 //Only add edge vertex if not a water edge and currently in notVisited
+<<<<<<< HEAD
                 if (!edge.second && (notVisited.find(edge.first->getName())!=notVisited.end()))
                     nextToVisit.push(edge.first->getName());
         } else { //Still in a continent
@@ -140,17 +168,42 @@ vector<set<string>* > getMapContinents(GameMap* map){
                 if (currentNode->getContinent() == continentName) {
                     notVisited.erase(currentNodeName);
                     continents.at(continentIndex)->insert(currentNodeName);
+=======
+                if (!edge.second && (notVisited.find(edge.first->getKey())!=notVisited.end()))
+                    nextToVisit.push(edge.first->getKey());
+        } else { //Still in a continent
+            string currentNodeKey = nextToVisit.front();
+            nextToVisit.pop();
+            Vertex* currentNode = vertices->find(currentNodeKey)->second;
+
+            //If exist in notVisited, remove it from notVisited, add it to continent, add non-water edges to nextToVisit
+            if(notVisited.find(currentNodeKey) != notVisited.end()) {
+                cout << currentNodeKey << " ";
+
+                // allows for nodes to be put in multiple continents
+                if (currentNode->getContinent() == continentName) {
+                    notVisited.erase(currentNodeKey);
+                    continents.at(continentIndex)->insert(currentNodeKey);
+>>>>>>> Modified to work in Windows
 
                     //add edgevertices to nextToVist
                     vector<Edge> *edges = currentNode->getEdges();
 
                     for(Edge& edge: *edges)
                         //Only add edge vertex if not a water edge and currently in notVisited
+<<<<<<< HEAD
                         if (!edge.second && (notVisited.find(edge.first->getName())!=notVisited.end()))
                             nextToVisit.push(edge.first->getName());
                 } else {
                     continents.at(continentIndex)->insert(currentNodeName);
                     cout << "\nWARNING: " << currentNodeName << " had a different continent name: " << currentNode->getContinent();
+=======
+                        if (!edge.second && (notVisited.find(edge.first->getKey())!=notVisited.end()))
+                            nextToVisit.push(edge.first->getKey());
+                } else {
+                    continents.at(continentIndex)->insert(currentNodeKey);
+                    cout << "\nWARNING: " << currentNodeKey << " had a different continent name: " << currentNode->getContinent();
+>>>>>>> Modified to work in Windows
                 }
             }
         }

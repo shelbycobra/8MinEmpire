@@ -186,6 +186,10 @@ Card Hand::exchange(Player* player){
         if (player->payCoins(values[position])) {
 
             Card* card = hand->at(position);
+<<<<<<< HEAD
+=======
+			player->addCardToHand(card);
+>>>>>>> Modified to work in Windows
 
             vector<Card*>::iterator it;
             for(it = hand->begin(); it != hand->end(); ++it) {
@@ -197,7 +201,10 @@ Card Hand::exchange(Player* player){
             }
 
             hand->push_back(deck->draw());
+<<<<<<< HEAD
             player->addCardToHand(card);
+=======
+>>>>>>> Modified to work in Windows
 
             return *card;
         }

@@ -42,7 +42,10 @@ void performCardAction(Player* player, string action, GameMap* map, Players* pla
         if ((*it) == "Build")
             executeBuildCity(player, action, map);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Modified to work in Windows
 }
 
 Vertex* chooseStartVertex(Player* player){
@@ -109,7 +112,11 @@ int chooseArmies(int maxArmies, int remainderArmies) {
         stringstream toInt(armiesStr);
         toInt >> armies;
 
+<<<<<<< HEAD
         if (remainderArmies - armies >= 0) {
+=======
+        if (remainderArmies - armies >= 0 && remainderArmies - armies <= maxArmies) {
+>>>>>>> Modified to work in Windows
             cout << endl;
             break;
         }

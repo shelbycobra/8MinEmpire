@@ -1,0 +1,1 @@
+Check project configuration. Linker->System->SubSystem should be CONSOLE

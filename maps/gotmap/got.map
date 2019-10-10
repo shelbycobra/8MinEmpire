@@ -27,9 +27,12 @@ YT:Yi Ti
 $VALYRIA
 LS:Land of Long Summer
 VY:Valyria
+<<<<<<< HEAD
 $SOTHORYOS
 BP:Basilisk Point
 WP:Wyvern Point
+=======
+>>>>>>> Modified to work in Windows
 &
 NO HF II SK w BA
 II HF w WL

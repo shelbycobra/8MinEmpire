@@ -12,7 +12,10 @@ youngest player win.
 */
 
 #include "Bidder.h"
+<<<<<<< HEAD
 #include <unistd.h>
+=======
+>>>>>>> Modified to work in Windows
 
 Bidder::Bidder(): 
     madeBid(new bool(false)),
