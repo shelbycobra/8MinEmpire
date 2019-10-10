@@ -13,7 +13,7 @@ using namespace std;
 typedef unordered_map<string, Player*> Players;
 typedef pair<Vertex*, bool> Edge;
 
-vector<string>* split(string& str, char delimiter);
+vector<string> split(string& str, char delimiter);
 void performCardAction(Player* player, string action, GameMap* map, Players* players);
 Vertex* chooseStartVertex(Player* player);
 Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map);

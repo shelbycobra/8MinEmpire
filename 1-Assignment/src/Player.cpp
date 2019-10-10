@@ -2,23 +2,23 @@
 #include "Map.h"
 #include "Cards.h"
 
-Player::Player(): 
-    name(new string("No name")), 
-    countries(new Vertices()), 
-    armies(new int(14)), 
-    cities(new int(3)), 
-    coins(new int(0)), 
-    hand(new vector<Card*>()), 
+Player::Player():
+    name(new string("No name")),
+    countries(new Vertices()),
+    armies(new int(14)),
+    cities(new int(3)),
+    coins(new int(0)),
+    hand(new vector<Card*>()),
     bidder(new Bidder(this)) {}
 
-Player::Player(string& playerName, int startCoins): 
-    name(new string(playerName)), 
+Player::Player(string& playerName, int startCoins):
+    name(new string(playerName)),
     countries(new Vertices()),
-    armies(new int(14)), 
-    cities(new int(3)), 
-    coins(new int(startCoins)), 
-    hand(new vector<Card*>()), 
-    bidder(new Bidder(this)) 
+    armies(new int(14)),
+    cities(new int(3)),
+    coins(new int(startCoins)),
+    hand(new vector<Card*>()),
+    bidder(new Bidder(this))
 {
     cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
 }
@@ -34,6 +34,10 @@ Player::Player(Player* player){
 }
 
 Player::~Player(){
+    //Delete all the cards the player holds.
+    for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it)
+        delete *it;
+
     delete name;
     delete countries;
     delete armies;

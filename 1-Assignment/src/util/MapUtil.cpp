@@ -2,14 +2,14 @@
 
 typedef pair<Vertex*, bool> Edge;
 
-vector<string>* split(string& str, char delimiter) {
-    vector<string>* arr = new vector<string>();
+vector<string> split(string& str, char delimiter) {
+    vector<string> arr;
     string next;
 
     for(string::const_iterator it = str.begin(); it != str.end(); ++it) {
         if (*it == delimiter) {
             if (!next.empty()) {
-                arr->push_back(next);
+                arr.push_back(next);
                 next.clear();
             }
         } else {
@@ -18,7 +18,7 @@ vector<string>* split(string& str, char delimiter) {
     }
 
     if (!next.empty())
-        arr->push_back(next);
+        arr.push_back(next);
 
     return arr;
 }
@@ -30,9 +30,9 @@ void performCardAction(Player* player, string action, GameMap* map, Players* pla
     if ( orPos != -1 )
         action = chooseORAction(action);
 
-    vector<string>* actionArr = split(action, ' ');
+    vector<string> actionArr = split(action, ' ');
 
-    for(vector<string>::iterator it = actionArr->begin(); it != actionArr->end(); ++it) {
+    for(vector<string>::iterator it = actionArr.begin(); it != actionArr.end(); ++it) {
         if ((*it) == "Move")
             executeMoveArmies(player, action, map);
         if ((*it) ==  "Add")
@@ -42,12 +42,12 @@ void performCardAction(Player* player, string action, GameMap* map, Players* pla
         if ((*it) == "Build")
             executeBuildCity(player, action, map);
     }
+
 }
 
 Vertex* chooseStartVertex(Player* player){
 
     string startName;
-    Vertex* startVertex;
 
     while(true){
         cout << "[ GAME ] You must choose a country to take armies from." << endl;
@@ -59,16 +59,13 @@ Vertex* chooseStartVertex(Player* player){
         if (player->getCountries()->find(startName) == player->getCountries()->end()) {
             cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
         } else {
-            startVertex = player->getCountries()->find(startName)->second;
-            break;
+            return player->getCountries()->find(startName)->second;
         }
     }
-    return startVertex;
 }
 
 Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
     string endName;
-    Vertex* endVertex;
 
     while(true){
         cout << "[ GAME ] Please choose a country:" << endl;
@@ -95,8 +92,7 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
         break;
     }
 
-    endVertex = map->getVertices()->find(endName)->second;
-    return endVertex;
+    return map->getVertices()->find(endName)->second;
 }
 
 int chooseArmies(int maxArmies, int remainderArmies) {

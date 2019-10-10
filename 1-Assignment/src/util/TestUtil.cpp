@@ -165,11 +165,11 @@ bool validateEdges(GameMap* map){
     //for each vertex, create new set, add edgevertex names
     Vertices::iterator it;
     for(it = vertices->begin(); it != vertices->end(); ++it) {
-        // cout << "Vertex: " << it->second->getName() << endl;
+
         set<string> edgeVertices;
         vector<Edge>* edges = it->second->getEdges();
         for (Edge& edge: *edges) {
-            // cout << "Current Edge = " << edge.first->getName() << endl;
+
             if (edgeVertices.find(edge.first->getName())!= edgeVertices.end()) {
                 cout << "[ ERROR! ] " << it->second->getName() << " points twice to " << edge.first->getName() << endl;
                 return false;
@@ -178,7 +178,7 @@ bool validateEdges(GameMap* map){
                 cout << "[ ERROR! ] " << it->second->getName() << " points to itself. \n" << endl;
                 return false;
             }
-            // cout << "Adding " << edge.first->getName() << " to edgeVertices.\n" << endl;
+
             edgeVertices.insert(edge.first->getName());
         }
     }

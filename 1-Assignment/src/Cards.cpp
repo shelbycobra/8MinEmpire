@@ -113,6 +113,12 @@ Deck& Deck::operator =(Deck& deck) {
 }
 
 Deck::~Deck(){
+    //Delete all the cards left over in the deck.
+    while(!cardDeck->empty()){
+        delete cardDeck->front();
+        cardDeck->pop();
+    }
+
     delete cardDeck;
     cardDeck = 0;
 }
@@ -155,11 +161,20 @@ Hand::Hand(Hand* otherGameHand) {
 Hand& Hand::operator=(Hand& otherGameHand) {
     hand = new vector<Card*>(*otherGameHand.getHand());
     deck = new Deck(otherGameHand.getDeck());
+
+    return *this;
 }
 
 Hand::~Hand(){
+    //Delete all the cards in the game hand.
+    for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it)
+        delete *it;
+
     delete hand;
+    delete deck;
+
     hand = 0;
+    deck = 0;
 }
 
 Card Hand::exchange(Player* player){

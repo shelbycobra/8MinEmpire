@@ -101,11 +101,22 @@ GameMap& GameMap::operator=(GameMap& map) {
     vertices = new Vertices(*map.getVertices());
     start = new string(map.getStartVertex());
     image = new string(map.getImage());
+
+    return *this;
 }
 
 GameMap::~GameMap() {
+    // Delete all vertices on the map.
+    for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it)
+        delete it->second;
+
     delete vertices;
+    delete start;
+    delete image;
+
     vertices = 0;
+    start = 0;
+    image = 0;
 }
 
 bool GameMap::setStartVertex(string& startVertexKey){

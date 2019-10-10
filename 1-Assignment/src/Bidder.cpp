@@ -30,6 +30,7 @@ Bidder::Bidder(Bidder* bidder) {
 Bidder& Bidder::operator=(Bidder& bidder) {
     madeBid = new bool(bidder.getMadeBid());
     player = new Player(bidder.getPlayer());
+    return *this;
 }
 
 Bidder::~Bidder(){
@@ -45,7 +46,7 @@ int Bidder::bid() {
     string bidStr;
 
     if (!*madeBid) {
-        
+
         while(true) {
 
             cout << "[ BIDDING ] " << player->getName() << ", please select your bid."

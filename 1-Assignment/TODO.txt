@@ -8,7 +8,9 @@
 8. Windows option in run_driver
 9. Method Documentation
 10. (DONE) Bidder tester
-11. Copy constructor and assignment constructors
+11. (DONE) Copy constructor and assignment constructors
+11. memory leaks
+12. (DONE) Default constructors
 
 Questions
 

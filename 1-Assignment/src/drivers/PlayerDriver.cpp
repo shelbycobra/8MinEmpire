@@ -52,6 +52,15 @@ void test_PlayerOwnsValidSetOfRegions() {
 
     result = playerOccupiedCountriesAreFoundOnMap(player->getCountries(), vertices);
     assert( result == true );
+
+    delete player;
+    delete map;
+    delete england;
+
+    player = 0;
+    map = 0;
+    vertices = 0;
+    england = 0;
 }
 
 void test_PlayerOwnsValidHand(){}
@@ -95,6 +104,12 @@ void test_PayCoins(){
     //0 - 7
     result = player2->payCoins(7);
     assert (result == false);
+
+    delete player;
+    delete player2;
+
+    player = 0;
+    player2 = 0;
 }
 
 void test_PlaceNewArmies(){
@@ -141,6 +156,14 @@ void test_PlaceNewArmies(){
     xArmies = player1->getArmiesOnCountry(xVertex);
 
     assert ( result == true && xArmies == 3 );
+
+    delete map;
+    delete player1;
+
+    map = 0;
+    player1 = 0;
+    startVertex = 0;
+    xVertex = 0;
 }
 
 void test_MoveArmies(){
@@ -205,6 +228,15 @@ void test_MoveArmies(){
 
     assert( result == false && startArmies == 1 && bArmies == 0 );
 
+    delete map;
+    delete player;
+
+    map = 0;
+    startVertex = 0;
+    player = 0;
+    xVertex = 0;
+    cVertex = 0;
+    bVertex = 0;
 }
 
 void test_MoveOverLand(){
@@ -260,8 +292,17 @@ void test_MoveOverLand(){
     xArmies = player->getArmiesOnCountry(xVertex);
 
     assert( result == false && cArmies == 1 && xArmies == 0 );
+    delete map;
+    delete player;
 
+    map = 0;
+    startVertex = 0;
+    player = 0;
+    xVertex = 0;
+    cVertex = 0;
+    bVertex = 0;
 }
+
 void test_BuildCity(){
     cout << "\n---------------------------------------" << endl;
     cout << "TEST: test_BuildCity" << endl;
@@ -311,7 +352,17 @@ void test_BuildCity(){
     rCities = player->getCitiesOnCountry(rVertex);
 
     assert( result == false && rCities == 0 );
+
+    delete map;
+    delete player;
+
+    map = 0;
+    startVertex = 0;
+    player = 0;
+    pVertex = 0;
+    rVertex = 0;
 }
+
 void test_DestroyArmy(){
     cout << "\n---------------------------------------" << endl;
     cout << "TEST: test_DestroyArmy" << endl;
@@ -381,4 +432,16 @@ void test_DestroyArmy(){
     pArmies = player1->getArmiesOnCountry(pVertex);
 
     assert( result == false && pArmies == 1 );
+
+    delete map;
+    delete player1;
+    delete player2;
+    delete player3;
+
+    map = 0;
+    startVertex = 0;
+    player1 = 0;
+    player2 = 0;
+    player3 = 0;
+    pVertex = 0;
 }
