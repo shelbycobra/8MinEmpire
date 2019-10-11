@@ -17,6 +17,7 @@ public:
     GameMap* generateMap();
 
     string getMapFilePath();
+    void setMapFilePath(const string& filePath);
 };
 
 #endif

@@ -4,14 +4,53 @@
 #include "../Map.h"
 #include "../MapLoader.h"
 
+void test_DeckObject();
+void test_FullGame();
+
 int main() {
-    MapLoader loader("maps/gotmap/got.map");
+    test_DeckObject();
+    test_FullGame();
+
+    return 0;
+}
+
+void test_DeckObject() {
+    cout << "\n\n========================================================" << endl;
+    cout << "TEST: test_DeckObject" << endl;
+    cout << "========================================================\n" << endl;
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Deck contains 42 cards and each card has a good and an action." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    Deck deck;
+    queue<Card*>* cardDeck = deck.getDeck();
+
+    int count = 0;
+    Card* card;
+    while(!cardDeck->empty()) {
+        card = cardDeck->front();
+        assert(card->getGood() != "" && card->getAction() != "");
+        cout << ++count << ": { " << card->getGood() << " : \"" << card->getAction() << "\" }" << endl;
+        cardDeck->pop();
+        delete card;
+    }
+    assert(count == 42);
+    cout << "\nDeck contains 42 cards!\n" << endl;
+}
+
+void test_FullGame() {
+    cout << "\n\n========================================================" << endl;
+    cout << "TEST: test_CardActions" << endl;
+    cout << "========================================================\n" << endl;
+
+    MapLoader loader("../maps/largeValid.map");
     GameMap* map = loader.generateMap();
     Hand* gameHand = new Hand();
     Players players = createDummyPlayers(3);
     queue<Player*> nextTurn;
 
-    //Set start vertex to "Crownlands" on the map
+    //Set start vertex
     string startName = "CL";
     map->setStartVertex(startName);
     Vertex* startVertex = map->getVertices()->find(startName)->second;
@@ -24,7 +63,7 @@ int main() {
         nextTurn.push(player.second);
     }
 
-    //Cycle through the nextTurn queue 6 times (2 rounds per player for demo purposes) or until the user stops execution, 
+    //Cycle through the nextTurn queue 6 times (2 rounds per player for demo purposes) or until the user stops execution,
     //either by entering any input other than 'y/Y' when asked "CONTINUE?", or by killing the process.
 
     string cont = "y";
@@ -40,7 +79,7 @@ int main() {
 
         Card currentCard = gameHand->exchange(currentPlayer);
         performCardAction(currentPlayer, currentCard.getAction(), map, &players);
-        
+
         count++;
 
         cout << "CONTINUE DEMO?" << endl;

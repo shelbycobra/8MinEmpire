@@ -20,7 +20,7 @@ MapLoader& MapLoader::operator=(MapLoader& mapLoader){
 
 MapLoader::~MapLoader(){
     delete mapFilePath;
-    mapFilePath = nullptr;
+    mapFilePath = 0;
 }
 
 GameMap* MapLoader::generateMap(){
@@ -31,54 +31,100 @@ GameMap* MapLoader::generateMap(){
     string line;
     getline(mapFile, line);
 
-    //Add vertices
-    string continent;
-    while (line != "&") {
+    if (line == "" || line.at(0) != '$') {
         cout << line << endl;
-        if (line.at(0) == '$') {
-            continent=line.substr(1);
-        }
-        else {
-            size_t pos = line.find(':');
-            nameMap.insert(pair<string, string> (line.substr(0, pos), line.substr(pos+1)));
-            map->addVertex(line.substr(0, pos), line.substr(pos+1), continent);
-        }
-        getline(mapFile, line);
+        cout << "[ ERROR! ] First line must be a continent in the form of \"$CONTINENT\"." << endl;
+        return nullptr;
     }
 
+    cout << "[ MAP LOADER ] Getting names of countries." << endl;
+    string continent;
+
+    while (line != "&") {
+        // cout << line << endl;
+        if (line == "" || line.at(0) == '$') {
+            continent=line.substr(1);
+        } else {
+            size_t pos = line.find(':');
+
+            if (pos == -1) {
+                cout << "[ ERROR! ] Invalid country syntax \"" << line << "\". Must be in the form of KEY:COUNTRY_NAME." << endl;
+                return nullptr;
+            }
+
+            string key = line.substr(0, pos);
+            string name = line.substr(pos+1);
+
+            nameMap.insert(pair<string, string> (key, name));
+            map->addVertex(key, name, continent);
+        }
+
+        getline(mapFile, line);
+
+        if(mapFile.eof()) {
+            cout << "[ ERROR! ] Reached end of file. Missing edges section" << endl;
+            return nullptr;
+        }
+    }
+
+    cout << "[ MAP LOADER ] Getting edges." << endl;
     getline(mapFile, line);
 
-    //Add Edges
     while(line != "%") {
-        // cout << line << endl;
+
+        //Split line into a vector of strings
         string text = line;
         istringstream iss(text);
         vector<string> results((istream_iterator<string>(iss)), istream_iterator<string>());
 
-        string key = results.at(0);
+        string key = "";
+
+        if (nameMap.find(results.at(0)) != nameMap.end())
+            key = results.at(0);
+        else {
+            cout << "[ ERROR! ] \"" << results.at(0) << "\" is an invalid key." << endl;
+            return nullptr;
+        }
+
         string startVertex = nameMap.find(key)->second;
 
-        // cout << "Start vertex - " << key << ":" << startVertex << endl;
-        // cout << "StartVertex " << startVertex << endl;
         auto i = results.size();
         for(i = 1; i < results.size(); i++) {
-            // cout << results.at(i) << " ";
+
             bool isWaterEdge = false;
             if (results.at(i) == "w") {
                 isWaterEdge = true;
                 i++;
-                // cout << results.at(i) << " ";
             }
-            string endVertex = nameMap.find(results.at(i))->first;
-            // cout << "Adding edge " << endVertex << ", waterEdge " << isWaterEdge << endl;
+
+            string endVertex = "";
+
+            if (nameMap.find(results.at(i)) != nameMap.end())
+                endVertex = nameMap.find(results.at(i))->first;
+            else {
+                cout << "[ ERROR! ] \"" << results.at(i) << "\" is an invalid key." << endl;
+                return nullptr;
+            }
+
             map->addEdge(key, endVertex, isWaterEdge);
         }
-        // cout << endl;
+
         getline(mapFile, line);
 
+        if(mapFile.eof()) {
+            cout << "[ ERROR! ] Reached end of file. Missing Image." << endl;
+            return nullptr;
+        }
     }
 
     string image = "";
+
+    if (line == "" || line.at(0) != '%') {
+        cout << "[ ERROR! ] Invalid input file." << endl;
+        return nullptr;
+    }
+
+    cout << "[ MAP LOADER ] Getting map image." << endl;
 
     while(getline(mapFile, line)) {
         image.append(line);
@@ -95,3 +141,8 @@ GameMap* MapLoader::generateMap(){
 }
 
 string MapLoader::getMapFilePath(){return *mapFilePath;}
+
+void MapLoader::setMapFilePath(const string& filePath) {
+    delete mapFilePath;
+    mapFilePath = new string(filePath);
+}

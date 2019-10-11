@@ -1,0 +1,22 @@
+$Continent1
+A:Country A
+B:Country B
+D:Country D
+F:Country F
+$Continent2
+O:Country O
+P:Country P
+R:Country R
+&
+A B
+B w D F
+F D w O
+O P R
+P R
+%
+
+A---B----F===O---P
+    =   /     \  |
+    =  /       \ |
+    = /         \|
+    D            R
