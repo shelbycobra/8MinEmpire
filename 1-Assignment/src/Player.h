@@ -61,8 +61,8 @@ public:
 private:
     void addArmiesToCountry(Vertex* country, int numArmies);
     void removeArmiesFromCountry(Vertex* country, int numArmies);
-    void increaseAvailableArmies(int amount);
-    void decreaseAvailableArmies(int amount);
+    void increaseAvailableArmies(int numArmies);
+    void decreaseAvailableArmies(int numArmies);
 };
 
 typedef unordered_map<string, Player*> Players;

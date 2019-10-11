@@ -53,6 +53,15 @@ Player::~Player(){
     hand = nullptr;
 }
 
+// GETTERS
+string Player::getName(){return *name;}
+Vertices* Player::getCountries(){return countries;}
+int Player::getArmies(){return *armies;}
+int Player::getCities(){return *cities;}
+int Player::getCoins(){return *coins;}
+vector<Card*>* Player::getHand(){return hand;}
+Bidder* Player::getBidder() {return bidder;}
+
 /**
  * Player pays a coins out of their purse.
  *
@@ -317,28 +326,50 @@ bool Player::destroyArmy(Vertex* country, Player* opponent){
     return false;
 }
 
+/**
+ * Adds a card to the player's hand.
+ *
+ * Preconditions: Player has successfuly paid for card.
+ *
+ * @param card A Card pointer. Used to create a deep copy of the card for the Player's hand.
+ */
 void Player::addCardToHand(Card* card) {
 	Card *newCard = new Card(card);
     hand->push_back(newCard);
 }
 
-
+/**
+ * Adds a country to the player's list of occupied countries.
+ *
+ * Preconditions: Country is a valid country and it satisfies all
+ * required conditions specific to the card action chosen by the Player.
+ *
+ * @param country A Vertex pointer to the target country.
+ */
 void Player::addCountry(Vertex* country){
-    Vertex* v;
-    v = country;
-    countries->insert(pair<string, Vertex*> (country->getKey(), v));
+    countries->insert(pair<string, Vertex*> (country->getKey(), country));
     cout << "{ " << *name << " } " << "Added country < " << country->getName() << " > to player's countries." << endl;
 }
 
+/**
+ * Removes a country from the Player's list of occupied countries.
+ *
+ * Detects whether the country to be removed still contains armies or cities belonging to the Player.
+ * If so, the country will not be removed and an error message will print out.
+ *
+ * @param country A Vertex pointer to the target country.
+ */
 void Player::removeCountry(Vertex* country) {
     if(countries->find(country->getKey()) != countries->end()) {
         int numArmies = 0, numCities = 0;
 
+        //Get current number of armies and cities if they exist on the country.
         if (country->getArmies()->find(*name) != country->getArmies()->end())
             numArmies = country->getArmies()->find(*name)->second;
         if (country->getCities()->find(*name) != country->getCities()->end())
             numCities = country->getCities()->find(*name)->second;
 
+        //Only remove the country if the player has 0 armies and 0 cities on the country.
         if (numArmies == 0 && numCities == 0) {
             country->getArmies()->erase(*name);
             country->getCities()->erase(*name);
@@ -352,61 +383,9 @@ void Player::removeCountry(Vertex* country) {
     }
 }
 
-
-// Private
-void Player::addArmiesToCountry(Vertex* country, int numArmies) {
-    if(countries->find(country->getKey()) == countries->end())
-        addCountry(country);
-    if (country->getArmies()->find(*name) == country->getArmies()->end()) {
-        country->getArmies()->insert(pair<string, int> (*name, numArmies));
-    } else {
-        int currentArmies = country->getArmies()->find(*name)->second;
-        country->getArmies()->erase(*name);
-        country->getArmies()->insert(pair<string, int> (*name, currentArmies + numArmies));
-    }
-}
-
-// Private
-void Player::removeArmiesFromCountry(Vertex* country, int numArmies) {
-    int currentArmies = country->getArmies()->find(*name)->second;
-
-    // erase current record to be updated
-    country->getArmies()->erase(*name);
-
-    // only update army count if there are still armies left on country
-    if (currentArmies - numArmies > 0)
-        country->getArmies()->insert(pair<string, int> (*name, currentArmies - numArmies));
-    // remove country if resulting num armies is 0 and no cities exist
-    else if (numArmies == currentArmies && country->getCities()->find(*name) == country->getCities()->end())
-        removeCountry(country);
-}
-
-string Player::getName(){return *name;}
-
-Vertices* Player::getCountries(){return countries;}
-
-int Player::getArmies(){return *armies;}
-
-int Player::getCities(){return *cities;}
-
-int Player::getCoins(){return *coins;}
-
-vector<Card*>* Player::getHand(){return hand;}
-
-Bidder* Player::getBidder() {return bidder;}
-
-void Player::increaseAvailableArmies(int amount) {
-    *armies += amount;
-}
-
-void Player::decreaseAvailableArmies(int amount) {
-    if (*armies - amount <= 0) {
-        *armies = 0;
-    } else {
-        *armies -= amount;
-    }
-}
-
+/**
+ * Prints a list of the Player's occupied countries.
+ */
 void Player::printCountries(){
 
     cout << "\n{ " << *name << " } Occupied Countries:\n" << endl;
@@ -424,4 +403,77 @@ void Player::printCountries(){
     }
 
     cout << "--------------------------------------------------------" << endl;
+}
+
+// PRIVATE
+/**
+ * Adds armies to a country.
+ * Preconditions: The Player has enough free armies to add to this country and the country
+ * has met the conditions of the card action chosen by the Player.
+ *
+ * Detects whether the country to be removed still contains armies or cities belonging to the Player.
+ * If so, the country will not be removed and an error message will print out.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @param numArmies The number of armies to add.
+ */
+void Player::addArmiesToCountry(Vertex* country, int numArmies) {
+    //Add country to the Player's list of occupied countries if it hasn't been added yet.
+    if(countries->find(country->getKey()) == countries->end())
+        addCountry(country);
+
+    if (country->getArmies()->find(*name) == country->getArmies()->end()) {
+        //Country doesn't have any of Player's armies. Create a new record.
+        country->getArmies()->insert(pair<string, int> (*name, numArmies));
+    } else {
+        //Country already has some of Player's armies. Add to current number of armies.
+        int currentArmies = country->getArmies()->find(*name)->second;
+        country->getArmies()->erase(*name);
+        country->getArmies()->insert(pair<string, int> (*name, currentArmies + numArmies));
+    }
+}
+
+// PRIVATE
+/**
+ * Removes armies from a country.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @param numArmies The number of armies to remove from country.
+ */
+void Player::removeArmiesFromCountry(Vertex* country, int numArmies) {
+    int currentArmies = country->getArmies()->find(*name)->second;
+
+    // erase current record
+    country->getArmies()->erase(*name);
+
+    // only update army count if there are still armies left on country
+    if (currentArmies - numArmies > 0)
+        country->getArmies()->insert(pair<string, int> (*name, currentArmies - numArmies));
+    // remove country if resulting num armies is 0 and no cities exist
+    else if (numArmies == currentArmies && country->getCities()->find(*name) == country->getCities()->end())
+        removeCountry(country);
+}
+
+//PRIVATE
+/**
+ * Increases number of free armies available to a Player.
+ *
+ * @param numArmies The number of armies to add.
+ */
+void Player::increaseAvailableArmies(int numArmies) {
+    *armies += numArmies;
+}
+
+//PRIVATE
+/**
+ * Removes free armies available to a Player.
+ *
+ * @param numArmies The number of armies to remove.
+ */
+void Player::decreaseAvailableArmies(int numArmies) {
+    if (*armies - numArmies <= 0) {
+        *armies = 0;
+    } else {
+        *armies -= numArmies;
+    }
 }

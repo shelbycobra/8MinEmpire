@@ -156,9 +156,9 @@ void GameMap::addVertex(const string& key, const string& name, const string& con
     cout << "[ MAP ] Vertex " << v->getName() << " on continent " << v->getContinent() << " already exists on the map.\n" << endl;
 }
 
-void GameMap::addEdge(const string& startVertex, const string& endVertex, bool isWaterEdge) {
-    Vertex * v1 = vertices->find(startVertex)->second;
-    Vertex * v2 = vertices->find(endVertex)->second;
+void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, bool isWaterEdge) {
+    Vertex * v1 = vertices->find(startVertexKey)->second;
+    Vertex * v2 = vertices->find(endVertexKey)->second;
     v1->addEdge(v2, isWaterEdge);
     v2->addEdge(v1, isWaterEdge);
 }

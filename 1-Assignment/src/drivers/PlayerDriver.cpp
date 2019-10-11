@@ -14,6 +14,7 @@ void test_BuildCity();
 void test_DestroyArmy();
 
 int main() {
+    test_PlayerHasValidBidding();
     test_PlayerOwnsValidSetOfRegions();
     test_PayCoins();
     test_PlaceNewArmies();
@@ -22,7 +23,6 @@ int main() {
     test_BuildCity();
     test_DestroyArmy();
     test_PlayerOwnsValidHand();
-    test_PlayerHasValidBidding();
 
 	return 0;
 }
@@ -69,8 +69,62 @@ void test_PlayerOwnsValidSetOfRegions() {
     england = nullptr;
 }
 
-void test_PlayerOwnsValidHand(){}
-void test_PlayerHasValidBidding(){}
+void test_PlayerOwnsValidHand(){
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_PlayerOwnsValidHand" << endl;
+    cout << "=======================================================" << endl;
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Player adds a card to its hand." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+    string name = "player 1";
+    Player player(name, 9);
+
+    Card card(1, "CARROT", "Move 4 armies");
+    player.addCardToHand(&card);
+
+    vector<Card*>* hand = player.getHand();
+    cout << "Hand size is " << hand->size() << endl;
+
+    assert(hand->size() == size_t(1));
+    cout << "The player sucessfully added a card to their hand." << endl;
+
+}
+
+void test_PlayerHasValidBidding(){
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_PlayerHasValidBidding" << endl;
+    cout << "=======================================================" << endl;
+
+    string name = "player1";
+    Player player(name, 9);
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Player is initialized with a bidder object." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    Bidder* bidder = player.getBidder();
+    assert(bidder->getPlayer() == &player);
+    cout << "Player's bidder object is initialized." << endl;
+    cout << "Has Player made a bid yet? " << bidder->getMadeBid() << endl;
+    assert(bidder->getMadeBid() == 0);
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Player places a bid." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    bidder->bid();
+    cout << "Has Player made a bid yet? " << bidder->getMadeBid() << endl;
+    assert(bidder->getMadeBid() == 1);
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Player fails to place a bid a second time." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    bidder->bid();
+    cout << "Has Player made a bid yet? " << bidder->getMadeBid() << endl;
+    assert(bidder->getMadeBid() == 1);
+}
 
 void test_PayCoins(){
     cout << "\n=======================================================" << endl;

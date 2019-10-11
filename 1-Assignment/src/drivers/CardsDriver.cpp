@@ -3,6 +3,7 @@
 #include "../util/TestUtil.h"
 #include "../Map.h"
 #include "../MapLoader.h"
+#include <cassert>
 
 void test_DeckObject();
 void test_HandObject();

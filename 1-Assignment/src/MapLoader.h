@@ -18,6 +18,11 @@ public:
 
     string getMapFilePath();
     void setMapFilePath(const string& filePath);
+
+private:
+    bool loadCountries(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap);
+    bool loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap);
+    bool loadImage(GameMap* map, ifstream* mapFile);
 };
 
 #endif

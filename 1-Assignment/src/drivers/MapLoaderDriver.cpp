@@ -1,5 +1,6 @@
 #include "../MapLoader.h"
 #include "../util/TestUtil.h"
+#include <cassert>
 
 void test_ReadValidMapFilesAndGenerateValidMaps();
 void test_ReadInvalidMapFiles();

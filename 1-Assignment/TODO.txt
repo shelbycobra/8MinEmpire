@@ -2,7 +2,7 @@
 2. (DONE) Add image in got.text
 3. (DONE) Create test cases for MapLoader (bad text files)
 4. (DONE) Create test cases for Cards
-5. Complete test suite for Player
+5. (DONE) Complete test suite for Player
 6. Documentation (diagram?)
 7. README
 8. (NO NEED) Windows option in run_driver
