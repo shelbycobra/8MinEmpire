@@ -4,10 +4,15 @@
 #include <sstream>
 #include <iterator>
 
+#ifdef _WIN32
+    string pathPrefix = "maps/";
+#else
+    string pathPrefix = "../maps/";
+#endif
 
 MapLoader::MapLoader() : mapFilePath(new string(".")){}
 
-MapLoader::MapLoader(const string& filePath): mapFilePath(new string(filePath)){}
+MapLoader::MapLoader(const string& filePath): mapFilePath(new string(pathPrefix + filePath)){}
 
 MapLoader::MapLoader(MapLoader* mapLoader){
     mapFilePath = new string(mapLoader->getMapFilePath());
@@ -144,5 +149,5 @@ string MapLoader::getMapFilePath(){return *mapFilePath;}
 
 void MapLoader::setMapFilePath(const string& filePath) {
     delete mapFilePath;
-    mapFilePath = new string(filePath);
+    mapFilePath = new string(pathPrefix + filePath);
 }

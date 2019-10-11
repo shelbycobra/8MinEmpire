@@ -5,10 +5,12 @@
 #include "../MapLoader.h"
 
 void test_DeckObject();
+void test_HandObject();
 void test_FullGame();
 
 int main() {
     test_DeckObject();
+    test_HandObject();
     test_FullGame();
 
     return 0;
@@ -39,12 +41,28 @@ void test_DeckObject() {
     cout << "\nDeck contains 42 cards!\n" << endl;
 }
 
+void test_HandObject() {
+    cout << "\n\n========================================================" << endl;
+    cout << "TEST: test_HandObject" << endl;
+    cout << "========================================================\n" << endl;
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Hand object creates deck and fills hand with cards from the deck." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    Hand* gameHand = new Hand();
+    string name = "Player 1";
+    Player player(name, 9);
+
+    Card currentCard = gameHand->exchange(&player);
+}
+
 void test_FullGame() {
     cout << "\n\n========================================================" << endl;
     cout << "TEST: test_CardActions" << endl;
     cout << "========================================================\n" << endl;
 
-    MapLoader loader("../maps/largeValid.map");
+    MapLoader loader("largeValid.map");
     GameMap* map = loader.generateMap();
     Hand* gameHand = new Hand();
     Players players = createDummyPlayers(3);

@@ -53,6 +53,14 @@ Player::~Player(){
     hand = nullptr;
 }
 
+/**
+ * Player pays a coins out of their purse.
+ *
+ * Checks if the player has enough coins to pay "amount" of coins
+ *
+ * @param amount Integer amount of coins to pay.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::payCoins(int amount){
     if (amount <= *coins && amount >= 0) {
         string coinStr = amount == 1 ? "coin" : "coins";
@@ -64,6 +72,17 @@ bool Player::payCoins(int amount){
     return false;
 }
 
+/**
+ * Player places new armies on a country.
+ *
+ * Checks if the player has enough free armies to place on the country.
+ * The country must either be the start country, or the country must contain a city.
+ *
+ * @param amount Number of armies to place.
+ * @param country A Vertex pointer to the country on which to place armies.
+ * @param start A string containing the name of the start country.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::placeNewArmies(int newArmies, Vertex* country, string start){
     if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
         if (newArmies > *armies || newArmies < 0) {
@@ -81,10 +100,26 @@ bool Player::placeNewArmies(int newArmies, Vertex* country, string start){
     return false;
 }
 
+/**
+ * Detects if a country is adjacent to at least one the player's currently
+ * occupied countries.
+ *
+ * @param target A Vertex pointer to the target country.
+ * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
+ * @return a boolean representing if the country is adjacent.
+ */
 bool Player::isAdjacent(Vertex* target, bool overWaterAllowed){
     return isAdjacent(target->getName(), overWaterAllowed);
 }
 
+/**
+ * Detects if a country is adjacent to at least one the player's currently
+ * occupied countries.
+ *
+ * @param target The target country name.
+ * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
+ * @return a boolean representing if the country is adjacent.
+ */
 bool Player::isAdjacent(string target, bool overWaterAllowed){
     typedef pair<Vertex*, bool> Edge;
 
@@ -108,6 +143,14 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
     return false;
 }
 
+/**
+ * Gets the number of armies on a country occupied by the player.
+ *
+ * Detects whether or not the country is occupied by the Player.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @return the number of armies on the country.
+ */
 int Player::getArmiesOnCountry(Vertex* country) {
     if(countries->find(country->getKey()) != countries->end()) {
         int numArmies = country->getArmies()->find(*name)->second;
@@ -119,6 +162,14 @@ int Player::getArmiesOnCountry(Vertex* country) {
     return 0;
 }
 
+/**
+ * Gets the number of cities on a country occupied by the player.
+ *
+ * Detects whether or not the country is occupied by the Player.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @return the number of cities on the country.
+ */
 int Player::getCitiesOnCountry(Vertex* country){
     if(countries->find(country->getKey()) != countries->end()) {
         int numCities = country->getCities()->find(*name)->second;
@@ -130,10 +181,33 @@ int Player::getCitiesOnCountry(Vertex* country){
     return 0;
 }
 
+/**
+ * Moves a certain number of armies over to an adjacent country not separated by water.
+ *
+ * Detects whether or not the country contains the Player's armies and if the country has
+ * enough armies on it to move.
+ *
+ * @param numArmies Amount of armies to move.
+ * @param start A Vertex pointer to the start country.
+ * @param end A Vertex pointer to the end country.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::moveOverLand(int numArmies, Vertex* start, Vertex* end){
     return moveArmies(numArmies, start, end, false);
 }
 
+/**
+ * Moves a certain number of armies over to an adjacent country not separated by water.
+ *
+ * Detects whether or not the country contains the Player's armies and if the country has
+ * enough armies on it to move.
+ *
+ * @param numArmies Amount of armies to move.
+ * @param start A Vertex pointer to the start country.
+ * @param end A Vertex pointer to the end country.
+ * @param moveOverWater A boolean representing if armies can move over water.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater){
     //Assumes: country is a valid vertex on the map
     //is country an adjacent country to an occupied country?
@@ -163,6 +237,14 @@ bool Player::moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOver
     return false;
 }
 
+/**
+ * Builds a city on a country occupied by the Player.
+ *
+ * Detects whether or not the country contains any Player's armies.
+ *
+ * @param country A Vertex pointer to the country.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::buildCity(Vertex* country){
     unordered_map<string, int>* armies = country->getArmies();
 
@@ -188,6 +270,16 @@ bool Player::buildCity(Vertex* country){
     return false;
 }
 
+/**
+ * Destroys an army belonging an opponent's country.
+ *
+ * Ensures the opponent is not the current player and that the chosen country
+ * contains armies belonging to the opponent.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @param opponent A Player pointer to the opponent player.
+ * @return a boolean that shows the action was successful.
+ */
 bool Player::destroyArmy(Vertex* country, Player* opponent){
 
     if (opponent->getName() == *name) {
@@ -195,19 +287,24 @@ bool Player::destroyArmy(Vertex* country, Player* opponent){
         return false;
     }
 
+    //Does opponent country contain an army to destroy?
     if (country->getArmies()->find(opponent->getName()) != country->getArmies()->end()
         && country->getArmies()->find(opponent->getName())->second > 0) {
+
         int currentArmies = country->getArmies()->find(opponent->getName())->second;
         currentArmies--;
 
         //Add destroyed army back in opponents available armies
         opponent->increaseAvailableArmies(1);
 
+        //Remove old record of opponent's armies on country
         country->getArmies()->erase(opponent->getName());
 
         if (currentArmies != 0)
+            //Insert new record with decremented army count
             country->getArmies()->insert(pair<string, int> (opponent->getName(), currentArmies));
         else {
+            //Remove country from opponent's list of occupied countries because the last army was destroyed.
             opponent->removeCountry(country);
         }
 

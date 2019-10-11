@@ -23,7 +23,7 @@ void test_ReadValidMapFilesAndGenerateValidMaps() {
     cout << "TEST: Read a valid map file - large map." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    MapLoader loader("../maps/largeValid.map");
+    MapLoader loader("largeValid.map");
     GameMap* map = loader.generateMap();
 
     assert(1 == isConnectedMap(map));
@@ -40,7 +40,7 @@ void test_ReadValidMapFilesAndGenerateValidMaps() {
     cout << "--------------------------------------------------------\n" << endl;
 
     delete map;
-    loader.setMapFilePath("../maps/medValid.map");
+    loader.setMapFilePath("medValid.map");
     map = loader.generateMap();
 
     assert(1 == isConnectedMap(map));
@@ -57,7 +57,7 @@ void test_ReadValidMapFilesAndGenerateValidMaps() {
     cout << "--------------------------------------------------------\n" << endl;
 
     delete map;
-    loader.setMapFilePath("../maps/smallValid.map");
+    loader.setMapFilePath("smallValid.map");
     map = loader.generateMap();
 
     assert(1 == isConnectedMap(map));
@@ -82,42 +82,49 @@ void test_ReadInvalidMapFiles(){
     cout << "TEST: Read a garbage file." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    MapLoader loader("../maps/garbage.map");
+    MapLoader loader("garbage.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Read a map file missing an image." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("../maps/missingImage.map");
+    loader.setMapFilePath("missingImage.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Read a map file missing edges section." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("../maps/missingEdges.map");
+    loader.setMapFilePath("missingEdges.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Read a map file with invalid edge syntax." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("../maps/invalidEdgeSyntax.map");
+    loader.setMapFilePath("invalidEdgeSyntax.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Read a map file missing top level continent name." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("../maps/missingTopContinent.map");
+    loader.setMapFilePath("missingTopContinent.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Read a map file with invalid country name syntax." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("../maps/invalidCountrySyntax.map");
+    loader.setMapFilePath("invalidCountrySyntax.map");
+    loader.generateMap();
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Read a non-existant map file." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    loader.setMapFilePath("fileDoesntExist.map");
     loader.generateMap();
 }
 
@@ -130,7 +137,7 @@ void test_CreateInvalidGraphFromMap(){
     cout << "TEST: Read a map file and create a disconnected map." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    MapLoader loader("../maps/disconnected.map");
+    MapLoader loader("disconnected.map");
     GameMap* map = loader.generateMap();
 
     assert(0 == isConnectedMap(map));
@@ -141,7 +148,7 @@ void test_CreateInvalidGraphFromMap(){
     cout << "--------------------------------------------------------\n" << endl;
 
     delete map;
-    loader.setMapFilePath("../maps/internalWaterEdge.map");
+    loader.setMapFilePath("internalWaterEdge.map");
     map = loader.generateMap();
 
     assert(1 == isConnectedMap(map));
@@ -155,7 +162,7 @@ void test_CreateInvalidGraphFromMap(){
     cout << "--------------------------------------------------------\n" << endl;
 
     delete map;
-    loader.setMapFilePath("../maps/invalidEdges.map");
+    loader.setMapFilePath("invalidEdges.map");
     map = loader.generateMap();
 
     assert(0 == validateEdges(map));
@@ -166,7 +173,7 @@ void test_CreateInvalidGraphFromMap(){
     cout << "--------------------------------------------------------\n" << endl;
 
     delete map;
-    loader.setMapFilePath("../maps/invalidContinent.map");
+    loader.setMapFilePath("invalidContinent.map");
     map = loader.generateMap();
 
     assert(1 == isConnectedMap(map));
