@@ -30,6 +30,29 @@ MapLoader::~MapLoader(){
     mapFilePath = 0;
 }
 
+//GETTER
+string MapLoader::getMapFilePath(){return *mapFilePath;}
+
+//SETTER
+void MapLoader::setMapFilePath(const string& filePath) {
+    delete mapFilePath;
+    mapFilePath = new string(pathPrefix + filePath);
+}
+
+/**
+ * Generates a GameMap object from a text file.
+ *
+ * The text file has the following syntax:
+ *
+ * $CONTINENT
+ * KEY:COUNTRY
+ * &
+ * STARTKEY ENDKEY ENDKEY w WATERENDKEY
+ * %
+ * Image Text
+ *
+ * @return A GameMap pointer to a map.
+ */
 GameMap* MapLoader::generateMap(){
     ifstream mapFile(*mapFilePath);
     GameMap* map = new GameMap();
@@ -49,13 +72,14 @@ GameMap* MapLoader::generateMap(){
     return map;
 }
 
-string MapLoader::getMapFilePath(){return *mapFilePath;}
-
-void MapLoader::setMapFilePath(const string& filePath) {
-    delete mapFilePath;
-    mapFilePath = new string(pathPrefix + filePath);
-}
-
+/**
+ * Adds countries to a map object.
+ *
+ * @param map A GameMap pointer to a map object.
+ * @param mapFile A ifstream pointer the map text file
+ * @param nameMap An unordeder_map pointer of an object mapping vertex keys to name
+ * @return A GameMap pointer to a map.
+ */
 bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap) {
 
     string continent;
