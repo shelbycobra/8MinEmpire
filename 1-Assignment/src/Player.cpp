@@ -2,6 +2,9 @@
 #include "Map.h"
 #include "Cards.h"
 
+/**
+ * Default constructor
+ */
 Player::Player():
     name(new string("No name")),
     countries(new Vertices()),
@@ -11,6 +14,15 @@ Player::Player():
     hand(new vector<Card*>()),
     bidder(new Bidder(this)) {}
 
+/**
+ * Initializes a Player object.
+ * 
+ * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
+ * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ * 
+ * @param playerName The name of the player.
+ * @param startCoins The number of coins the player starts with.
+ */
 Player::Player(string& playerName, int startCoins):
     name(new string(playerName)),
     countries(new Vertices()),
@@ -23,6 +35,9 @@ Player::Player(string& playerName, int startCoins):
     cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
 }
 
+/**
+ * Copy Constructor
+ */
 Player::Player(Player* player){
     name = new string(player->getName());
     countries = new Vertices(*player->getCountries());
@@ -63,7 +78,7 @@ vector<Card*>* Player::getHand(){return hand;}
 Bidder* Player::getBidder() {return bidder;}
 
 /**
- * Player pays a coins out of their purse.
+ * Takes coins out of the Player's purse.
  *
  * Checks if the player has enough coins to pay "amount" of coins
  *
@@ -85,7 +100,7 @@ bool Player::payCoins(int amount){
  * Player places new armies on a country.
  *
  * Checks if the player has enough free armies to place on the country.
- * The country must either be the start country, or the country must contain a city.
+ * The country must either be the start country or contain a city.
  *
  * @param amount Number of armies to place.
  * @param country A Vertex pointer to the country on which to place armies.
@@ -155,8 +170,6 @@ bool Player::isAdjacent(string target, bool overWaterAllowed){
 /**
  * Gets the number of armies on a country occupied by the player.
  *
- * Detects whether or not the country is occupied by the Player.
- *
  * @param country A Vertex pointer to the target country.
  * @return the number of armies on the country.
  */
@@ -173,8 +186,6 @@ int Player::getArmiesOnCountry(Vertex* country) {
 
 /**
  * Gets the number of cities on a country occupied by the player.
- *
- * Detects whether or not the country is occupied by the Player.
  *
  * @param country A Vertex pointer to the target country.
  * @return the number of cities on the country.

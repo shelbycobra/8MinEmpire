@@ -215,7 +215,7 @@ void test_SettingAndGettingStartVertex(){
     string startName = "W";
     result = map->setStartVertex(startName);
     start = map->getStartVertex();
-    assert(start == startName);
+    assert(start == startName && result == 1);
     cout << "Success! Start == " << start << endl;
 
     cout << "\n--------------------------------------------------------" << endl;
@@ -224,7 +224,7 @@ void test_SettingAndGettingStartVertex(){
 
     startName = "Z";
     result = map->setStartVertex(startName);
-    assert(start != startName);
+    assert(start != startName && result == 0);
     cout << "Success! Start == " << start << " and not the excepted \"" << startName << "\"" << endl;
 
     delete map;

@@ -10,14 +10,14 @@ class MapLoader {
 
 public:
     MapLoader();
-    MapLoader(const string& filePath);
+    MapLoader(const string& fileName);
     MapLoader(MapLoader* mapLoader);
     MapLoader& operator=(MapLoader& mapLoader);
     ~MapLoader();
     GameMap* generateMap();
 
     string getMapFilePath();
-    void setMapFilePath(const string& filePath);
+    void setMapFilePath(const string& fileName);
 
 private:
     bool loadCountries(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap);

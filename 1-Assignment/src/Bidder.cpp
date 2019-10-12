@@ -1,25 +1,18 @@
-/*
-Implement a group of C++ classes that implement a biding facility to be used during start of the
-game to see who will start first. There is only one bid per game. The biding consists of each player
-picking up his coins and privately chooses a number to bid. When all players are ready, all players
-reveal the amount they have chosen to bid at the same time. The player who bids the most coins
-wins the bid and puts the coins he bid in the supply. Other players do not pay coins if they lost
-the bid. If the bids are tied for most, the youngest player wins the bid and pays his coins. If all
-bids are zero, the youngest player wins the bid. . You must deliver a driver that creates the biding
-facility objects, with the following tests: 1) one can shows a player who bid the most coins wins,
-2) that show bids that are tied and the youngest win the bid, 3) one that if all bids are zero the
-youngest player win.
-*/
-
 #include "Bidder.h"
+
+/**
+ * The Bidder object is initialized with a pointer to the Player who owns the Bidder object
+ * and the boolean madeBid to false.
+ * 
+ * The boolean madeBid is used to prevent additional bids after the first one is made by the Player.
+ */
+Bidder::Bidder(Player* player): 
+    madeBid(new bool(false)), 
+    player(player) {}
 
 Bidder::Bidder(): 
     madeBid(new bool(false)),
     player(new Player()) {}
-
-Bidder::Bidder(Player* player): 
-    madeBid(new bool(false)), 
-    player(player) {}
 
 Bidder::Bidder(Bidder* bidder) {
     madeBid = new bool(bidder->getMadeBid());
@@ -36,10 +29,19 @@ Bidder::~Bidder(){
     delete madeBid;
     delete player;
 
-    madeBid = 0;
-    player = 0;
+    madeBid = nullptr;
+    player = nullptr;
 }
 
+//GETTERS
+bool Bidder::getMadeBid(){return *madeBid;}
+Player* Bidder::getPlayer(){return player;}
+
+/**
+ * Prompts the Player to make a bid from their purse.
+ * If the Player has enough coins to make the bid, the
+ * madeBid boolean is set to true.
+ */
 int Bidder::bid() {
     int bid = -1;
     string bidStr;
@@ -71,6 +73,11 @@ int Bidder::bid() {
     return bid;
 }
 
+/**
+ * A class function that starts the bidding process for a group of players.
+ * 
+ * @param players A pointer to a vector of Player pointers representing all the players in the game.
+ */
 void Bidder::startBid(Players* players) {
     cout << "\n[ BIDDER ] STARTING BID!\n" << endl;
 
@@ -86,8 +93,18 @@ void Bidder::startBid(Players* players) {
     Player* winner = Bidder::calculateWinner(bids, players);
 
     winner->payCoins(bids->find(winner)->second);
+
+    delete bids;
+    bids = nullptr;
  }
 
+/**
+ * A class function that calculates the winner from the bids of the players in the game.
+ * 
+ * @param bids An unordered_map pointer that maps Players to their bids.
+ * @param players A pointer to a vector of Player pointers representing all the players in the game.
+ * @return The player who won the bid.
+ */
 Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* players) {
 
     cout << "\n[ BIDDER ] Finding winning bid ... \n\n";
@@ -130,8 +147,4 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
     cout << "\n[ BIDDER ] " << winner->getName() << " has won the bid!\n" << endl;
 
     return winner;
-
 }
-
-bool Bidder::getMadeBid(){return *madeBid;}
-Player* Bidder::getPlayer(){return player;}

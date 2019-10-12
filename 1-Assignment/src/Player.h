@@ -10,7 +10,7 @@
 #include "Map.h"
 #include "Bidder.h"
 
-enum actionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
+enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
 class Card;
 class Vertex;

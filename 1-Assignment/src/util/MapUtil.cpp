@@ -1,7 +1,18 @@
+/**
+ * MapUtil contains methods that may become a part of classes in future assignemnts.
+ */
+
 #include "MapUtil.h"
 
 typedef pair<Vertex*, bool> Edge;
 
+/**
+ * Splits a string into a vector of strings by a delimiter.
+ * 
+ * @param str String to split.
+ * @param delimiter The delimiter by which to split the string. 
+ * @return A vector of strings.
+ */
 vector<string> split(string& str, char delimiter) {
     vector<string> arr;
     string next;
@@ -23,7 +34,14 @@ vector<string> split(string& str, char delimiter) {
     return arr;
 }
 
-
+/**
+ * Executes the action of a card.
+ * 
+ * @param player A pointer to the Player object who is using the card.
+ * @param action The action to be performed.
+ * @param map A pointer to the GameMap object of the game.
+ * @param players A pointer to the list of all players in the game.
+ */
 void performCardAction(Player* player, string action, GameMap* map, Players* players) {
     //if action contains OR -> ask player which to use
     int orPos = action.find("OR");
@@ -44,6 +62,13 @@ void performCardAction(Player* player, string action, GameMap* map, Players* pla
     }
 }
 
+/**
+ * Prompts a player to choose a start vertex among the player's occupied countries.
+ * 
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @return A Vertex pointer to the start country.
+ */
 Vertex* chooseStartVertex(Player* player){
 
     string startName;
@@ -63,15 +88,23 @@ Vertex* chooseStartVertex(Player* player){
     }
 }
 
-Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
+/**
+ * Prompts a player to choose an end vertex on the map.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param type An ActionType enum representing the type of action being called.
+ * @param map A GameMap pointer to the map.
+ * @return A Vertex pointer to the end country.
+ */
+Vertex* chooseEndVertex(Player* player, ActionType type, GameMap* map){
     string endName;
 
     while(true){
         cout << "[ GAME ] Please choose a country:" << endl;
 
-        if (type == actionType::ADD_ARMY || type == actionType::BUILD_CITY)
+        if (type == ActionType::ADD_ARMY || type == ActionType::BUILD_CITY)
             player->printCountries();
-        else if (type == actionType::MOVE_OVER_LAND || type == actionType::MOVE_OVER_WATER || type == actionType::DESTROY_ARMY)
+        else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY)
             map->printMap();
         else {
             cerr << "[ ERROR! ] Invalid action type." << endl;
@@ -94,6 +127,13 @@ Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map){
     return map->getVertices()->find(endName)->second;
 }
 
+/**
+ * Prompts a player to choose how many armies to place on a country.
+ * 
+ * @param maxArmies The maximum number of armies the player can place. Determined by the card chosen.
+ * @param remainderArmies The amount of armies left that the player can choose from.
+ * @return The number of armies chosen to move.
+ */
 int chooseArmies(int maxArmies, int remainderArmies) {
     int armies;
     string armiesStr;
@@ -119,6 +159,12 @@ int chooseArmies(int maxArmies, int remainderArmies) {
     return armies;
 }
 
+/**
+ * Prompts a player to choose one of the action in an OR'd card.
+ * 
+ * @param action The action containing an OR'd action.
+ * @return The action chosen by the player.
+ */
 string chooseORAction(string action) {
     string answer;
     string firstChoice;
@@ -130,7 +176,7 @@ string chooseORAction(string action) {
         cout << "\n[ GAME ] Which action do you want? 1 or 2 ?" << endl;
 
         firstChoice = action.substr(0, orPos - 1);
-        secondChoice = action.substr(orPos + 2);
+        secondChoice = action.substr(orPos + 3);
 
         cout << "[ OPTION 1 ] " << firstChoice << endl;
         cout << "[ OPTION 2 ] " << secondChoice << endl;
@@ -147,6 +193,13 @@ string chooseORAction(string action) {
     }
 }
 
+/**
+ * Prompts a player to choose an opponent.
+ * 
+ * @param players A pointer to the list of Players in the game.
+ * @param currentPlayer A pointer to the Player being prompted.
+ * @return A Player pointer to the chosen opponent.
+ */
 Player* chooseOpponent(Players* players, Player* currentPlayer) {
     string opponentName;
 
@@ -167,6 +220,15 @@ Player* chooseOpponent(Players* players, Player* currentPlayer) {
     }
 }
 
+/**
+ * Executes the action "Move # armies" or "Move # armies over water".
+ * 
+ * The player can move armies around the map to adjacent countries as many times as the card dictates.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ */
 void executeMoveArmies(Player* player,string action, GameMap* map) {
     Vertex* startVertex;
     Vertex* endVertex;
@@ -177,9 +239,8 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
     toInt >> maxArmies;
     remainderArmies = maxArmies;
 
-    size_t negOne = -1;
-    bool overWater = action.find("water") != negOne;
-    actionType type = overWater ? actionType::MOVE_OVER_WATER : actionType::MOVE_OVER_LAND;
+    bool overWater = action.find("water") != size_t(-1);
+    ActionType type = overWater ? ActionType::MOVE_OVER_WATER : ActionType::MOVE_OVER_LAND;
     string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n";
 
 
@@ -202,6 +263,15 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
     player->printCountries();
 }
 
+/**
+ * Executes the action "Add # armies".
+ * 
+ * The player can add armies to any country the player currently has a city or to the start country.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ */
 void executeAddArmies(Player* player, string action, GameMap* map) {
     Vertex* endVertex;
 
@@ -217,7 +287,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
     while(remainderArmies > 0) {
         int armies;
 
-        endVertex = chooseEndVertex(player, actionType::ADD_ARMY, map);
+        endVertex = chooseEndVertex(player, ActionType::ADD_ARMY, map);
         armies = chooseArmies(maxArmies, remainderArmies);
 
         if (!player->placeNewArmies(armies, endVertex, map->getStartVertex())) {
@@ -230,6 +300,16 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
     player->printCountries();
 }
 
+/**
+ * Executes the action "Destroy army".
+ * 
+ * The player chooses an opponent's army to destroy on a country where the oponnent has an army.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ * @param players A list of players in the game.
+ */
 void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players) {
     cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
@@ -240,7 +320,7 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
     opponent = chooseOpponent(players, player);
 
     while(true) {
-        endVertex = chooseEndVertex(player, actionType::DESTROY_ARMY, map);
+        endVertex = chooseEndVertex(player, ActionType::DESTROY_ARMY, map);
         if (!player->destroyArmy(endVertex, opponent)) {
             continue;
         }
@@ -250,13 +330,22 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
     opponent->printCountries();
 }
 
+/**
+ * Executes the action "Build city".
+ * 
+ * The player can build a city on a country where they currently have armies.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ */
 void executeBuildCity(Player* player, string action, GameMap* map) {
     cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
 
     Vertex* endVertex;
 
     while (true) {
-        endVertex = chooseEndVertex(player, actionType::BUILD_CITY, map);
+        endVertex = chooseEndVertex(player, ActionType::BUILD_CITY, map);
         if (!player->buildCity(endVertex)) {
             continue;
         }

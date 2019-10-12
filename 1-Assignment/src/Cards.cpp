@@ -9,16 +9,29 @@
 
 using namespace std;
 
+/**
+ * Default Constructor
+ */
 Card::Card():
     id(new int(0)), 
     good(new string("No good")), 
     action(new string("No action")) {}
 
+/**
+ * Initializes a Card object with an ID number, a good and an action.
+ * 
+ * @param theId The ID of the card.
+ * @param theGood The good of the card.
+ * @param theAction The action of the card.
+ */
 Card::Card(int theId, string theGood, string theAction): 
     id(new int(theId)), 
     good(new string(theGood)), 
     action(new string(theAction)) {}
 
+/**
+ * Copy Constructor
+ */
 Card::Card(Card* card) {
     id = new int(card->getID());
     good = new string(card->getGood());
@@ -42,10 +55,16 @@ Card::~Card() {
     action = nullptr;
 }
 
+//GETTERS
 int Card::getID(){return *id;}
 string Card::getGood(){return *good;}
 string Card::getAction(){return *action;}
 
+/**
+ * Initliazes a Deck object that contains 42 Card objects.
+ * The card order is generated randomly each time a Deck object is created,
+ * meaning no two Deck object will have the same order of cards.
+ */
 Deck::Deck(){
     string resources[] = {"GEM", "IRON", "STONE", "WOOD", "CARROT"};
     string actions[] = {"Add 3 armies", "Add 2 armies", "Add 4 armies", "Move 3 armies", "Move 5 armies",
@@ -103,6 +122,9 @@ Deck::Deck(){
 
 }
 
+/**
+ * Copy Constructor
+ */
 Deck::Deck(Deck* deck) {
     cardDeck = new queue<Card*>(*deck->getDeck());
 }
@@ -123,6 +145,16 @@ Deck::~Deck(){
     cardDeck = nullptr;
 }
 
+//GETTER
+queue<Card*>* Deck::getDeck(){
+    return cardDeck;
+}
+
+/**
+ * Removes a Cards from the top of the Deck.
+ * 
+ * @return A Card pointer to the removed card.
+ */
 Card* Deck::draw(){
     Card* card = cardDeck->front();
     cardDeck->pop();
@@ -130,10 +162,10 @@ Card* Deck::draw(){
     return card;
 }
 
-queue<Card*>* Deck::getDeck(){
-    return cardDeck;
-}
-
+//PRIVATE
+/**
+ * Generates a random integer. Used for shuffling card order.
+ */
 int Deck::generateRandomInt(set<int>* nums){
     srand (time(0));
 
@@ -146,6 +178,12 @@ int Deck::generateRandomInt(set<int>* nums){
     }
 }
 
+/**
+ * Default Constructor
+ * 
+ * Each Hand object initilizes a Deck object and immediately draws 6 cards from the top
+ * of the Deck and adds them to the hand.
+ */
 Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {
     //Populate game hand
     for(int i = 0; i < 6; i++) {
@@ -153,6 +191,9 @@ Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {
     }
 }
 
+/**
+ * Copy Constructor
+ */
 Hand::Hand(Hand* otherGameHand) {
     hand = new vector<Card*>(*otherGameHand->getHand());
     deck = new Deck(otherGameHand->getDeck());
@@ -177,6 +218,20 @@ Hand::~Hand(){
     deck = nullptr;
 }
 
+//GETTERS
+vector<Card*>* Hand::getHand(){return hand;}
+Deck* Hand::getDeck(){return deck;}
+
+/**
+ * The current player is asked to choose a card from the Hand.
+ * If the player has enough coins, the card will be removed from the 
+ * hand and added to the Player's hand. The Player will pay the corresponding 
+ * amount of coins for the card and the Hand object will draw another card from the 
+ * top of the deck and place it in the back of the hand.
+ * 
+ * @param player A Player pointer to the current player. 
+ * @return A Card pointer to the removed card.
+ */
 Card Hand::exchange(Player* player){
     int position;
     int values[] = {0, 1, 1, 2, 2, 3};
@@ -204,6 +259,13 @@ Card Hand::exchange(Player* player){
     }
 }
 
+//PRIVATE
+/**
+ * Prompts the current player to select the position in the Hand of the
+ * desired card.
+ * 
+ * @return The position of the card to be used in gameplay.
+ */
 int Hand::selectPositionOfCardFromGameHand(){
     string pos;
     int position;
@@ -224,6 +286,9 @@ int Hand::selectPositionOfCardFromGameHand(){
     }
 }
 
+/**
+ * Prints the cards in the hand "face up". 
+ */
 void Hand::printHand() {
     cout << "\n[ GAME HAND ] C U R R E N T   H A N D" << endl;
     int values[] = {0, 1, 1, 2, 2, 3};
@@ -233,19 +298,4 @@ void Hand::printHand() {
         count++;
     }
     cout << endl;
-}
-
-vector<Card*>* Hand::getHand(){return hand;}
-Deck* Hand::getDeck(){return deck;}
-
-int generateRandomInt(set<int>* nums){
-    srand (time(0));
-
-    while (true){
-        int num = rand() % 42;
-        if(nums->find(num) == nums->end()) {
-            nums->insert(num);
-            return num;
-        }
-    }
 }

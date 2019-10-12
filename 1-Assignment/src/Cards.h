@@ -14,7 +14,6 @@ using namespace std;
 class Player;
 
 class Card {
-
     int* id;
     string* good;
     string* action;
@@ -42,12 +41,12 @@ public:
 
     Card* draw();
     queue<Card*>* getDeck();
+
 private:
     int generateRandomInt(set<int>* nums);
 };
 
 class Hand {
-
     vector<Card*>* hand;
     Deck* deck;
 
@@ -61,6 +60,8 @@ public:
     void printHand();
     vector<Card*>* getHand();
     Deck* getDeck();
+
+private:
     int selectPositionOfCardFromGameHand();
 };
 

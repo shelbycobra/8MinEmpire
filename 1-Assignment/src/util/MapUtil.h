@@ -16,7 +16,7 @@ typedef pair<Vertex*, bool> Edge;
 vector<string> split(string& str, char delimiter);
 void performCardAction(Player* player, string action, GameMap* map, Players* players);
 Vertex* chooseStartVertex(Player* player);
-Vertex* chooseEndVertex(Player* player, actionType type, GameMap* map);
+Vertex* chooseEndVertex(Player* player, ActionType type, GameMap* map);
 int chooseArmies(int maxArmies, int remainderArmies);
 string chooseORAction(string action);
 Player* chooseOpponent(Players* players, Player* currentPlayer);

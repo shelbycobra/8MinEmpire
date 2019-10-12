@@ -4,18 +4,25 @@
 #include <sstream>
 #include <iterator>
 
-#ifdef _WIN32
-    string pathPrefix = "maps/";
-#else
-    string pathPrefix = "../maps/";
-#endif
+#define PATH_PREFIX "maps/"
 
 using namespace std;
 
+/**
+ * Default Constructor
+ */
 MapLoader::MapLoader() : mapFilePath(new string(".")){}
 
-MapLoader::MapLoader(const string& filePath): mapFilePath(new string(pathPrefix + filePath)){}
+/**
+ * Initializes a MapLoader object.
+ * 
+ * @param fileName The name of the file. This can be a path start from any directory inside the maps/ directory.
+ */
+MapLoader::MapLoader(const string& fileName): mapFilePath(new string(PATH_PREFIX + fileName)){}
 
+/**
+ * Copy Constructor
+ */
 MapLoader::MapLoader(MapLoader* mapLoader){
     mapFilePath = new string(mapLoader->getMapFilePath());
 }
@@ -27,16 +34,16 @@ MapLoader& MapLoader::operator=(MapLoader& mapLoader){
 
 MapLoader::~MapLoader(){
     delete mapFilePath;
-    mapFilePath = 0;
+    mapFilePath = nullptr;
 }
 
 //GETTER
 string MapLoader::getMapFilePath(){return *mapFilePath;}
 
 //SETTER
-void MapLoader::setMapFilePath(const string& filePath) {
+void MapLoader::setMapFilePath(const string& fileName) {
     delete mapFilePath;
-    mapFilePath = new string(pathPrefix + filePath);
+    mapFilePath = new string(PATH_PREFIX + fileName);
 }
 
 /**
@@ -67,7 +74,6 @@ GameMap* MapLoader::generateMap(){
 
     if(!loadImage(map, &mapFile))
         return nullptr;
-
 
     return map;
 }
@@ -128,6 +134,14 @@ bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<str
     return true;
 }
 
+/**
+ * Adds edges to a map object.
+ *
+ * @param map A GameMap pointer to a map object.
+ * @param mapFile A ifstream pointer the map text file
+ * @param nameMap An unordeder_map pointer of an object mapping vertex keys to name
+ * @return A GameMap pointer to a map.
+ */
 bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap) {
 
     string line;
@@ -180,6 +194,13 @@ bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string,
     return true;
 }
 
+/**
+ * Adds Image to a map object.
+ *
+ * @param map A GameMap pointer to a map object.
+ * @param mapFile A ifstream pointer the map text file
+ * @return A GameMap pointer to a map.
+ */
 bool MapLoader::loadImage(GameMap* map, ifstream* mapFile) {
 
     string image = "";
@@ -203,5 +224,4 @@ bool MapLoader::loadImage(GameMap* map, ifstream* mapFile) {
     map->printMap();
 
     return true;
-
 }

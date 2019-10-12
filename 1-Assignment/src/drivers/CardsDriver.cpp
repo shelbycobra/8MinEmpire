@@ -56,6 +56,9 @@ void test_HandObject() {
     Player player(name, 9);
 
     Card currentCard = gameHand->exchange(&player);
+
+    delete gameHand;
+    gameHand = nullptr;
 }
 
 void test_FullGame() {

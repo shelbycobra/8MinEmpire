@@ -1,5 +1,21 @@
+/**
+ * TestUtil provides methods that are used for testing purposes, such as:
+ *  - generating valid and invalid maps
+ *  - connectivity
+ *  - continent validity
+ *  - edge validity
+ * 
+ */
+
 #include "TestUtil.h"
 
+/**
+ * Conducts a Breadth-First-Search through the GameMap object to detect if
+ * it is a fully connected map.
+
+ * @param map A GameMap pointer to the map.
+ * @return A boolean representing if the map is connnected.
+ */
 bool isConnectedMap(GameMap* map){
     typedef pair<Vertex*, bool> Edge;
 
@@ -43,6 +59,15 @@ bool isConnectedMap(GameMap* map){
     return true;
 }
 
+/**
+ * Analyzes each continent in the map to determine whether it is a valid continent.
+ * 
+ * A valid continents means that each continent contains more than one country and
+ * contains no internal water edges.
+
+ * @param map A GameMap pointer to the map.
+ * @return A boolean representing if the map contains valid continents.
+ */
 bool validateContinents(GameMap* map) {
     vector<set<string>* > continents = getMapContinents(map);
     Vertices* vertices = map->getVertices();
@@ -56,6 +81,10 @@ bool validateContinents(GameMap* map) {
     //Iterate through each continent and verify that each vertex belongs to only one continent
     vector<set<string>* >::iterator it;
     for (it = continents.begin(); it != continents.end(); ++it) {
+
+        //Verify each continent is a connected subgraph
+        if (!isContinentConnected(*it, map))
+            return false;
 
         if((*it)->size() > 1) {
             for (const string& vertex : *(*it)) {
@@ -89,6 +118,71 @@ bool validateContinents(GameMap* map) {
     return true;
 }
 
+/**
+ * Conducts a Breadth-First-Search on a continent in a map to determine whether it is a
+ * connected subgraph.
+ * 
+ * @param continent A pointer to a set of strings of vertex keys belonging to a continent.
+ * @param map A GameMap pointer to the map object.
+ * @return A boolean that respresents if the continent is a connected subgraph.
+ */
+bool isContinentConnected(set<string>* continent, GameMap* map){
+    //Iterate through set of strings and do a BFS 
+    typedef pair<Vertex*, bool> Edge;
+
+    set<string> visited;
+    queue<string> nextToVisit;
+
+    Vertices* vertices = map->getVertices();
+
+    //Add first vertex to visited.
+    visited.insert(*continent->begin());
+
+    //Add all non-water edges from first node to queue
+    vector<Edge>* edges = vertices->find(*continent->begin())->second->getEdges();
+    for(Edge& edge: *edges)
+        if (!edge.second)
+            nextToVisit.push(edge.first->getKey());
+        
+    //Breadth-First-Search
+    while(!nextToVisit.empty()) {
+        string currentKey = nextToVisit.front();
+        nextToVisit.pop();
+
+        if (continent->find(currentKey) == continent->end()) {
+            cout << "[ ERROR! ] " << currentKey << " doesn't belong to " << vertices->find(*continent->begin())->second->getContinent() << "." << endl;
+            return false;
+        }
+
+        // If current node has not been visited yet
+        if (visited.find(currentKey) == visited.end()) {
+            visited.insert(currentKey);
+
+            //Add all of current node's non-water endpoint vertices to nextToVist
+            vector<Edge>* edges = vertices->find(currentKey)->second->getEdges();
+            for(Edge& edge: *edges)
+                if (!edge.second)
+                    nextToVisit.push(edge.first->getKey());
+        }
+    }
+
+    // Check if all nodes of continent have been added to visited set
+    set<string>::iterator it;
+    for (it = continent->begin(); it != continent->end(); ++it)
+        if (visited.find(*it) == visited.end()) {
+            cout << "Node " << vertices->find(*it)->second->getName() << " was not visited.\n" << endl;
+            return false;
+        }
+    return true;
+}
+
+/**
+ * Conducts a Breadth-First-Search through the GameMap object to find all the continents
+ * in the map.
+ * 
+ * @param map A GameMap pointer to the map.
+ * @return a list of country names grouped in sets representing the different continents on the map.
+ */
 vector<set<string>* > getMapContinents(GameMap* map){
     vector<set<string>* > continents;
     Vertices* vertices = map->getVertices();
@@ -164,6 +258,16 @@ vector<set<string>* > getMapContinents(GameMap* map){
     return continents;
 }
 
+/**
+ * Iterates through all the vertices in a GameMap object to determine if the edges of
+ * the map are valid.
+ * 
+ * An invalid edge is when the start vertex points to itself or contains two edges that 
+ * point to the same vertex.
+
+ * @param map A GameMap pointer to the map.
+ * @return A boolean representing if the map contains valid edges.
+ */
 bool validateEdges(GameMap* map){
     Vertices* vertices = map->getVertices();
 
@@ -175,11 +279,14 @@ bool validateEdges(GameMap* map){
         vector<Edge>* edges = it->second->getEdges();
         for (Edge& edge: *edges) {
 
-            if (edgeVertices.find(edge.first->getName())!= edgeVertices.end()) {
+            // If one of the end vertices has been added to the list already, there exists more than one edge to the same vertex
+            if (edgeVertices.find(edge.first->getName()) != edgeVertices.end()) {
                 cout << "[ ERROR! ] " << it->second->getName() << " points twice to " << edge.first->getName() << endl;
                 return false;
             }
-            if (edge.first->getName() == it->second->getName()) {
+
+            // If the end vertex is the same as the current vertex, the edge is a self loop.
+            if (edge.first == it->second) {
                 cout << "[ ERROR! ] " << it->second->getName() << " points to itself. \n" << endl;
                 return false;
             }
@@ -191,11 +298,18 @@ bool validateEdges(GameMap* map){
     return true;
 }
 
-bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVertices) {
+/**
+ * Iterates through a Player's countries and checks if they are indeed found on the map.
+ * 
+ * @param player A pointer to a Player object.
+ * @param map A GameMap pointer to the map.
+ * @return A boolean representing that the Player's countries exist on the map.
+ */
+bool playerOccupiedCountriesAreFoundOnMap(Player* player, GameMap* map) {
     Vertices::iterator it;
 
-    for(it = countries->begin(); it != countries->end(); ++it) {
-        if (mapVertices->find(it->second->getKey()) == mapVertices->end()) {
+    for(it = player->getCountries()->begin(); it != player->getCountries()->end(); ++it) {
+        if (map->getVertices()->find(it->second->getKey()) == map->getVertices()->end()) {
             cout << it->second->getName() << " does not exist on the map.\n" << endl;
             return false;
         } else {
@@ -205,6 +319,12 @@ bool playerOccupiedCountriesAreFoundOnMap(Vertices* countries, Vertices* mapVert
     return true;
 }
 
+/**
+ * Creates a number of dummy players for testing purposes.
+ * 
+ * @param numPlayers The number of players to create. Must be between 2 and 5 inclusive.
+ * @return A list of Player pointers.
+ */
 Players createDummyPlayers(int numPlayers){
     cout << "\n[ TEST UTIL ] Creating " << numPlayers << " dummy playeres.\n" << endl;
     Players players;

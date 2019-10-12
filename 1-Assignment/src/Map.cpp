@@ -1,5 +1,8 @@
 #include "Map.h"
 
+/**
+ * Default Constructor
+ */
 Vertex::Vertex():
     name(new string("None")), 
     vertexKey(new string("None")),
@@ -9,6 +12,13 @@ Vertex::Vertex():
     cities(new unordered_map<string, int>()),
     edges(new vector<Edge>()) {}
 
+/**
+ * Initializes a Vertex object that represents a country on a GameMap object.
+ * 
+ * @param aName The name of the country.
+ * @param key The key corresponding to the name of the country.
+ * @param continent The name of the continent where the country sits.
+ */
 Vertex::Vertex(string aName, string key, string continent):
     name(new string(aName)), 
     vertexKey(new string(key)), 
@@ -18,6 +28,9 @@ Vertex::Vertex(string aName, string key, string continent):
     cities(new unordered_map<string, int>()),
     edges(new vector<Edge>()) {}
 
+/**
+ * Copy Constructor
+ */
 Vertex::Vertex(Vertex* vertex){
     name = new string(vertex->getName());
     vertexKey = new string(vertex->getKey());
@@ -57,10 +70,28 @@ Vertex::~Vertex(){
     edges = nullptr;
 }
 
-void Vertex::addEdge(Vertex* vertex, bool isWaterEdge) {
-    edges->push_back(Edge(vertex, isWaterEdge));
+//GETTERS
+string Vertex::getName(){return *name;}
+string Vertex::getKey(){return *vertexKey;}
+string Vertex::getContinent(){return *continent;}
+set<Player*>* Vertex::getOwners(){return owners;}
+unordered_map<string, int>* Vertex::getArmies(){return armies;}
+unordered_map<string, int>* Vertex::getCities(){return cities;}
+vector<Edge>* Vertex::getEdges(){return edges;}
+
+/**
+ * Adds an edge to endVertex.
+ *
+ * @param endVertex A Vertex pointer to the end point vertex.
+ * @param isWaterEdge A boolean representing if the edge is a water edge.
+ */
+void Vertex::addEdge(Vertex* endVertex, bool isWaterEdge) {
+    edges->push_back(Edge(endVertex, isWaterEdge));
 }
 
+/**
+ * Prints a list to the console of the armies and cities currently on the vertex.
+ */ 
 void Vertex::print() {
     cout << "\t" << *vertexKey << " : " << *name << endl;
     unordered_map<string, int>::iterator it;
@@ -78,19 +109,17 @@ void Vertex::print() {
     }
 }
 
-string Vertex::getName(){return *name;}
-string Vertex::getKey(){return *vertexKey;}
-string Vertex::getContinent(){return *continent;}
-set<Player*>* Vertex::getOwners(){return owners;}
-unordered_map<string, int>* Vertex::getArmies(){return armies;}
-unordered_map<string, int>* Vertex::getCities(){return cities;}
-vector<Edge>* Vertex::getEdges(){return edges;}
-
+/**
+ * Default Constructor
+ */
 GameMap::GameMap(): 
     vertices(new Vertices()),
     start(new string("none")), 
     image(new string("")) {}
 
+/**
+ * Copy Constructor
+ */
 GameMap::GameMap(GameMap* map) {
     vertices = new Vertices(*map->getVertices());
     start = new string(map->getStartVertex());
@@ -119,6 +148,19 @@ GameMap::~GameMap() {
     image = nullptr;
 }
 
+//GETTERS
+string GameMap::getStartVertex(){return *start;}
+string GameMap::getImage(){return *image;}
+Vertices* GameMap::getVertices(){return vertices;}
+
+/**
+ * Sets the start vertex member variable of a GameMap object.
+ * The variable is initialized to "none" and can only be set once.
+ * Once the variable is set, it can't be changed again.
+ *
+ * @param startVertexKey The vertex key representing the start country
+ * @return a boolean that shows the action was successful.
+ */
 bool GameMap::setStartVertex(string& startVertexKey){
     Vertices::iterator it;
 
@@ -138,14 +180,28 @@ bool GameMap::setStartVertex(string& startVertexKey){
     return false;
 }
 
-string GameMap::getStartVertex(){return *start;}
-string GameMap::getImage(){return *image;}
-Vertices* GameMap::getVertices(){return vertices;}
+/**
+ * Sets the image string of the GameMap object. This string produces an 
+ * ASCII based image of the map that is printed throughout the game.
+ * 
+ * The image comes from the text file used to create the map (see MapLoader.cpp).
+ *
+ * @param newImage The string representing an image of the map.
+ */
+void GameMap::setImage(string& newImage) {
+    *image = newImage;
+}
 
+/**
+ * Adds a vertex object to the list of vertices belonging to the GameMap.
+ *
+ * @param key The vertex key that corresponds to the country.
+ * @param name The name of the country.
+ * @param continent The name of the continent the country is on.
+ */
 void GameMap::addVertex(const string& key, const string& name, const string& continent) {
-    Vertices::iterator it = vertices->find(key);
 
-    if (it == vertices->end()) {
+    if (vertices->find(key) == vertices->end()) {
         Vertex * vertex = new Vertex (name, key, continent);
         typedef pair<string, Vertex*> node;
         vertices->insert(node (key, vertex));
@@ -156,6 +212,13 @@ void GameMap::addVertex(const string& key, const string& name, const string& con
     cout << "[ MAP ] Vertex " << v->getName() << " on continent " << v->getContinent() << " already exists on the map.\n" << endl;
 }
 
+/**
+ * Creates an edge on the map between two vertices.
+ *
+ * @param startVertexKey The key corresponding to the start country.
+ * @param endVertexKey The key corresponding to the end country.
+ * @param isWaterEdge A bool representing wher the edge is over water.
+ */
 void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, bool isWaterEdge) {
     Vertex * v1 = vertices->find(startVertexKey)->second;
     Vertex * v2 = vertices->find(endVertexKey)->second;
@@ -163,6 +226,10 @@ void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, 
     v2->addEdge(v1, isWaterEdge);
 }
 
+/**
+ * Prints the image of the GameMap along with a list of all the currently occupied
+ * countries. 
+ */
 void GameMap::printMap(){
     cout << *image << endl;
     Vertices::iterator it;
@@ -172,8 +239,4 @@ void GameMap::printMap(){
             it->second->print();
     }
     cout << "--------------------------------------------------------" << endl;
-}
-
-void GameMap::setImage(string& newImage) {
-    *image = newImage;
 }
