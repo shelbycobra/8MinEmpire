@@ -45,7 +45,8 @@ void test_PlayerOwnsValidSetOfRegions() {
 
     player->addCountry(england);
 
-    bool result = playerOccupiedCountriesAreFoundOnMap(player->getCountries(), vertices);
+    bool result = playerOccupiedCountriesAreFoundOnMap(player, map);
+
     assert( result == 0 );
 
     cout << "\n--------------------------------------------------------" << endl;
@@ -56,7 +57,8 @@ void test_PlayerOwnsValidSetOfRegions() {
     player->addCountry(map->getVertices()->find("Z")->second);
     player->addCountry(map->getVertices()->find("X")->second);
 
-    result = playerOccupiedCountriesAreFoundOnMap(player->getCountries(), vertices);
+    result = playerOccupiedCountriesAreFoundOnMap(player, map);
+
     assert( result == 1 );
 
     delete player;
