@@ -92,7 +92,7 @@ void Bidder::startBid(Players* players) {
 
     Player* winner = Bidder::calculateWinner(bids, players);
 
-    winner->payCoins(bids->find(winner)->second);
+    winner->PayCoins(bids->find(winner)->second);
 
     delete bids;
     bids = nullptr;

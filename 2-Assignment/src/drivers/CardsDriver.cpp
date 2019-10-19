@@ -81,7 +81,7 @@ void test_FullGame() {
     cout << "\n[ GAME ] Each player adds 3 armies to the start vertex.\n" << endl;
 
     for (pair<string, Player*> player: players) {
-        player.second->placeNewArmies(3, startVertex, startName);
+        player.second->PlaceNewArmies(3, startVertex, startName);
         nextTurn.push(player.second);
     }
 

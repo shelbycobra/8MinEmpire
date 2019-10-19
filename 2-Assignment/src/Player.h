@@ -33,12 +33,13 @@ public:
     Player(Player* player);
     ~Player();
 
-    bool payCoins(int amount);
-    bool placeNewArmies(int newArmies, Vertex* country, string start);
-    bool moveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
-    bool moveOverLand(int numArmies, Vertex* start, Vertex* end);
-    bool buildCity(Vertex* country);
-    bool destroyArmy(Vertex* country, Player* opponent);
+    bool PayCoins(int amount);
+    bool PlaceNewArmies(int newArmies, Vertex* country, string start);
+    bool MoveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
+    bool MoveOverLand(int numArmies, Vertex* start, Vertex* end);
+    bool BuildCity(Vertex* country);
+    bool DestroyArmy(Vertex* country, Player* opponent);
+    bool Ignore();
 
     void addCardToHand(Card* card);
     void addCountry(Vertex* country);
@@ -60,7 +61,7 @@ public:
 
 private:
     void addArmiesToCountry(Vertex* country, int numArmies);
-    void removeArmiesFromCountry(Vertex* country, int numArmies);
+    void reMoveArmiesFromCountry(Vertex* country, int numArmies);
     void increaseAvailableArmies(int numArmies);
     void decreaseAvailableArmies(int numArmies);
 };

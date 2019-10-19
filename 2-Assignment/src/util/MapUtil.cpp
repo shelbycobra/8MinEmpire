@@ -254,7 +254,7 @@ void executeMoveArmies(Player* player,string action, GameMap* map) {
         endVertex = chooseEndVertex(player, type, map);
         armies = chooseArmies(maxArmies, remainderArmies);
 
-        if (!player->moveArmies(armies, startVertex, endVertex, overWater)) {
+        if (!player->MoveArmies(armies, startVertex, endVertex, overWater)) {
             continue;
         }
 
@@ -290,7 +290,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
         endVertex = chooseEndVertex(player, ActionType::ADD_ARMY, map);
         armies = chooseArmies(maxArmies, remainderArmies);
 
-        if (!player->placeNewArmies(armies, endVertex, map->getStartVertex())) {
+        if (!player->PlaceNewArmies(armies, endVertex, map->getStartVertex())) {
             continue;
         }
 
@@ -321,7 +321,7 @@ void executeDestroyArmy(Player* player, string action, GameMap* map, Players* pl
 
     while(true) {
         endVertex = chooseEndVertex(player, ActionType::DESTROY_ARMY, map);
-        if (!player->destroyArmy(endVertex, opponent)) {
+        if (!player->DestroyArmy(endVertex, opponent)) {
             continue;
         }
         break;
@@ -346,7 +346,7 @@ void executeBuildCity(Player* player, string action, GameMap* map) {
 
     while (true) {
         endVertex = chooseEndVertex(player, ActionType::BUILD_CITY, map);
-        if (!player->buildCity(endVertex)) {
+        if (!player->BuildCity(endVertex)) {
             continue;
         }
         break;

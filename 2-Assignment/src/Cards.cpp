@@ -238,7 +238,7 @@ Card Hand::exchange(Player* player){
 
     while(true) {
         position = selectPositionOfCardFromGameHand();
-        if (player->payCoins(values[position])) {
+        if (player->PayCoins(values[position])) {
 
             Card* card = hand->at(position);
 			player->addCardToHand(card);
