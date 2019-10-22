@@ -1,4 +1,5 @@
 #include "../MapLoader.h"
+#include "../util/MapUtil.h"
 #include "../util/TestUtil.h"
 #include <cassert>
 

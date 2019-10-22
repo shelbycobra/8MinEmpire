@@ -8,6 +8,7 @@
 #include <queue>
 #include <iostream>
 #include <set>
+#include <map>
 
 using namespace std;
 
@@ -31,7 +32,8 @@ public:
 };
 
 class Deck {
-    queue<Card*>* cardDeck;
+    queue<pair<int, Card*>>* cardDeck;
+    map<int, Card*>* cardMap;
 
 public:
     Deck();
@@ -40,8 +42,9 @@ public:
     ~Deck();
 
     Card* draw();
+    void shuffle();
 
-    queue<Card*>* getDeck() { return cardDeck; }
+    queue<pair<int, Card*>>* getDeck() { return cardDeck; }
 
 private:
     int generateRandomInt(set<int>* nums);
@@ -64,7 +67,7 @@ public:
     Deck* getDeck() { return deck; }
 
 private:
-    int selectPositionOfCardFromGameHand();
+    int selectCardPosition();
 };
 
 #endif

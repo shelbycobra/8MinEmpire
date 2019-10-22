@@ -27,12 +27,13 @@ void test_DeckObject() {
     cout << "--------------------------------------------------------\n" << endl;
 
     Deck deck;
-    queue<Card*>* cardDeck = deck.getDeck();
+    queue<pair<int,Card*>>* cardDeck = deck.getDeck();
+
 
     int count = 0;
     Card* card;
     while(!cardDeck->empty()) {
-        card = cardDeck->front();
+        card = cardDeck->front().second;
         assert(card->getGood() != "" && card->getAction() != "");
         cout << ++count << ": { " << card->getGood() << " : \"" << card->getAction() << "\" }" << endl;
         cardDeck->pop();

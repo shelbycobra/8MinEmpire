@@ -2,32 +2,32 @@
 
 #include "../GameInit.h"
 
-Hand* hand;
-GameMap* map;
-Players* players;
 
-void test_start();
+void test_GameInit();
 
 int main() {
 
-    test_start();
+    test_GameInit();
 
     return 0;
 }
 
-void test_start(){
+void test_GameInit(){
     cout << "\n=======================================================" << endl;
-    cout << "TEST: test_StartObject" << endl;
+    cout << "TEST: test_GameInitObject" << endl;
     cout << "=======================================================" << endl;
 
-    GameInitEngine startPhase;
+    GameInitEngine initPhase;
 
-    startPhase.getMapFiles();
-    startPhase.initGame();
+    initPhase.initGame();
 
-    hand = startPhase.getHand();
-    map = startPhase.getMap();
-    players = startPhase.getPlayers();
+    Hand* hand;
+    GameMap* map;
+    Players* players;
+
+    hand = initPhase.getHand();
+    map = initPhase.getMap();
+    players = initPhase.getPlayers();
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Verify game hand contains same cards during initialization." << endl;
@@ -46,7 +46,17 @@ void test_start(){
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Verify players are the same as during initialization." << endl;
     cout << "--------------------------------------------------------\n" << endl;
+
     Players::iterator pl;
     for(pl = players->begin(); pl != players->end(); ++pl)
         cout << pl->first << endl;
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Verify players hands are empty." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+    for(pl = players->begin(); pl != players->end(); ++pl) {
+        cout << pl->first << ": Num cards in hand is " << pl->second->getHand()->size() << endl;
+
+    }
+        
 }

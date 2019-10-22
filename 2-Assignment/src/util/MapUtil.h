@@ -13,6 +13,12 @@ using namespace std;
 typedef unordered_map<string, Player*> Players;
 typedef pair<Vertex*, bool> Edge;
 
+bool isConnectedMap(GameMap* map);
+bool validateContinents(GameMap* map);
+vector<set<string>* > getMapContinents(GameMap* map);
+bool validateEdges(GameMap* map);
+bool isContinentConnected(set<string>* continent, GameMap* map);
+
 vector<string> split(string& str, char delimiter);
 void performCardAction(Player* player, string action, GameMap* map, Players* players);
 Vertex* chooseStartVertex(Player* player);

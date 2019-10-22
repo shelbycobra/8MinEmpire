@@ -155,7 +155,7 @@ bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string,
         istringstream iss(text);
         vector<string> edgeKeys((istream_iterator<string>(iss)), istream_iterator<string>());
 
-        //Start vertex key is always at the first index.
+        //Start vertex key is always the first string.
         string startVertexKey = edgeKeys.at(0);
 
         if (nameMap->find(startVertexKey) == nameMap->end()) {

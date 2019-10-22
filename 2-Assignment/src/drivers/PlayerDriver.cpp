@@ -36,7 +36,6 @@ void test_PlayerOwnsValidSetOfRegions() {
     Player* player = new Player(name, 9);
 
     GameMap* map = generateValidMap();
-    Vertices* vertices = map->getVertices();
     Vertex* england = new Vertex("England", "ENG", "Europe");
 
     cout << "\n--------------------------------------------------------" << endl;
@@ -67,7 +66,6 @@ void test_PlayerOwnsValidSetOfRegions() {
 
     player = nullptr;
     map = nullptr;
-    vertices = nullptr;
     england = nullptr;
 }
 

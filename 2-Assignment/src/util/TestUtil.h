@@ -7,14 +7,7 @@
 
 using namespace std;
 
-typedef pair<Vertex*, bool> Edge;
-
-bool isConnectedMap(GameMap* map);
-bool validateContinents(GameMap* map);
-vector<set<string>* > getMapContinents(GameMap* map);
-bool validateEdges(GameMap* map);
 bool playerOccupiedCountriesAreFoundOnMap(Player* player, GameMap* map);
-bool isContinentConnected(set<string>* continent, GameMap* map);
 Players createDummyPlayers(int numPlayers);
 
 GameMap* generateValidMap();

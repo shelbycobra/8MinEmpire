@@ -1,11 +1,8 @@
 #include "Cards.h"
 #include "util/MapUtil.h"
 
-#include <stdio.h>
-#include <set>
-#include <map>
-#include <stdlib.h>
 #include <time.h>
+#define DECK_SIZE 42
 
 using namespace std;
 
@@ -73,20 +70,21 @@ Deck::Deck(){
     int count = 0;
     int joinedCard = 0;
 
-    map<int, Card*>* cards = new map<int,Card*>();
+    cardDeck = new queue<pair<int, Card*>>();
+    cardMap = new map<int,Card*>();
 
     for(int i = 0; i < 42; i++) {
 
         string good = resources[resourceIndex];
         string action = actions[actionIndex];
 
-        // if count divisible by 14, make OR with actionIndex and 8 or 9
+        // if count divisible by 7, make OR with actionIndex and 8 or 9
         if (count % 7 == 0) {
             if (actionIndex == 7 + joinedCard) { // prevents the same action being or'd
                 action = actions[actionIndex-2] + " OR " + actions[8 + joinedCard];
             } else
                 action = actions[actionIndex] + " OR " + actions[8 + joinedCard];
-            joinedCard = joinedCard == 0 ? 1 : 0;
+            joinedCard = joinedCard == 0 ? 1 : 0; // adds a more "randomness"
         }
 
         // if count divisible by 10, make AND actionIndex and 7 or 8
@@ -95,50 +93,71 @@ Deck::Deck(){
                 action = actions[actionIndex-2] + " AND " + actions[8 + joinedCard];
             } else
                 action = actions[actionIndex] + " AND " + actions[8 + joinedCard];
-            joinedCard = joinedCard == 0 ? 1 : 0;
+            joinedCard = joinedCard == 0 ? 1 : 0; 
         }
 
         Card* newCard = new Card(count, good, action);
-        cards->insert(pair<int, Card*> (count, newCard));
+        pair<int, Card*> cardEntry(count, newCard);
+
+        cardMap->insert(cardEntry);
+        cardDeck->push(cardEntry);
 
         actionIndex = (actionIndex + 1) % numActions;
         resourceIndex = (resourceIndex + 1) % numResources;
+
         count++;
     }
-
-    set<int>* nums = new set<int>();
-    cardDeck = new queue<Card*>();
-
-    while(nums->size() < 42) {
-        int rand = generateRandomInt(nums);
-        Card* card = cards->find(rand)->second;
-        cardDeck->push(card);
-    }
-
 }
 
 /**
  * Copy Constructor
  */
 Deck::Deck(Deck* deck) {
-    cardDeck = new queue<Card*>(*deck->getDeck());
+    cardDeck = new queue<pair<int, Card*>>(*deck->getDeck());
 }
 
 Deck& Deck::operator =(Deck& deck) {
-    cardDeck = new queue<Card*>(*deck.getDeck());
+    cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
     return *this;
 }
 
 Deck::~Deck(){
     //Delete all the cards left over in the deck.
     while(!cardDeck->empty()){
-        delete cardDeck->front();
+        delete cardDeck->front().second;
         cardDeck->pop();
     }
 
     delete cardDeck;
+    delete cardMap;
+    
     cardDeck = nullptr;
+    cardMap = nullptr;
+    
 }
+
+
+/**
+ * Shuffles the deck.
+ */
+void Deck::shuffle() {
+    cout << "[ DECK ] Shuffling deck." << endl;
+
+    delete cardDeck;
+
+    cardDeck = new queue<pair<int, Card*>>();
+    set<int>* nums = new set<int>();
+
+    while(nums->size() < DECK_SIZE) {
+        int rand = generateRandomInt(nums);
+        if (cardMap->find(rand) != cardMap->end()) {
+            pair<int, Card*> cardEntry = *cardMap->find(rand);
+            cardDeck->push(cardEntry);
+        }
+    }
+}
+
+
 
 /**
  * Removes a Cards from the top of the Deck.
@@ -146,10 +165,13 @@ Deck::~Deck(){
  * @return A Card pointer to the removed card.
  */
 Card* Deck::draw(){
-    Card* card = cardDeck->front();
+    pair<int, Card*> cardEntry = cardDeck->front();
     cardDeck->pop();
-    cout << "[ DECK ] Drew card { " << card->getGood() << " : \"" << card->getAction() << "\" } from the deck." << endl;
-    return card;
+
+    cardMap->erase(cardEntry.first);
+
+    cout << "[ DECK ] Drew card { " << cardEntry.second->getGood() << " : \"" << cardEntry.second->getAction() << "\" } from the deck." << endl;
+    return cardEntry.second;
 }
 
 //PRIVATE
@@ -160,7 +182,7 @@ int Deck::generateRandomInt(set<int>* nums){
     srand (time(0));
 
     while (true){
-        int num = rand() % 42;
+        int num = rand() % DECK_SIZE;
         if(nums->find(num) == nums->end()) {
             nums->insert(num);
             return num;
@@ -175,6 +197,8 @@ int Deck::generateRandomInt(set<int>* nums){
  * of the Deck and adds them to the hand.
  */
 Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {
+    deck->shuffle();
+
     //Populate game hand
     for(int i = 0; i < 6; i++) {
         hand->push_back(deck->draw());
@@ -223,7 +247,7 @@ Card Hand::exchange(Player* player){
     int values[] = {0, 1, 1, 2, 2, 3};
 
     while(true) {
-        position = selectPositionOfCardFromGameHand();
+        position = selectCardPosition();
         if (player->PayCoins(values[position])) {
 
             Card* card = hand->at(position);
@@ -252,7 +276,7 @@ Card Hand::exchange(Player* player){
  * 
  * @return The position of the card to be used in gameplay.
  */
-int Hand::selectPositionOfCardFromGameHand(){
+int Hand::selectCardPosition(){
     string pos;
     int position;
 
@@ -261,14 +285,19 @@ int Hand::selectPositionOfCardFromGameHand(){
     while (true) {
         cout << "[ GAME HAND ] Please choose a card from the game hand." << endl;
         cout << "[ GAME HAND ] > ";
+
+        try {
         getline(cin, pos);
 
-        stringstream toInt(pos);
-        toInt >> position;
+        position = stoi(pos);
 
         if (position < 7 && position > 0)
             return position - 1;
         cout << "[ ERROR! ] You can only choose numbers between [1, 6]. Please try again." << endl;
+
+        } catch (invalid_argument& e) {
+            cout << "[ ERROR! ] You entered garbage. Please try again." << endl;
+        }
     }
 }
 
