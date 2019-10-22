@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <cassert>
 #include "../GameInit.h"
 
 
@@ -28,6 +28,17 @@ void test_GameInit(){
     hand = initPhase.getHand();
     map = initPhase.getMap();
     players = initPhase.getPlayers();
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Verify deck contains 42 cards." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+
+    Deck* deck = hand->getDeck();
+    int decksize = deck->getDeck()->size();
+    int handsize = hand->getHand()->size();
+
+    assert(decksize + handsize == 42);
+    cout << "Size of deck is " << decksize + handsize << endl;
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Verify game hand contains same cards during initialization." << endl;
