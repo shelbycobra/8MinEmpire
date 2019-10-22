@@ -29,7 +29,6 @@ void test_DeckObject() {
     Deck deck;
     queue<pair<int,Card*>>* cardDeck = deck.getDeck();
 
-
     int count = 0;
     Card* card;
     while(!cardDeck->empty()) {
@@ -39,6 +38,7 @@ void test_DeckObject() {
         cardDeck->pop();
         delete card;
     }
+
     assert(count == 42);
     cout << "\nDeck contains 42 cards!\n" << endl;
 }
@@ -53,6 +53,8 @@ void test_HandObject() {
     cout << "--------------------------------------------------------\n" << endl;
 
     Hand* gameHand = new Hand();
+    gameHand->fill();
+    gameHand->fill();
     string name = "Player 1";
     Player player(name, 9);
 
@@ -70,6 +72,7 @@ void test_FullGame() {
     MapLoader loader("largeValid.map");
     GameMap* map = loader.generateMap();
     Hand* gameHand = new Hand();
+    gameHand->fill();
     Players players = createDummyPlayers(3);
     queue<Player*> nextTurn;
 

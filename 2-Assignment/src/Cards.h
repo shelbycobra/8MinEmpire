@@ -60,6 +60,7 @@ public:
     Hand& operator=(Hand& hand);
     ~Hand();
 
+    void fill();
     Card exchange(Player* player);
     void printHand();
 

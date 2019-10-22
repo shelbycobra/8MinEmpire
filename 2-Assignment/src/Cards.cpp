@@ -192,18 +192,8 @@ int Deck::generateRandomInt(set<int>* nums){
 
 /**
  * Default Constructor
- * 
- * Each Hand object initilizes a Deck object and immediately draws 6 cards from the top
- * of the Deck and adds them to the hand.
  */
-Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {
-    deck->shuffle();
-
-    //Populate game hand
-    for(int i = 0; i < 6; i++) {
-        hand->push_back(deck->draw());
-    }
-}
+Hand::Hand(): hand(new vector<Card*>()), deck(new Deck()) {}
 
 /**
  * Copy Constructor
@@ -230,6 +220,24 @@ Hand::~Hand(){
 
     hand = nullptr;
     deck = nullptr;
+}
+
+/**
+ * Shuffles the Deck and draws 6 cards from the top
+ * of the Deck and adds them to the hand.
+ */
+void Hand::fill() {
+
+    if(hand->size() != 6) {
+        deck->shuffle();
+
+        //Populate game hand
+        for(int i = 0; i < 6; i++) {
+            hand->push_back(deck->draw());
+        }
+    } else {
+        cout << "[ ERROR! ] Hand has already been populated." << endl;
+    }
 }
 
 /**
