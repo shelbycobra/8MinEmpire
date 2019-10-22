@@ -16,6 +16,6 @@ fi
 
 $COMPILER -Wall $CPP_STD $CPP_FILES
 
-echo $?
-
-./a.out
+if [ "$?" -eq "0" ]; then
+    ./a.out
+fi
