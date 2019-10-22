@@ -16,4 +16,6 @@ fi
 
 $COMPILER -Wall $CPP_STD $CPP_FILES
 
+echo $?
+
 ./a.out
