@@ -47,17 +47,17 @@ public:
     void printCountries();
     bool isAdjacent(Vertex* country, bool overWaterAllowed);
     bool isAdjacent(string countryName, bool overWaterAllowed);
-
-    // Getters
     int getArmiesOnCountry(Vertex* country);
     int getCitiesOnCountry(Vertex* country);
-    string getName();
-    Vertices* getCountries();
-    int getArmies();
-    int getCities();
-    int getCoins();
-    vector<Card*>* getHand();
-    Bidder* getBidder();
+
+    // Getters
+    string getName() { return *name; }
+    Vertices* getCountries() { return countries; }
+    int getArmies() { return *armies; }
+    int getCities() { return *cities; }
+    int getCoins() { return *coins; }
+    vector<Card*>* getHand() { return hand;}
+    Bidder* getBidder() { return bidder; }
 
 private:
     void addArmiesToCountry(Vertex* country, int numArmies);

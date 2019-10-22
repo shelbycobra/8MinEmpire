@@ -33,10 +33,6 @@ Bidder::~Bidder(){
     player = nullptr;
 }
 
-//GETTERS
-bool Bidder::getMadeBid(){return *madeBid;}
-Player* Bidder::getPlayer(){return player;}
-
 /**
  * Prompts the Player to make a bid from their purse.
  * If the Player has enough coins to make the bid, the

@@ -22,8 +22,9 @@ public:
 
     int bid();
     static void startBid(Players* players);
-    bool getMadeBid();
-    Player* getPlayer();
+
+    bool getMadeBid() { return *madeBid; }
+    Player* getPlayer() { return player; }
 
 private:
     static Player* calculateWinner(unordered_map<Player*, int>* bids, Players* players);

@@ -148,11 +148,6 @@ GameMap::~GameMap() {
     image = nullptr;
 }
 
-//GETTERS
-string GameMap::getStartVertex(){return *start;}
-string GameMap::getImage(){return *image;}
-Vertices* GameMap::getVertices(){return vertices;}
-
 /**
  * Sets the start vertex member variable of a GameMap object.
  * The variable is initialized to "none" and can only be set once.

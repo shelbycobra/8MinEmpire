@@ -68,15 +68,6 @@ Player::~Player(){
     hand = nullptr;
 }
 
-// GETTERS
-string Player::getName(){return *name;}
-Vertices* Player::getCountries(){return countries;}
-int Player::getArmies(){return *armies;}
-int Player::getCities(){return *cities;}
-int Player::getCoins(){return *coins;}
-vector<Card*>* Player::getHand(){return hand;}
-Bidder* Player::getBidder() {return bidder;}
-
 /**
  * Takes coins out of the Player's purse.
  *

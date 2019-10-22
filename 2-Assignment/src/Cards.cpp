@@ -55,11 +55,6 @@ Card::~Card() {
     action = nullptr;
 }
 
-//GETTERS
-int Card::getID(){return *id;}
-string Card::getGood(){return *good;}
-string Card::getAction(){return *action;}
-
 /**
  * Initliazes a Deck object that contains 42 Card objects.
  * The card order is generated randomly each time a Deck object is created,
@@ -145,11 +140,6 @@ Deck::~Deck(){
     cardDeck = nullptr;
 }
 
-//GETTER
-queue<Card*>* Deck::getDeck(){
-    return cardDeck;
-}
-
 /**
  * Removes a Cards from the top of the Deck.
  * 
@@ -217,10 +207,6 @@ Hand::~Hand(){
     hand = nullptr;
     deck = nullptr;
 }
-
-//GETTERS
-vector<Card*>* Hand::getHand(){return hand;}
-Deck* Hand::getDeck(){return deck;}
 
 /**
  * The current player is asked to choose a card from the Hand.

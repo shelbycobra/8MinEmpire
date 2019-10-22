@@ -60,12 +60,14 @@ public:
 
     void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
-    Vertices* getVertices();
-    string getStartVertex();
-    string getImage();
-    bool setStartVertex(string& startVertexName);
     void printMap();
+
+    Vertices* getVertices() { return vertices; }
+    string getStartVertex() { return *start; }
+    string getImage() { return *image; }
+
     void setImage(string& newImage);
+    bool setStartVertex(string& startVertexName);
 };
 
 #endif

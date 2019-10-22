@@ -37,9 +37,6 @@ MapLoader::~MapLoader(){
     mapFilePath = nullptr;
 }
 
-//GETTER
-string MapLoader::getMapFilePath(){return *mapFilePath;}
-
 //SETTER
 void MapLoader::setMapFilePath(const string& fileName) {
     delete mapFilePath;

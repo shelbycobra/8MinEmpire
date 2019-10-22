@@ -25,9 +25,9 @@ public:
     Card& operator=(Card& card);
     ~Card();
 
-    int getID();
-    string getGood();
-    string getAction();
+    int getID() { return *id; }
+    string getGood() { return *good; }
+    string getAction() { return *action; }
 };
 
 class Deck {
@@ -40,7 +40,8 @@ public:
     ~Deck();
 
     Card* draw();
-    queue<Card*>* getDeck();
+
+    queue<Card*>* getDeck() { return cardDeck; }
 
 private:
     int generateRandomInt(set<int>* nums);
@@ -58,8 +59,9 @@ public:
 
     Card exchange(Player* player);
     void printHand();
-    vector<Card*>* getHand();
-    Deck* getDeck();
+
+    vector<Card*>* getHand() { return hand; }
+    Deck* getDeck() { return deck; }
 
 private:
     int selectPositionOfCardFromGameHand();
