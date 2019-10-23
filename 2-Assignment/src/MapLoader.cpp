@@ -27,11 +27,17 @@ MapLoader::MapLoader(MapLoader* mapLoader){
     mapFilePath = new string(mapLoader->getMapFilePath());
 }
 
+/**
+ * Assignment operator
+ */
 MapLoader& MapLoader::operator=(MapLoader& mapLoader){
     mapFilePath = new string(mapLoader.getMapFilePath());
     return *this;
 }
 
+/**
+ * Destructor
+ */
 MapLoader::~MapLoader(){
     delete mapFilePath;
     mapFilePath = nullptr;

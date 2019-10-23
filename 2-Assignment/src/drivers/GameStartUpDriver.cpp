@@ -8,3 +8,15 @@ graph, etc.), and invalid maps are rejected without the program crashing.
 * An assigned biding facility to each player.
 * An assigned empty hand of cards to each player.
 */
+
+#include "GameStartUp.h"
+
+int main() {
+    GameInitEngine initPhase;
+    initPhase.initGame();
+
+    GameStartUpEngine startPhase(&initPhase);
+    startPhase.startGame();
+
+    return 0;
+}

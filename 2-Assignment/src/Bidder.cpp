@@ -1,6 +1,13 @@
 #include "Bidder.h"
 
 /**
+ * Default constructor
+ */
+Bidder::Bidder(): 
+    madeBid(new bool(false)),
+    player(new Player()) {}
+
+/**
  * The Bidder object is initialized with a pointer to the Player who owns the Bidder object
  * and the boolean madeBid to false.
  * 
@@ -10,21 +17,26 @@ Bidder::Bidder(Player* player):
     madeBid(new bool(false)), 
     player(player) {}
 
-Bidder::Bidder(): 
-    madeBid(new bool(false)),
-    player(new Player()) {}
-
+/**
+ * Copy constructor
+ */
 Bidder::Bidder(Bidder* bidder) {
     madeBid = new bool(bidder->getMadeBid());
     player = new Player(bidder->getPlayer());
 }
 
+/**
+ * Assignment operator
+ */
 Bidder& Bidder::operator=(Bidder& bidder) {
     madeBid = new bool(bidder.getMadeBid());
     player = new Player(bidder.getPlayer());
     return *this;
 }
 
+/**
+ * Destructor
+ */
 Bidder::~Bidder(){
     delete madeBid;
     delete player;
@@ -74,7 +86,7 @@ int Bidder::bid() {
  * 
  * @param players A pointer to a vector of Player pointers representing all the players in the game.
  */
-void Bidder::startBid(Players* players) {
+Player* Bidder::startBid(Players* players) {
     cout << "\n[ BIDDER ] STARTING BID!\n" << endl;
 
     unordered_map<Player*, int>* bids = new unordered_map<Player*, int>();
@@ -92,6 +104,8 @@ void Bidder::startBid(Players* players) {
 
     delete bids;
     bids = nullptr;
+
+    return winner;
  }
 
 /**

@@ -21,7 +21,7 @@ Card::Card():
  * @param theGood The good of the card.
  * @param theAction The action of the card.
  */
-Card::Card(int theId, string theGood, string theAction): 
+Card::Card(const int& theId, const string& theGood, const string& theAction): 
     id(new int(theId)), 
     good(new string(theGood)), 
     action(new string(theAction)) {}
@@ -35,6 +35,9 @@ Card::Card(Card* card) {
     action = new string(card->getAction());
 }
 
+/**
+ * Assignment operator
+ */
 Card& Card::operator =(Card& card){
     id = new int(card.getID());
     good = new string(card.getGood());
@@ -42,6 +45,9 @@ Card& Card::operator =(Card& card){
     return *this;
 }
 
+/**
+ * Destructor
+ */
 Card::~Card() {
     delete id;
     delete good;
@@ -116,11 +122,17 @@ Deck::Deck(Deck* deck) {
     cardDeck = new queue<pair<int, Card*>>(*deck->getDeck());
 }
 
+/**
+ * Assignment operator
+ */
 Deck& Deck::operator =(Deck& deck) {
     cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
     return *this;
 }
 
+/**
+ * Destructor
+ */
 Deck::~Deck(){
     //Delete all the cards left over in the deck.
     while(!cardDeck->empty()){
@@ -135,7 +147,6 @@ Deck::~Deck(){
     cardMap = nullptr;
     
 }
-
 
 /**
  * Shuffles the deck.
@@ -156,8 +167,6 @@ void Deck::shuffle() {
         }
     }
 }
-
-
 
 /**
  * Removes a Cards from the top of the Deck.
@@ -203,6 +212,9 @@ Hand::Hand(Hand* otherGameHand) {
     deck = new Deck(otherGameHand->getDeck());
 }
 
+/**
+ * Assignment operator
+ */
 Hand& Hand::operator=(Hand& otherGameHand) {
     hand = new vector<Card*>(*otherGameHand.getHand());
     deck = new Deck(otherGameHand.getDeck());
@@ -210,6 +222,9 @@ Hand& Hand::operator=(Hand& otherGameHand) {
     return *this;
 }
 
+/**
+ * Destructor
+ */
 Hand::~Hand(){
     //Delete all the cards in the game hand.
     for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it)

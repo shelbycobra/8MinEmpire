@@ -41,6 +41,9 @@ Vertex::Vertex(Vertex* vertex){
     edges = new vector<Edge>(*vertex->getEdges());
 }
 
+/**
+ * Assignment operator
+ */
 Vertex& Vertex::operator=(Vertex& vertex) {
     name = new string(vertex.getName());
     vertexKey = new string(vertex.getKey());
@@ -52,6 +55,9 @@ Vertex& Vertex::operator=(Vertex& vertex) {
     return *this;
 }
 
+/**
+ * Destructor
+ */
 Vertex::~Vertex(){
     delete name;
     delete vertexKey;
@@ -156,7 +162,7 @@ GameMap::~GameMap() {
  * @param startVertexKey The vertex key representing the start country
  * @return a boolean that shows the action was successful.
  */
-bool GameMap::setStartVertex(string& startVertexKey){
+bool GameMap::setStartVertex(const string& startVertexKey){
     Vertices::iterator it;
 
     if (*start != "none"){
@@ -183,7 +189,7 @@ bool GameMap::setStartVertex(string& startVertexKey){
  *
  * @param newImage The string representing an image of the map.
  */
-void GameMap::setImage(string& newImage) {
+void GameMap::setImage(const string& newImage) {
     *image = newImage;
 }
 

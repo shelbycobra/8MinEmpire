@@ -21,7 +21,7 @@ class Card {
 
 public:
     Card();
-    Card(int theId, string theGood, string theAction);
+    Card(const int& theId, const string& theGood, const string& theAction);
     Card(Card* card);
     Card& operator=(Card& card);
     ~Card();

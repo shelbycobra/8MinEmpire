@@ -3,21 +3,59 @@
 #include "MapLoader.h"
 #include "util/MapUtil.h"
 
-
-GameInitEngine::GameInitEngine(): map(new GameMap()), players(new Players()),
+/**
+ * Default Constructor
+ */
+GameInitEngine::GameInitEngine(): 
+    map(new GameMap()), players(new Players()),
     hand(new Hand()), numPlayers(new int()) {}
 
+/**
+ * Copy constructor
+ */
+GameInitEngine::GameInitEngine(GameInitEngine* otherInitEngine) {
+    map = new GameMap(otherInitEngine->getMap());
+    players = new Players(*otherInitEngine->getPlayers());
+    hand = new Hand(otherInitEngine->getHand());
+    numPlayers = new int(otherInitEngine->getNumPlayers());
+}
+
+/**
+ * Assignment operator
+ */
+GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
+    map = new GameMap(otherInitEngine.getMap());
+    players = new Players(*otherInitEngine.getPlayers());
+    hand = new Hand(otherInitEngine.getHand());
+    numPlayers = new int(otherInitEngine.getNumPlayers());
+    return *this;
+}
+
+/**
+ * Destructor
+ */
 GameInitEngine::~GameInitEngine() {
     delete map;
     delete players;
     delete hand;
     delete numPlayers;
+
+    map = nullptr;
+    players = nullptr;
+    hand = nullptr;
+    numPlayers = nullptr;
 }
 
+/**
+ * 
+ */
 void GameInitEngine::initGame() {
-    initializeMap();
-    selectNumPlayers();
-    createPlayers();
+    // Only initialize the game once.
+    if (players->size() == 0 && map->getVertices()->size() == 0) {
+        initializeMap();
+        selectNumPlayers();
+        createPlayers();
+    }
 }
 
 void GameInitEngine::initializeMap() {
@@ -75,18 +113,14 @@ void GameInitEngine::selectNumPlayers() {
 }
 
 void GameInitEngine::createPlayers(){
-    int coins = 18 - *numPlayers * 2;
-    if (*numPlayers == 3 || *numPlayers == 4)
-        coins--;
-
-    cout << "[ START ] Creating " << *numPlayers << " players. Each will have " << coins << " coins." << endl;
+    cout << "[ START ] Creating " << *numPlayers << " players." << endl;
     
     for (int i = 0; i < *numPlayers; i++) {
-        createPlayer(coins);
+        createPlayer();
     }
 }
 
-void GameInitEngine::createPlayer(const int& coins){
+void GameInitEngine::createPlayer(){
     string name;
 
     cout << "\n[ START ] Creating a new player" << endl;
@@ -94,7 +128,7 @@ void GameInitEngine::createPlayer(const int& coins){
     cout << "[ START ] > ";
     getline(cin, name);
 
-    players->insert(pair<string,Player*>(name, new Player(name, coins)));
+    players->insert(pair<string,Player*>(name, new Player(name)));
 }
 
 vector<string>* GameInitEngine::getMapFiles() {

@@ -14,6 +14,17 @@ Player::Player():
     hand(new vector<Card*>()),
     bidder(new Bidder(this)) {}
 
+Player::Player(const string &playerName): 
+    name(new string(playerName)),
+    countries(new Vertices()),
+    armies(new int(14)),
+    cities(new int(3)),
+    coins(new int(0)),
+    hand(new vector<Card*>()),
+    bidder(new Bidder(this)) 
+{
+    cout << "{ " << *name << " } CREATED. (Purse = 0)." << endl;
+}
 /**
  * Initializes a Player object.
  * 
@@ -23,7 +34,7 @@ Player::Player():
  * @param playerName The name of the player.
  * @param startCoins The number of coins the player starts with.
  */
-Player::Player(string& playerName, int startCoins):
+Player::Player(const string& playerName, const int& startCoins):
     name(new string(playerName)),
     countries(new Vertices()),
     armies(new int(14)),
@@ -48,6 +59,23 @@ Player::Player(Player* player){
     bidder = new Bidder(player->getBidder());
 }
 
+/**
+ * Assignment operator
+ */
+Player& Player::operator=(Player& player) {
+    name = new string(player.getName());
+    countries = new Vertices(*player.getCountries());
+    armies = new int(player.getArmies());
+    cities = new int(player.getCities());
+    coins = new int(player.getCoins());
+    hand = new vector<Card*>(*player.getHand());
+    bidder = new Bidder(player.getBidder());
+    return *this;
+}
+
+/**
+ * Destructor
+ */
 Player::~Player(){
     //Delete all the cards the player holds.
     for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it)
@@ -76,7 +104,7 @@ Player::~Player(){
  * @param amount Integer amount of coins to pay.
  * @return a boolean that shows the action was successful.
  */
-bool Player::PayCoins(int amount){
+bool Player::PayCoins(const int& amount){
     if (amount <= *coins && amount >= 0) {
         string coinStr = amount == 1 ? "coin" : "coins";
         *coins -= amount;
@@ -98,7 +126,7 @@ bool Player::PayCoins(int amount){
  * @param start A string containing the name of the start country.
  * @return a boolean that shows the action was successful.
  */
-bool Player::PlaceNewArmies(int newArmies, Vertex* country, string start){
+bool Player::PlaceNewArmies(const int& newArmies, Vertex* country, const string& start){
     if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
         if (newArmies > *armies || newArmies < 0) {
             cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
@@ -123,7 +151,7 @@ bool Player::PlaceNewArmies(int newArmies, Vertex* country, string start){
  * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
  * @return a boolean representing if the country is adjacent.
  */
-bool Player::isAdjacent(Vertex* target, bool overWaterAllowed){
+bool Player::isAdjacent(Vertex* target, const bool& overWaterAllowed){
     return isAdjacent(target->getName(), overWaterAllowed);
 }
 
@@ -135,7 +163,7 @@ bool Player::isAdjacent(Vertex* target, bool overWaterAllowed){
  * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
  * @return a boolean representing if the country is adjacent.
  */
-bool Player::isAdjacent(string target, bool overWaterAllowed){
+bool Player::isAdjacent(const string& target, const bool& overWaterAllowed){
     typedef pair<Vertex*, bool> Edge;
 
     Vertices::iterator it = countries->begin();
@@ -203,7 +231,7 @@ int Player::getCitiesOnCountry(Vertex* country){
  * @param end A Vertex pointer to the end country.
  * @return a boolean that shows the action was successful.
  */
-bool Player::MoveOverLand(int numArmies, Vertex* start, Vertex* end){
+bool Player::MoveOverLand(const int& numArmies, Vertex* start, Vertex* end){
     return MoveArmies(numArmies, start, end, false);
 }
 
@@ -219,7 +247,7 @@ bool Player::MoveOverLand(int numArmies, Vertex* start, Vertex* end){
  * @param moveOverWater A boolean representing if armies can move over water.
  * @return a boolean that shows the action was successful.
  */
-bool Player::MoveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater){
+bool Player::MoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater){
     //Assumes: country is a valid vertex on the map
     //is country an adjacent country to an occupied country?
     if (isAdjacent(end, moveOverWater)) {
@@ -419,7 +447,7 @@ void Player::printCountries(){
  * @param country A Vertex pointer to the target country.
  * @param numArmies The number of armies to add.
  */
-void Player::addArmiesToCountry(Vertex* country, int numArmies) {
+void Player::addArmiesToCountry(Vertex* country, const int& numArmies) {
     //Add country to the Player's list of occupied countries if it hasn't been added yet.
     if(countries->find(country->getKey()) == countries->end())
         addCountry(country);
@@ -442,7 +470,7 @@ void Player::addArmiesToCountry(Vertex* country, int numArmies) {
  * @param country A Vertex pointer to the target country.
  * @param numArmies The number of armies to remove from country.
  */
-void Player::reMoveArmiesFromCountry(Vertex* country, int numArmies) {
+void Player::reMoveArmiesFromCountry(Vertex* country, const int& numArmies) {
     int currentArmies = country->getArmies()->find(*name)->second;
 
     // erase current record
@@ -462,7 +490,7 @@ void Player::reMoveArmiesFromCountry(Vertex* country, int numArmies) {
  *
  * @param numArmies The number of armies to add.
  */
-void Player::increaseAvailableArmies(int numArmies) {
+void Player::increaseAvailableArmies(const int& numArmies) {
     *armies += numArmies;
 }
 
@@ -472,7 +500,7 @@ void Player::increaseAvailableArmies(int numArmies) {
  *
  * @param numArmies The number of armies to remove.
  */
-void Player::decreaseAvailableArmies(int numArmies) {
+void Player::decreaseAvailableArmies(const int& numArmies) {
     if (*armies - numArmies <= 0) {
         *armies = 0;
     } else {

@@ -21,7 +21,7 @@ public:
     ~Bidder();
 
     int bid();
-    static void startBid(Players* players);
+    static Player* startBid(Players* players);
 
     bool getMadeBid() { return *madeBid; }
     Player* getPlayer() { return player; }

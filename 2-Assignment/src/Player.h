@@ -29,14 +29,16 @@ class Player {
 
 public:
     Player();
-    Player(string &name,int startCoins);
+    Player(const string &name);
+    Player(const string &name, const int& startCoins);
     Player(Player* player);
+    Player& operator=(Player& player);
     ~Player();
 
-    bool PayCoins(int amount);
-    bool PlaceNewArmies(int newArmies, Vertex* country, string start);
-    bool MoveArmies(int numArmies, Vertex* start, Vertex* end, bool moveOverWater);
-    bool MoveOverLand(int numArmies, Vertex* start, Vertex* end);
+    bool PayCoins(const int& amount);
+    bool PlaceNewArmies(const int& newArmies, Vertex* country, const string& start);
+    bool MoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater);
+    bool MoveOverLand(const int& numArmies, Vertex* start, Vertex* end);
     bool BuildCity(Vertex* country);
     bool DestroyArmy(Vertex* country, Player* opponent);
     bool Ignore();
@@ -45,8 +47,8 @@ public:
     void addCountry(Vertex* country);
     void removeCountry(Vertex* country);
     void printCountries();
-    bool isAdjacent(Vertex* country, bool overWaterAllowed);
-    bool isAdjacent(string countryName, bool overWaterAllowed);
+    bool isAdjacent(Vertex* country, const bool& overWaterAllowed);
+    bool isAdjacent(const string& countryName, const bool& overWaterAllowed);
     int getArmiesOnCountry(Vertex* country);
     int getCitiesOnCountry(Vertex* country);
 
@@ -59,11 +61,14 @@ public:
     vector<Card*>* getHand() { return hand;}
     Bidder* getBidder() { return bidder; }
 
+    //Setters
+    void setCoins(const int& coins) { *this->coins = coins; }
+
 private:
-    void addArmiesToCountry(Vertex* country, int numArmies);
-    void reMoveArmiesFromCountry(Vertex* country, int numArmies);
-    void increaseAvailableArmies(int numArmies);
-    void decreaseAvailableArmies(int numArmies);
+    void addArmiesToCountry(Vertex* country, const int& numArmies);
+    void reMoveArmiesFromCountry(Vertex* country, const int& numArmies);
+    void increaseAvailableArmies(const int& numArmies);
+    void decreaseAvailableArmies(const int& numArmies);
 };
 
 typedef unordered_map<string, Player*> Players;

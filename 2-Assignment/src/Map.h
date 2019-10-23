@@ -66,8 +66,8 @@ public:
     string getStartVertex() { return *start; }
     string getImage() { return *image; }
 
-    void setImage(string& newImage);
-    bool setStartVertex(string& startVertexName);
+    void setImage(const string& newImage);
+    bool setStartVertex(const string& startVertexName);
 };
 
 #endif

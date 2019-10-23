@@ -1,9 +1,7 @@
-#ifndef GameInitEngine_H
-#define GameInitEngine_H
+#ifndef GAME_INIT_ENGINE_H
+#define GAME_INIT_ENGINE_H
 
-#include "Map.h"
 #include "Player.h"
-#include "Cards.h"
 
 class GameInitEngine {
     GameMap* map;
@@ -13,12 +11,11 @@ class GameInitEngine {
 
 public:
     GameInitEngine();
+    GameInitEngine(GameInitEngine* otherInitEngine);
+    GameInitEngine& operator=(GameInitEngine& otherInitEngine);
     ~GameInitEngine();
 
     void initGame();
-    void initializeMap();
-    void selectNumPlayers();
-    void createPlayers();
 
     GameMap* getMap() { return map;}
     Players* getPlayers() { return players;}
@@ -26,9 +23,13 @@ public:
     int getNumPlayers() { return *numPlayers; }
 
 private:
+    void initializeMap();
+    void selectNumPlayers();
+    void createPlayers();
+
     vector<string>* getMapFiles();
     string selectMap(vector<string>* maps);
-    void createPlayer(const int& coins);
+    void createPlayer();
 };
 
 #endif

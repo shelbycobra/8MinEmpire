@@ -14,8 +14,8 @@ public:
     MapLoader(MapLoader* mapLoader);
     MapLoader& operator=(MapLoader& mapLoader);
     ~MapLoader();
-    GameMap* generateMap();
 
+    GameMap* generateMap();
     string getMapFilePath() { return *mapFilePath; }
     void setMapFilePath(const string& fileName);
 
