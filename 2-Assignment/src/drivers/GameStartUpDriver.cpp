@@ -9,14 +9,19 @@ graph, etc.), and invalid maps are rejected without the program crashing.
 * An assigned empty hand of cards to each player.
 */
 
-#include "GameStartUp.h"
+#include "../GameStartUp.h"
 
 int main() {
-    GameInitEngine initPhase;
-    initPhase.initGame();
+    GameInitEngine* initPhase = new GameInitEngine();
+    initPhase->initGame();
 
-    GameStartUpEngine startPhase(&initPhase);
-    startPhase.startGame();
+    GameStartUpEngine* startPhase = new GameStartUpEngine(initPhase);
+    startPhase->startGame();
+
+    delete startPhase;
+
+    initPhase = nullptr;
+    startPhase = nullptr;
 
     return 0;
 }

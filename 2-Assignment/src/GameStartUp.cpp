@@ -1,22 +1,5 @@
+#include<algorithm>
 #include "GameStartUp.h"
-
-
-/*Eight-Minute Empire game. This phase is composed of the following sequence:
-1. Shuffling the cards of the deck, and draw six cards, that will be put face up along the top
-of the board.
-2. Each player takes a set of one color of cubes (14 armies) and discs (3 cities). Each player
-places 3 armies on the starting region on the board. If playing with 2 players, each player
-takes turns placing one army at a time of a third, non-player color in any region on the
-board until ten armies have been placed.
-3. Player places the coin tokens in a pile next to the board. This is the supply.
-*if playing with five players, each player takes 8 coins
-*if playing with four players, each player takes 9 coins
-*if playing with three players, each player takes 11 coins
-*if playing with two players, each player takes 14 coins.
-4. Players bid (using the biding facility implemented in Assignemnt#1). The winner of the
-bid will be chosen to start to play and the game will be going in clockwise order. If the
-bids are tied for most, the youngest player wins the bid. If all bids are zero, the youngest
-*/
 
 /**
  * Default Constructor
@@ -64,16 +47,10 @@ GameStartUpEngine::~GameStartUpEngine(){
 void GameStartUpEngine::startGame() {
 
     distributeCoins();
+    selectStartVertex();
     placeArmiesOnStartVertex();
-
     Player* firstPlayer = Bidder::startBid(initPhase->getPlayers());
     setPlayerOrderInQueue(firstPlayer);
-
-    //Each player places 3 armies on start region on board.
-    //If 2 players, place 3 armies on start 
-    //Distribute coins to players
-    //Players bid
-    //Rearrange player order to match bid.
 
 }
 
@@ -81,13 +58,62 @@ void GameStartUpEngine::distributeCoins() {
     int coins = 18 - initPhase->getNumPlayers() * 2;
     if (initPhase->getNumPlayers() == 3 || initPhase->getNumPlayers() == 4)
         coins--;
+
+    cout << "\n[ START ] Distributing coins to players. Each player gets " << coins << " coins." << endl;
+    Players::iterator it;
+    for(it = initPhase->getPlayers()->begin(); it != initPhase->getPlayers()->end(); ++it) {
+        it->second->setCoins(coins);
+    }
+}
+
+void GameStartUpEngine::selectStartVertex() {
+    Vertices* vertices = initPhase->getMap()->getVertices();
+    
+    while(true) {
+        string answer;
+        
+        initPhase->getMap()->printMap();
+
+        cout << "\n[ START ] Please choose the start vertex on the map:" << endl;
+        cout << "[ START ] > ";
+
+        getline(cin, answer);
+        transform(answer.begin(), answer.end(), answer.begin(), ::toupper);
+
+        if (vertices->find(answer) != vertices->end()) {
+            initPhase->getMap()->setStartVertex(answer);
+            break;
+        }
+
+        cout << "[ ERROR! ] That vertex doesn't exist on the map." << endl;
+    }
+
 }
 
 void GameStartUpEngine::placeArmiesOnStartVertex() {
+    string startName = initPhase->getMap()->getStartVertex();
 
+    cout << "\n[ START ] Placing 3 armies on the start vertex < " << startName << " >.\n" << endl;
+    Players* players = initPhase->getPlayers();
+
+    Vertex* startVertex = initPhase->getMap()->getVertices()->find(startName)->second;
+    for(Players::iterator it = players->begin(); it != players->end(); ++it) {
+        it->second->PlaceNewArmies(3, startVertex, startName);
+    }
+
+    if (players->size() == 2) {
+        //Place 3 armies of a nonplayer on start vertex.
+        cout << "{ anon } Added 3 new armies to < " << startVertex->getName() << " >." << endl;
+        startVertex->getArmies()->insert(pair<string, int>("Anon", 3));
+    }
 }
 
 void GameStartUpEngine::setPlayerOrderInQueue(Player* firstPlayer) {
+    nextTurn->push(firstPlayer);
 
+    Players* players = initPhase->getPlayers();
+    Players::iterator it;
+    for(it = players->begin(); it != players->end(); ++it)
+        if(it->second != firstPlayer)
+            nextTurn->push(it->second);
 }
-

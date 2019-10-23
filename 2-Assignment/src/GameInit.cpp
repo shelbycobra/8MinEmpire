@@ -90,8 +90,8 @@ void GameInitEngine::selectNumPlayers() {
     while(true) {
         string answer;
 
-        cout << "\n[ START ] Please enter the number of players from 2 to 5:" << endl;
-        cout << "[ START ] > ";
+        cout << "\n[ INIT ] Please enter the number of players from 2 to 5:" << endl;
+        cout << "[ INIT ] > ";
 
         getline(cin, answer);
         
@@ -99,7 +99,7 @@ void GameInitEngine::selectNumPlayers() {
             int num = stoi(answer);
         
             if (num >= MIN_NUM_PLAYERS && num <= MAX_NUM_PLAYERS) {
-                cout << "[ START ] You entered " << num << endl;
+                cout << "[ INIT ] You entered " << num << endl;
                 *numPlayers = num;
                 break;
             }
@@ -113,7 +113,7 @@ void GameInitEngine::selectNumPlayers() {
 }
 
 void GameInitEngine::createPlayers(){
-    cout << "[ START ] Creating " << *numPlayers << " players." << endl;
+    cout << "[ INIT ] Creating " << *numPlayers << " players." << endl;
     
     for (int i = 0; i < *numPlayers; i++) {
         createPlayer();
@@ -123,9 +123,9 @@ void GameInitEngine::createPlayers(){
 void GameInitEngine::createPlayer(){
     string name;
 
-    cout << "\n[ START ] Creating a new player" << endl;
-    cout << "[ START ] Enter name of the player:" << endl;
-    cout << "[ START ] > ";
+    cout << "\n[ INIT ] Creating a new player" << endl;
+    cout << "[ INIT ] Enter name of the player:" << endl;
+    cout << "[ INIT ] > ";
     getline(cin, name);
 
     players->insert(pair<string,Player*>(name, new Player(name)));
@@ -158,10 +158,10 @@ string GameInitEngine::selectMap(vector<string>* maps) {
     while(true) {
         string answer;
 
-        cout << "\n[ START ] Please select a map [ 1 - " << NUM_MAPS << " ]:" << endl;
+        cout << "\n[ INIT ] Please select a map [ 1 - " << NUM_MAPS << " ]:" << endl;
         for (int i = 0; i < NUM_MAPS; i++)
             cout << i+1 << " : " << maps->at(i) << endl;
-        cout << "\n[ START ] > ";
+        cout << "\n[ INIT ] > ";
 
         getline(cin, answer);
         
@@ -170,7 +170,7 @@ string GameInitEngine::selectMap(vector<string>* maps) {
         
             if (index > 0 && index <= NUM_MAPS) {
                 string chosenMap = maps->at(index-1);
-                cout << "[ START ] You have chosen " << chosenMap << endl;
+                cout << "[ INIT ] You have chosen " << chosenMap << endl;
                 return chosenMap;
             }
         
