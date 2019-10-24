@@ -39,7 +39,6 @@ Bidder& Bidder::operator=(Bidder& bidder) {
  */
 Bidder::~Bidder(){
     delete madeBid;
-    delete player;
 
     madeBid = nullptr;
     player = nullptr;

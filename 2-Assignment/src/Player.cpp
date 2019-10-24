@@ -91,6 +91,7 @@ Player::~Player(){
     delete cities;
     delete coins;
     delete hand;
+    delete bidder;
 
     name = nullptr;
     countries = nullptr;
@@ -98,6 +99,7 @@ Player::~Player(){
     cities = nullptr;
     coins = nullptr;
     hand = nullptr;
+    bidder = nullptr;
 }
 
 /**
@@ -127,7 +129,7 @@ bool Player::PayCoins(const int& amount){
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
-void Player::BuildCity(const string& action, GameMap* map) {
+void Player::BuildCity(const string action, GameMap* map) {
     cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
 
     Vertex* endVertex;
@@ -143,11 +145,11 @@ void Player::BuildCity(const string& action, GameMap* map) {
     printCountries();
 }
 
-void Player::MoveOverLand(const string& action, GameMap* map){
+void Player::MoveOverLand(const string action, GameMap* map){
     return MoveArmies(action, map);
 }
 
-void Player::MoveOverWater(const string& action, GameMap* map){
+void Player::MoveOverWater(const string action, GameMap* map){
     return MoveArmies(action, map);
 }
 
@@ -159,7 +161,7 @@ void Player::MoveOverWater(const string& action, GameMap* map){
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
-void Player::MoveArmies(const string& action, GameMap* map) {
+void Player::MoveArmies(const string action, GameMap* map) {
     Vertex* startVertex;
     Vertex* endVertex;
     int maxArmies;
@@ -204,7 +206,7 @@ void Player::MoveArmies(const string& action, GameMap* map) {
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
-void Player::PlaceNewArmies(const string& action, GameMap* map) {
+void Player::PlaceNewArmies(const string action, GameMap* map) {
     Vertex* endVertex;
 
     stringstream toInt(action.substr(4, 5));
@@ -242,7 +244,7 @@ void Player::PlaceNewArmies(const string& action, GameMap* map) {
  * @param map A GameMap pointer to the map.
  * @param players A list of players in the game.
  */
-void Player::DestroyArmy(const string& action, GameMap* map, Players* players) {
+void Player::DestroyArmy(const string action, GameMap* map, Players* players) {
     cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
     Vertex* endVertex;
@@ -263,7 +265,7 @@ void Player::DestroyArmy(const string& action, GameMap* map, Players* players) {
     opponent->printCountries();
 }
 
-void Player::AndOrAction(const string& action, GameMap* map, Players* players) {
+void Player::AndOrAction(const string action, GameMap* map, Players* players) {
     vector<string> actionArr;
 
     if (action.find("OR") != size_t(-1)) {
@@ -448,7 +450,7 @@ void Player::printCountries(){
         printf("\t%-3s : %-15s ARMIES: %-5d CITIES: %-5d\n", it->second->getKey().c_str(), it->second->getName().c_str(), numArmies, numCities);
     }
 
-    cout << "--------------------------------------------------------" << endl;
+    cout << "--------------------------------------------------------\n" << endl;
 }
 
 // PRIVATE
@@ -486,7 +488,7 @@ void Player::addArmiesToCountry(Vertex* country, const int& numArmies) {
  * @param country A Vertex pointer to the target country.
  * @param numArmies The number of armies to remove from country.
  */
-void Player::reMoveArmiesFromCountry(Vertex* country, const int& numArmies) {
+void Player::removeArmiesFromCountry(Vertex* country, const int& numArmies) {
     int currentArmies = country->getArmies()->find(*name)->second;
 
     // erase current record
@@ -603,7 +605,7 @@ int Player::chooseArmies(const int& maxArmies, const int& remainderArmies, int s
         string remainderArmiesStr = remainderArmies == 1 ? "army" : "armies";
         string startVertexArmiesStr = startVertexArmies == 1 ? "army" : "armies";
 
-        cout << "{ " << *name << " } How many armies to move? (" << remainderArmies << " Moves left)" << endl;
+        cout << "{ " << *name << " } How many armies? ( Max armies " << remainderArmies << ")" << endl;
         cout << "{ " << *name << " } > ";
         getline(cin, armiesStr);
 
@@ -634,7 +636,7 @@ int Player::chooseArmies(const int& maxArmies, const int& remainderArmies, int s
  * @param action The action containing an OR'd action.
  * @return The action chosen by the player.
  */
-string Player::chooseORAction(const string& action) {
+string Player::chooseORAction(const string action) {
     string answer;
     string firstChoice;
     string secondChoice;
@@ -743,7 +745,7 @@ bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end,
             }
 
             addArmiesToCountry(end, numArmies);
-            reMoveArmiesFromCountry(start, numArmies);
+            removeArmiesFromCountry(start, numArmies);
 
             cout << "{ " << *name << " } Moved " << numArmies
                  << " armies from < " << start->getName() << " > to < " << end->getName() << " >." << endl;

@@ -265,7 +265,7 @@ void Hand::fill() {
  * @param player A Player pointer to the current player. 
  * @return A Card pointer to the removed card.
  */
-Card Hand::exchange(Player* player){
+Card* Hand::exchange(Player* player){
     int position;
     int values[] = {0, 1, 1, 2, 2, 3};
 
@@ -279,17 +279,22 @@ Card Hand::exchange(Player* player){
             vector<Card*>::iterator it;
             for(it = hand->begin(); it != hand->end(); ++it) {
                 if (*it == card) {
-                    cout << "[ GAME HAND ] Removed card { " << (*it)->getGood() << " : \"" << (*it)->getAction() << "\" } from game hand."<< endl;
+                    cout << "[ GAME HAND ] Removed card { " << (*it)->getGood() << " : \"" << (*it)->getAction() << "\" } from game hand.\n"<< endl;
                     hand->erase(it);
                     break;
                 }
             }
 
-            hand->push_back(deck->draw());
-
-            return *card;
+            return card;
         }
     }
+}
+
+void Hand::drawCardFromDeck() {
+    Card* card = deck->draw();
+    cout << "\n[ GAME HAND ] Drew card { " << card->getGood() << " : \"" << card->getAction() << "\" } from deck." << endl;
+    cout << "[ GAME HAND ] Adding it to the right side of the game hand.\n" << endl;
+    hand->push_back(card);
 }
 
 //PRIVATE

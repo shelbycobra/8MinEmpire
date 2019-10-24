@@ -18,6 +18,6 @@ bool validateContinents(GameMap* map);
 vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
 bool isContinentConnected(set<string>* continent, GameMap* map);
-void performCardAction(Player* player, const string& action, GameMap* map, Players* players);
+void performCardAction(Player* player, const string action, GameMap* map, Players* players);
 
 #endif

@@ -322,7 +322,7 @@ vector<string> split(string& str, char delimiter) {
  * @param map A pointer to the GameMap object of the game.
  * @param players A pointer to the list of all players in the game.
  */
-void performCardAction(Player* player, const string& action, GameMap* map, Players* players) {
+void performCardAction(Player* player, const string action, GameMap* map, Players* players) {
     if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
         player->AndOrAction(action, map, players);
     else if (action.find("Move") != size_t(-1)) {

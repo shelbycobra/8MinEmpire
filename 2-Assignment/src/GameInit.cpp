@@ -35,6 +35,9 @@ GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
  * Destructor
  */
 GameInitEngine::~GameInitEngine() {
+    for (pair<string, Player*> player: *players) {
+        delete player.second;
+    }
     delete map;
     delete players;
     delete hand;
@@ -55,6 +58,7 @@ void GameInitEngine::initGame() {
         initializeMap();
         selectNumPlayers();
         createPlayers();
+        hand->fill();
     }
 }
 
@@ -128,7 +132,11 @@ void GameInitEngine::createPlayer(){
     cout << "[ INIT ] > ";
     getline(cin, name);
 
+    if(players->find(name) != players->end())
+        name = name + "#2";
+    
     players->insert(pair<string,Player*>(name, new Player(name)));
+
 }
 
 vector<string>* GameInitEngine::getMapFiles() {

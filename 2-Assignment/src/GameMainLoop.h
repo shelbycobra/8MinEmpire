@@ -29,8 +29,8 @@ public:
     GameMainEngine& operator=(GameMainEngine& otherGameMainEngine);
     ~GameMainEngine();
 
-    void runMainLoop();
-    void performCardAction(Player* player, const string& action, GameMap* map, Players* players);
+    void playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand);
+    void performCardAction(Player* player, const string action, GameMap* map, Players* players);
 };
 
 #endif

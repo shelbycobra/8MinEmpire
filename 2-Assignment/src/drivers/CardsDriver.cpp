@@ -103,8 +103,9 @@ void test_FullGame() {
 
         cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
 
-        Card currentCard = gameHand->exchange(currentPlayer);
-        performCardAction(currentPlayer, currentCard.getAction(), map, &players);
+        Card* currentCard = gameHand->exchange(currentPlayer);
+        performCardAction(currentPlayer, currentCard->getAction(), map, &players);
+        gameHand->drawCardFromDeck();
 
         count++;
 

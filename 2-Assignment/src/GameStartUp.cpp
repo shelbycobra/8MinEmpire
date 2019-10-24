@@ -34,7 +34,6 @@ GameStartUpEngine& GameStartUpEngine::operator=(GameStartUpEngine& otherStartUpE
  * Deconstructor
  */
 GameStartUpEngine::~GameStartUpEngine(){
-    delete initPhase;
     delete nextTurn;
 
     initPhase = nullptr;
@@ -51,7 +50,6 @@ void GameStartUpEngine::startGame() {
     placeArmiesOnStartVertex();
     Player* firstPlayer = Bidder::startBid(initPhase->getPlayers());
     setPlayerOrderInQueue(firstPlayer);
-
 }
 
 void GameStartUpEngine::distributeCoins() {

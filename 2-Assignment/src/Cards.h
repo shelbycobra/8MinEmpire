@@ -61,7 +61,8 @@ public:
     ~Hand();
 
     void fill();
-    Card exchange(Player* player);
+    Card* exchange(Player* player);
+    void drawCardFromDeck();
     void printHand();
 
     vector<Card*>* getHand() { return hand; }

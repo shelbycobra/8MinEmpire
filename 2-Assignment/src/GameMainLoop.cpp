@@ -6,7 +6,19 @@ GameMainEngine::GameMainEngine(GameMainEngine* otherGameMainEngine) {}
 GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {}
 GameMainEngine::~GameMainEngine() {}
 
-void GameMainEngine::runMainLoop() {}
+void GameMainEngine::playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand) {
+    Player* currentPlayer = nextTurn->front();
+    nextTurn->pop();
+    nextTurn->push(currentPlayer);
+
+    cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
+
+    Card* currentCard = gameHand->exchange(currentPlayer);
+    performCardAction(currentPlayer, currentCard->getAction(), map, players);
+
+    gameHand->drawCardFromDeck();
+    gameHand->printHand();
+}
 
 /**
  * Executes the action of a card.
@@ -16,11 +28,9 @@ void GameMainEngine::runMainLoop() {}
  * @param map A pointer to the GameMap object of the game.
  * @param players A pointer to the list of all players in the game.
  */
-void GameMainEngine::performCardAction(Player* player, const string& action, GameMap* map, Players* players) {
-    cout << "\n\n\n\n[ PLAYER TURN ] " << player->getName() << ".\n" << endl;
+void GameMainEngine::performCardAction(Player* player, const string action, GameMap* map, Players* players) {
     string answer;
-
-    cout << "[ GAME ] Ignore card action < " << action << " >?" << endl;
+    cout << "[ GAME ] Ignore card action < " << action << " > (y/n)?" << endl;
     cout << "[ GAME ] > ";
     getline(cin, answer);
 

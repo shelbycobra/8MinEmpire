@@ -40,13 +40,13 @@ public:
     ~Player();
 
     bool PayCoins(const int& amount);
-    void PlaceNewArmies(const string& action, GameMap* map);
-    void MoveArmies(const string& action, GameMap* map);
-    void MoveOverLand(const string& action, GameMap* map);
-    void MoveOverWater(const string& action, GameMap* map);
-    void BuildCity(const string& action, GameMap* map);
-    void DestroyArmy(const string& action, GameMap* map, Players* players);
-    void AndOrAction(const string& action, GameMap* map, Players* players);
+    void PlaceNewArmies(const string action, GameMap* map);
+    void MoveArmies(const string action, GameMap* map);
+    void MoveOverLand(const string action, GameMap* map);
+    void MoveOverWater(const string action, GameMap* map);
+    void BuildCity(const string action, GameMap* map);
+    void DestroyArmy(const string action, GameMap* map, Players* players);
+    void AndOrAction(const string action, GameMap* map, Players* players);
     void Ignore();
 
     void addCardToHand(Card* card);
@@ -77,7 +77,7 @@ public:
 
 private:
     void addArmiesToCountry(Vertex* country, const int& numArmies);
-    void reMoveArmiesFromCountry(Vertex* country, const int& numArmies);
+    void removeArmiesFromCountry(Vertex* country, const int& numArmies);
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);
 
@@ -85,7 +85,7 @@ private:
     Vertex* chooseStartVertex();
     Vertex* chooseEndVertex(const ActionType& type, GameMap* map);
     int chooseArmies(const int& maxArmies, const int& remainderArmies, int endVertexArmies, const string& startVertexName);
-    string chooseORAction(const string& action);
+    string chooseORAction(const string action);
     Player* chooseOpponent(Players* players);
 };
 
