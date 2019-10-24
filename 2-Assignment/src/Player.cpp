@@ -133,6 +133,7 @@ void Player::BuildCity(const string& action, GameMap* map) {
     Vertex* endVertex;
 
     while (true) {
+        cout << "{ " << *name << " } Please choose a country to build a city on." << endl;
         endVertex = chooseEndVertex(ActionType::BUILD_CITY, map);
         if (!executeBuildCity(endVertex)) {
             continue;
@@ -174,14 +175,17 @@ void Player::MoveArmies(const string& action, GameMap* map) {
 
 
     cout << "\n\n[[ ACTION ]] Move " << maxArmies << actionSuffix << "\n\n" << endl;
-    cout << "[ GAME ] You can move " << maxArmies << " armies around the board." << endl;
+    cout << "{ " << *name << " } You can move " << maxArmies << " armies around the board." << endl;
 
     while(remainderArmies > 0) {
         int armies;
 
         startVertex = chooseStartVertex();
+        cout << "{ " << *name << " } Please choose a country to move armies to." << endl;
         endVertex = chooseEndVertex(type, map);
-        armies = chooseArmies(maxArmies, remainderArmies);
+        
+        int startVertexArmies = startVertex->getArmies()->find(*name)->second;
+        armies = chooseArmies(maxArmies, remainderArmies, startVertexArmies, startVertex->getName());
 
         if (!executeMoveArmies(armies, startVertex, endVertex, overWater)) {
             continue;
@@ -210,13 +214,14 @@ void Player::PlaceNewArmies(const string& action, GameMap* map) {
     remainderArmies = maxArmies;
 
     cout << "\n\n[[ ACTION ]] Add " << maxArmies << " armies.\n\n" << endl;
-    cout << "[ GAME ] You have the choice of adding " << maxArmies << " armies on the board." << endl;
+    cout << "{ " << *name << " } You have the choice of adding " << maxArmies << " armies on the board." << endl;
 
     while(remainderArmies > 0) {
         int armies;
 
+        cout << "{ " << *name << " } Please choose a country to add new armies to." << endl;
         endVertex = chooseEndVertex(ActionType::ADD_ARMY, map);
-        armies = chooseArmies(maxArmies, remainderArmies);
+        armies = chooseArmies(maxArmies, remainderArmies, 0, "none");
 
         if (!executeAddArmies(armies, endVertex, map->getStartVertex())) {
             continue;
@@ -247,6 +252,7 @@ void Player::DestroyArmy(const string& action, GameMap* map, Players* players) {
     opponent = chooseOpponent(players);
 
     while(true) {
+        cout << "{ " << *name << " } Please choose an opponent occupied country." << endl;
         endVertex = chooseEndVertex(ActionType::DESTROY_ARMY, map);
         if (!executeDestroyArmy(endVertex, opponent)) {
             continue;
@@ -261,15 +267,12 @@ void Player::AndOrAction(const string& action, GameMap* map, Players* players) {
     vector<string> actionArr;
 
     if (action.find("OR") != size_t(-1)) {
-        cout << "Player OR ACTION" << endl;
         actionArr.push_back(chooseORAction(action));
     }
     else {
-        cout << "Player AND ACTION" << endl;
         size_t andPos = action.find("AND");
         actionArr.push_back(action.substr(0, andPos));
         actionArr.push_back(action.substr(andPos));
-        cout << "Size = " << actionArr.size() << endl;
     }
 
     for(vector<string>::iterator it = actionArr.begin(); it != actionArr.end(); ++it) {
@@ -286,6 +289,10 @@ void Player::AndOrAction(const string& action, GameMap* map, Players* players) {
         else if ((*it).find("Build") != size_t(-1))
             BuildCity(action, map);
     }
+}
+
+void Player::Ignore() {
+cout << "\n{ " << *name << " } Ignoring card action ... \n" << endl;
 }
 
 /**
@@ -529,9 +536,9 @@ Vertex* Player::chooseStartVertex(){
     string startName;
 
     while(true){
-        cout << "[ GAME ] You must choose a country to take armies from." << endl;
+        cout << "{ " << *name << " } You must choose a country to take armies from." << endl;
         printCountries();
-        cout << "[ GAME ] > ";
+        cout << "{ " << *name << " } > ";
         getline(cin, startName);
         transform(startName.begin(), startName.end(),startName.begin(), ::toupper);
 
@@ -555,8 +562,6 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
     string endName;
 
     while(true){
-        cout << "[ GAME ] Please choose a country:" << endl;
-
         if (type == ActionType::ADD_ARMY || type == ActionType::BUILD_CITY)
             printCountries();
         else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY)
@@ -566,20 +571,18 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
             return 0;
         }
 
-        cout << "[ GAME ] > ";
+        cout << "{ " << *name << " } > ";
         getline(cin, endName);
         transform(endName.begin(), endName.end(), endName.begin(), ::toupper);
-        cout << "[ GAME ] You chose < " << endName << " >.\n" << endl;
+        cout << "{ " << *name << " } You chose < " << endName << " >.\n" << endl;
 
         if (map->getVertices()->find(endName) == map->getVertices()->end()) {
             cerr << "[ ERROR! ] That country doesn't exist on the map." << endl;
             continue;
         }
 
-        break;
+        return map->getVertices()->find(endName)->second;
     }
-
-    return map->getVertices()->find(endName)->second;
 }
 
 /**
@@ -589,26 +592,37 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
  * @param remainderArmies The amount of armies left that the player can choose from.
  * @return The number of armies chosen to move.
  */
-int Player::chooseArmies(const int& maxArmies, const int& remainderArmies) {
+int Player::chooseArmies(const int& maxArmies, const int& remainderArmies, int startVertexArmies, const string& startVertexName) {
     int armies;
     string armiesStr;
 
-    while (true) {
-        string armyStr = remainderArmies == 1 ? "army" : "armies";
+    if (startVertexName == "none")
+        startVertexArmies = remainderArmies;
 
-        cout << "[ GAME ] How many armies? (MAX " << remainderArmies << " " << armyStr << ")" << endl;
-        cout << "[ GAME ] > ";
+    while (true) {
+        string remainderArmiesStr = remainderArmies == 1 ? "army" : "armies";
+        string startVertexArmiesStr = startVertexArmies == 1 ? "army" : "armies";
+
+        cout << "{ " << *name << " } How many armies to move? (" << remainderArmies << " Moves left)" << endl;
+        cout << "{ " << *name << " } > ";
         getline(cin, armiesStr);
 
-        stringstream toInt(armiesStr);
-        toInt >> armies;
+        try {
+            armies = stoi(armiesStr);
 
-        if (remainderArmies - armies >= 0 && remainderArmies - armies <= maxArmies) {
-            cout << endl;
-            break;
+            if (startVertexArmies - armies >= 0 && remainderArmies - armies >= 0 && remainderArmies - armies <= maxArmies) {
+                cout << endl;
+                break;
+            }
+
+            if (remainderArmies - armies)
+                cout << "[ ERROR! ] You can only choose a maximum of " << remainderArmies << " " << remainderArmiesStr << "." << endl;
+            else
+                cout << "[ ERROR! ] < " << startVertexName << " > only has " << startVertexArmies << " " << startVertexArmiesStr << " available." << endl;
+            
+        } catch(invalid_argument& e) {
+            cout << "[ ERROR! ] Please enter a number." << endl;
         }
-
-        cout << "[ GAME ] You can only choose a maximum of " << remainderArmies << " " << armyStr << "." << endl;
     }
 
     return armies;
@@ -628,7 +642,7 @@ string Player::chooseORAction(const string& action) {
     int orPos = action.find("OR");
 
     while(true) {
-        cout << "\n[ GAME ] Which action do you want? 1 or 2 ?" << endl;
+        cout << "\n{ " << *name << " } Which action do you want? 1 or 2 ?" << endl;
 
         firstChoice = action.substr(0, orPos - 1);
         secondChoice = action.substr(orPos + 3);
@@ -636,7 +650,7 @@ string Player::chooseORAction(const string& action) {
         cout << "[ OPTION 1 ] " << firstChoice << endl;
         cout << "[ OPTION 2 ] " << secondChoice << endl;
 
-        cout << "[ GAME ] > ";
+        cout << "{ " << *name << " } > ";
         getline(cin, answer);
 
         if (answer == "1")
@@ -659,8 +673,8 @@ Player* Player::chooseOpponent(Players* players) {
     string opponentName;
 
     while (true) {
-        cout << "[ GAME ] Choose an opponent." << endl;
-        cout << "[ GAME ] > ";
+        cout << "{ " << *name << " } Choose an opponent." << endl;
+        cout << "{ " << *name << " } > ";
         getline(cin, opponentName);
 
         if (opponentName == *name) {

@@ -84,7 +84,7 @@ private:
     void performCardAction(string& action, GameMap* map, Players* players);
     Vertex* chooseStartVertex();
     Vertex* chooseEndVertex(const ActionType& type, GameMap* map);
-    int chooseArmies(const int& maxArmies, const int& remainderArmies);
+    int chooseArmies(const int& maxArmies, const int& remainderArmies, int endVertexArmies, const string& startVertexName);
     string chooseORAction(const string& action);
     Player* chooseOpponent(Players* players);
 };

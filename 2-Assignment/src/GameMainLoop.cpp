@@ -16,21 +16,32 @@ void GameMainEngine::runMainLoop() {}
  * @param map A pointer to the GameMap object of the game.
  * @param players A pointer to the list of all players in the game.
  */
-void GameMainEngine::performCardAction(Player* player, string& action, GameMap* map, Players* players) {
-    if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
-        player->AndOrAction(action, map, players);
-    if (action.find("Move") != size_t(-1)) {
-        if (action.find("water") != size_t(-1))
-            player->MoveOverLand(action, map);
-        else
-            player->MoveOverWater(action, map);
+void GameMainEngine::performCardAction(Player* player, const string& action, GameMap* map, Players* players) {
+    cout << "\n\n\n\n[ PLAYER TURN ] " << player->getName() << ".\n" << endl;
+    string answer;
+
+    cout << "[ GAME ] Ignore card action < " << action << " >?" << endl;
+    cout << "[ GAME ] > ";
+    getline(cin, answer);
+
+    if (answer == "y" || answer == "Y") {
+        player->Ignore();
+    } else {
+        if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
+            player->AndOrAction(action, map, players);
+        else if (action.find("Move") != size_t(-1)) {
+            if (action.find("water") != size_t(-1))
+                player->MoveOverLand(action, map);
+            else
+                player->MoveOverWater(action, map);
+        }
+        else if (action.find("Add") != size_t(-1))
+            player->PlaceNewArmies(action, map);
+        else if (action.find("Destroy") != size_t(-1))
+            player->DestroyArmy(action, map, players);
+        else if (action.find("Build") != size_t(-1))
+            player->BuildCity(action, map);
+        else 
+            cout << "[ ERROR! ] Invalid action." << endl;
     }
-    else if (action.find("Add") != size_t(-1))
-        player->PlaceNewArmies(action, map);
-    else if (action.find("Destroy") != size_t(-1))
-        player->DestroyArmy(action, map, players);
-    else if (action.find("Build") != size_t(-1))
-        player->BuildCity(action, map);
-    else 
-        cout << "[ ERROR! ] Invalid action." << endl;
 }

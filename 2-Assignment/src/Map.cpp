@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <algorithm>
 
 /**
  * Default Constructor
@@ -75,15 +76,6 @@ Vertex::~Vertex(){
     cities = nullptr;
     edges = nullptr;
 }
-
-//GETTERS
-string Vertex::getName(){return *name;}
-string Vertex::getKey(){return *vertexKey;}
-string Vertex::getContinent(){return *continent;}
-set<Player*>* Vertex::getOwners(){return owners;}
-unordered_map<string, int>* Vertex::getArmies(){return armies;}
-unordered_map<string, int>* Vertex::getCities(){return cities;}
-vector<Edge>* Vertex::getEdges(){return edges;}
 
 /**
  * Adds an edge to endVertex.
@@ -162,7 +154,8 @@ GameMap::~GameMap() {
  * @param startVertexKey The vertex key representing the start country
  * @return a boolean that shows the action was successful.
  */
-bool GameMap::setStartVertex(const string& startVertexKey){
+bool GameMap::setStartVertex(string& startVertexKey){
+    transform(startVertexKey.begin(), startVertexKey.end(), startVertexKey.begin(), ::toupper);
     Vertices::iterator it;
 
     if (*start != "none"){

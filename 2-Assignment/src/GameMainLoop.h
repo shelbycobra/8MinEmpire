@@ -30,7 +30,7 @@ public:
     ~GameMainEngine();
 
     void runMainLoop();
-    void performCardAction(Player* player, string& action, GameMap* map, Players* players);
+    void performCardAction(Player* player, const string& action, GameMap* map, Players* players);
 };
 
 #endif

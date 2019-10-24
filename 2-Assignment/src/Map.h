@@ -36,13 +36,13 @@ public:
 
     void addEdge(Vertex* vertex, bool isWaterEdge);
     void print();
-    string getName();
-    string getKey();
-    string getContinent();
-    set<Player*>* getOwners();
-    unordered_map<string, int>* getArmies();
-    unordered_map<string, int>* getCities();
-    vector<Edge>* getEdges();
+    string getName(){return *name;}
+    string getKey(){return *vertexKey;}
+    string getContinent(){return *continent;}
+    set<Player*>* getOwners(){return owners;}
+    unordered_map<string, int>* getArmies(){return armies;}
+    unordered_map<string, int>* getCities(){return cities;}
+    vector<Edge>* getEdges(){return edges;}
 };
 
 typedef unordered_map<string, Vertex*> Vertices;
@@ -67,7 +67,7 @@ public:
     string getImage() { return *image; }
 
     void setImage(const string& newImage);
-    bool setStartVertex(const string& startVertexName);
+    bool setStartVertex(string& startVertexName);
 };
 
 #endif
