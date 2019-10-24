@@ -18,17 +18,6 @@ bool validateContinents(GameMap* map);
 vector<set<string>* > getMapContinents(GameMap* map);
 bool validateEdges(GameMap* map);
 bool isContinentConnected(set<string>* continent, GameMap* map);
-
-vector<string> split(string& str, char delimiter);
-void performCardAction(Player* player, string action, GameMap* map, Players* players);
-Vertex* chooseStartVertex(Player* player);
-Vertex* chooseEndVertex(Player* player, ActionType type, GameMap* map);
-int chooseArmies(int maxArmies, int remainderArmies);
-string chooseORAction(string action);
-Player* chooseOpponent(Players* players, Player* currentPlayer);
-void executeMoveArmies(Player* player,string action, GameMap* map);
-void executeAddArmies(Player* player, string action, GameMap* map);
-void executeDestroyArmy(Player* player, string action, GameMap* map, Players* players);
-void executeBuildCity(Player* player, string action, GameMap* map);
+void performCardAction(Player* player, const string& action, GameMap* map, Players* players);
 
 #endif

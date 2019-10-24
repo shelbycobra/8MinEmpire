@@ -98,7 +98,7 @@ void GameStartUpEngine::placeArmiesOnStartVertex() {
 
     Vertex* startVertex = initPhase->getMap()->getVertices()->find(startName)->second;
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->PlaceNewArmies(3, startVertex, startName);
+        it->second->executeAddArmies(3, startVertex, startName);
     }
 
     if (players->size() == 2) {

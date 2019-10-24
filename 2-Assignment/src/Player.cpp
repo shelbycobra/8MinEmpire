@@ -1,7 +1,11 @@
 #include "Player.h"
 #include "Map.h"
 #include "Cards.h"
+#include "util/MapUtil.h"
 
+#include <algorithm>
+
+class GameMap;
 /**
  * Default constructor
  */
@@ -116,31 +120,172 @@ bool Player::PayCoins(const int& amount){
 }
 
 /**
- * Player places new armies on a country.
- *
- * Checks if the player has enough free armies to place on the country.
- * The country must either be the start country or contain a city.
- *
- * @param amount Number of armies to place.
- * @param country A Vertex pointer to the country on which to place armies.
- * @param start A string containing the name of the start country.
- * @return a boolean that shows the action was successful.
+ * Executes the action "Build city".
+ * 
+ * The player can build a city on a country where they currently have armies.
+ * 
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
  */
-bool Player::PlaceNewArmies(const int& newArmies, Vertex* country, const string& start){
-    if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
-        if (newArmies > *armies || newArmies < 0) {
-            cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
-            return false;
+void Player::BuildCity(const string& action, GameMap* map) {
+    cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
+
+    Vertex* endVertex;
+
+    while (true) {
+        endVertex = chooseEndVertex(ActionType::BUILD_CITY, map);
+        if (!executeBuildCity(endVertex)) {
+            continue;
+        }
+        break;
+    }
+    printCountries();
+}
+
+void Player::MoveOverLand(const string& action, GameMap* map){
+    return MoveArmies(action, map);
+}
+
+void Player::MoveOverWater(const string& action, GameMap* map){
+    return MoveArmies(action, map);
+}
+
+/**
+ * Executes the action "Move # armies" or "Move # armies over water".
+ * 
+ * The player can move armies around the map to adjacent countries as many times as the card dictates.
+ * 
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ */
+void Player::MoveArmies(const string& action, GameMap* map) {
+    Vertex* startVertex;
+    Vertex* endVertex;
+    int maxArmies;
+    int remainderArmies;
+
+    stringstream toInt(action.substr(5, 6));
+    toInt >> maxArmies;
+    remainderArmies = maxArmies;
+
+    bool overWater = action.find("water") != size_t(-1);
+    ActionType type = overWater ? ActionType::MOVE_OVER_WATER : ActionType::MOVE_OVER_LAND;
+    string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n";
+
+
+    cout << "\n\n[[ ACTION ]] Move " << maxArmies << actionSuffix << "\n\n" << endl;
+    cout << "[ GAME ] You can move " << maxArmies << " armies around the board." << endl;
+
+    while(remainderArmies > 0) {
+        int armies;
+
+        startVertex = chooseStartVertex();
+        endVertex = chooseEndVertex(type, map);
+        armies = chooseArmies(maxArmies, remainderArmies);
+
+        if (!executeMoveArmies(armies, startVertex, endVertex, overWater)) {
+            continue;
         }
 
-        *armies -= newArmies;
-        addArmiesToCountry(country, newArmies);
-
-        cout << "{ " << *name << " } Added " << newArmies << " new armies to < "<< country->getName() << " >." << endl;
-        return true;
+        remainderArmies -= armies;
     }
-    cout << "[ ERROR! ] " << *name << " Chose an invalid country. It must be either START or contain one of the player's cities->" << endl;
-    return false;
+    printCountries();
+}
+
+/**
+ * Executes the action "Add # armies".
+ * 
+ * The player can add armies to any country the player currently has a city or to the start country.
+ * 
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ */
+void Player::PlaceNewArmies(const string& action, GameMap* map) {
+    Vertex* endVertex;
+
+    stringstream toInt(action.substr(4, 5));
+    int maxArmies;
+    int remainderArmies;
+    toInt >> maxArmies;
+    remainderArmies = maxArmies;
+
+    cout << "\n\n[[ ACTION ]] Add " << maxArmies << " armies.\n\n" << endl;
+    cout << "[ GAME ] You have the choice of adding " << maxArmies << " armies on the board." << endl;
+
+    while(remainderArmies > 0) {
+        int armies;
+
+        endVertex = chooseEndVertex(ActionType::ADD_ARMY, map);
+        armies = chooseArmies(maxArmies, remainderArmies);
+
+        if (!executeAddArmies(armies, endVertex, map->getStartVertex())) {
+            continue;
+        }
+
+        remainderArmies -= armies;
+    }
+
+    printCountries();
+}
+
+/**
+ * Executes the action "Destroy army".
+ * 
+ * The player chooses an opponent's army to destroy on a country where the oponnent has an army.
+ *
+ * @param action The action to be executed.
+ * @param map A GameMap pointer to the map.
+ * @param players A list of players in the game.
+ */
+void Player::DestroyArmy(const string& action, GameMap* map, Players* players) {
+    cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
+
+    Vertex* endVertex;
+    string opponentName;
+    Player* opponent;
+
+    opponent = chooseOpponent(players);
+
+    while(true) {
+        endVertex = chooseEndVertex(ActionType::DESTROY_ARMY, map);
+        if (!executeDestroyArmy(endVertex, opponent)) {
+            continue;
+        }
+        break;
+    }
+
+    opponent->printCountries();
+}
+
+void Player::AndOrAction(const string& action, GameMap* map, Players* players) {
+    vector<string> actionArr;
+
+    if (action.find("OR") != size_t(-1)) {
+        cout << "Player OR ACTION" << endl;
+        actionArr.push_back(chooseORAction(action));
+    }
+    else {
+        cout << "Player AND ACTION" << endl;
+        size_t andPos = action.find("AND");
+        actionArr.push_back(action.substr(0, andPos));
+        actionArr.push_back(action.substr(andPos));
+        cout << "Size = " << actionArr.size() << endl;
+    }
+
+    for(vector<string>::iterator it = actionArr.begin(); it != actionArr.end(); ++it) {
+        if ((*it).find("Move") != size_t(-1)) {
+            if ((*it).find("water") != size_t(-1))
+                MoveOverLand(action, map);
+            else
+                MoveOverWater(action, map);
+        }
+        else if ((*it).find("Add") != size_t(-1))
+            PlaceNewArmies(action, map);
+        else if ((*it).find("Destroy") != size_t(-1))
+            DestroyArmy(action, map, players);
+        else if ((*it).find("Build") != size_t(-1))
+            BuildCity(action, map);
+    }
 }
 
 /**
@@ -218,142 +363,6 @@ int Player::getCitiesOnCountry(Vertex* country){
     }
     cout << "{ " << *name << " } Has ZERO cities on country < " << country->getName() << " >." << endl;
     return 0;
-}
-
-/**
- * Moves a certain number of armies over to an adjacent country not separated by water.
- *
- * Detects whether or not the country contains the Player's armies and if the country has
- * enough armies on it to move.
- *
- * @param numArmies Amount of armies to move.
- * @param start A Vertex pointer to the start country.
- * @param end A Vertex pointer to the end country.
- * @return a boolean that shows the action was successful.
- */
-bool Player::MoveOverLand(const int& numArmies, Vertex* start, Vertex* end){
-    return MoveArmies(numArmies, start, end, false);
-}
-
-/**
- * Moves a certain number of armies over to an adjacent country not separated by water.
- *
- * Detects whether or not the country contains the Player's armies and if the country has
- * enough armies on it to move.
- *
- * @param numArmies Amount of armies to move.
- * @param start A Vertex pointer to the start country.
- * @param end A Vertex pointer to the end country.
- * @param moveOverWater A boolean representing if armies can move over water.
- * @return a boolean that shows the action was successful.
- */
-bool Player::MoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater){
-    //Assumes: country is a valid vertex on the map
-    //is country an adjacent country to an occupied country?
-    if (isAdjacent(end, moveOverWater)) {
-        //does start vertex even have armies on it?
-        if (start->getArmies()->find(*name) != start->getArmies()->end()) {
-            int currentArmies = start->getArmies()->find(*name)->second;
-            if (numArmies > currentArmies) {
-                cout << "[ ERROR! ] " << *name << " doesn't have enough armies on < " << start->getName()
-                     << " > to move " << numArmies << "." << endl;
-                return false;
-            }
-
-            addArmiesToCountry(end, numArmies);
-            reMoveArmiesFromCountry(start, numArmies);
-
-            cout << "{ " << *name << " } Moved " << numArmies
-                 << " armies from < " << start->getName() << " > to < " << end->getName() << " >." << endl;
-            return true;
-        }
-
-        cout << "[ ERROR! ] " << *name << " doesn't have any armies on < " << start->getName() << " > to move." << endl;
-        return false;
-    }
-
-    cout << "[ ERROR! ] " << end->getName() << " > is not an adjacent country." << endl;
-    return false;
-}
-
-/**
- * Builds a city on a country occupied by the Player.
- *
- * Detects whether or not the country contains any Player's armies.
- *
- * @param country A Vertex pointer to the country.
- * @return a boolean that shows the action was successful.
- */
-bool Player::BuildCity(Vertex* country){
-    unordered_map<string, int>* armies = country->getArmies();
-
-    //does country belong to the player and does it contain at least one army?
-    if (armies->find(*name) != armies->end()) {
-        if (armies->find(*name)->second > 0) {
-
-            //If country contains a player owned city, increase the count
-            int currentCities = 1;
-            if (country->getCities()->find(*name) != country->getCities()->end()) {
-                currentCities += country->getCities()->find(*name)->second;
-                country->getCities()->erase(*name);
-                country->getCities()->insert(pair<string,int>(*name, currentCities));
-            } else //Else insert new record
-                country->getCities()->insert(pair<string, int> (*name, currentCities));
-
-            cout << "{ " << *name << " } Added an city to < " << country->getName() << " >. (New city count = " << currentCities << ")." << endl;
-            return true;
-        }
-    }
-
-    cout << "[ ERROR! ] " << *name << " can't place city on < " << country->getName() << " > because the player has no armies on it." << endl;
-    return false;
-}
-
-/**
- * Destroys an army belonging an opponent's country.
- *
- * Ensures the opponent is not the current player and that the chosen country
- * contains armies belonging to the opponent.
- *
- * @param country A Vertex pointer to the target country.
- * @param opponent A Player pointer to the opponent player.
- * @return a boolean that shows the action was successful.
- */
-bool Player::DestroyArmy(Vertex* country, Player* opponent){
-
-    if (opponent->getName() == *name) {
-        cout << "\n{ " << *name << " } Can't destroy own army." << endl;
-        return false;
-    }
-
-    //Does opponent country contain an army to destroy?
-    if (country->getArmies()->find(opponent->getName()) != country->getArmies()->end()
-        && country->getArmies()->find(opponent->getName())->second > 0) {
-
-        int currentArmies = country->getArmies()->find(opponent->getName())->second;
-        currentArmies--;
-
-        //Add destroyed army back in opponents available armies
-        opponent->increaseAvailableArmies(1);
-
-        //Remove old record of opponent's armies on country
-        country->getArmies()->erase(opponent->getName());
-
-        if (currentArmies != 0)
-            //Insert new record with decremented army count
-            country->getArmies()->insert(pair<string, int> (opponent->getName(), currentArmies));
-        else {
-            //Remove country from opponent's list of occupied countries because the last army was destroyed.
-            opponent->removeCountry(country);
-        }
-
-        cout << "{ " << *name << " } Destroyed one of " << opponent->getName() << "'s armies on < " << country->getName() << " >." << endl;
-        return true;
-    }
-
-
-    cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->getName() << " >." << endl;
-    return false;
 }
 
 /**
@@ -506,4 +515,311 @@ void Player::decreaseAvailableArmies(const int& numArmies) {
     } else {
         *armies -= numArmies;
     }
+}
+
+/**
+ * Prompts a player to choose a start vertex among the player's occupied countries.
+ * 
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @return A Vertex pointer to the start country.
+ */
+Vertex* Player::chooseStartVertex(){
+
+    string startName;
+
+    while(true){
+        cout << "[ GAME ] You must choose a country to take armies from." << endl;
+        printCountries();
+        cout << "[ GAME ] > ";
+        getline(cin, startName);
+        transform(startName.begin(), startName.end(),startName.begin(), ::toupper);
+
+        if (getCountries()->find(startName) == getCountries()->end()) {
+            cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
+        } else {
+            return getCountries()->find(startName)->second;
+        }
+    }
+}
+
+/**
+ * Prompts a player to choose an end vertex on the map.
+ * 
+ * @param player A pointer to the Player being prompted.
+ * @param type An ActionType enum representing the type of action being called.
+ * @param map A GameMap pointer to the map.
+ * @return A Vertex pointer to the end country.
+ */
+Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
+    string endName;
+
+    while(true){
+        cout << "[ GAME ] Please choose a country:" << endl;
+
+        if (type == ActionType::ADD_ARMY || type == ActionType::BUILD_CITY)
+            printCountries();
+        else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY)
+            map->printMap();
+        else {
+            cerr << "[ ERROR! ] Invalid action type." << endl;
+            return 0;
+        }
+
+        cout << "[ GAME ] > ";
+        getline(cin, endName);
+        transform(endName.begin(), endName.end(), endName.begin(), ::toupper);
+        cout << "[ GAME ] You chose < " << endName << " >.\n" << endl;
+
+        if (map->getVertices()->find(endName) == map->getVertices()->end()) {
+            cerr << "[ ERROR! ] That country doesn't exist on the map." << endl;
+            continue;
+        }
+
+        break;
+    }
+
+    return map->getVertices()->find(endName)->second;
+}
+
+/**
+ * Prompts a player to choose how many armies to place on a country.
+ * 
+ * @param maxArmies The maximum number of armies the player can place. Determined by the card chosen.
+ * @param remainderArmies The amount of armies left that the player can choose from.
+ * @return The number of armies chosen to move.
+ */
+int Player::chooseArmies(const int& maxArmies, const int& remainderArmies) {
+    int armies;
+    string armiesStr;
+
+    while (true) {
+        string armyStr = remainderArmies == 1 ? "army" : "armies";
+
+        cout << "[ GAME ] How many armies? (MAX " << remainderArmies << " " << armyStr << ")" << endl;
+        cout << "[ GAME ] > ";
+        getline(cin, armiesStr);
+
+        stringstream toInt(armiesStr);
+        toInt >> armies;
+
+        if (remainderArmies - armies >= 0 && remainderArmies - armies <= maxArmies) {
+            cout << endl;
+            break;
+        }
+
+        cout << "[ GAME ] You can only choose a maximum of " << remainderArmies << " " << armyStr << "." << endl;
+    }
+
+    return armies;
+}
+
+/**
+ * Prompts a player to choose one of the action in an OR'd card.
+ * 
+ * @param action The action containing an OR'd action.
+ * @return The action chosen by the player.
+ */
+string Player::chooseORAction(const string& action) {
+    string answer;
+    string firstChoice;
+    string secondChoice;
+
+    int orPos = action.find("OR");
+
+    while(true) {
+        cout << "\n[ GAME ] Which action do you want? 1 or 2 ?" << endl;
+
+        firstChoice = action.substr(0, orPos - 1);
+        secondChoice = action.substr(orPos + 3);
+
+        cout << "[ OPTION 1 ] " << firstChoice << endl;
+        cout << "[ OPTION 2 ] " << secondChoice << endl;
+
+        cout << "[ GAME ] > ";
+        getline(cin, answer);
+
+        if (answer == "1")
+            return firstChoice;
+        if (answer == "2")
+            return secondChoice;
+
+        cout << "[ ERROR! ] Invalid choice. Please enter either '1' or '2'." << endl;
+    }
+}
+
+/**
+ * Prompts a player to choose an opponent.
+ * 
+ * @param players A pointer to the list of Players in the game.
+ * @param currentPlayer A pointer to the Player being prompted.
+ * @return A Player pointer to the chosen opponent.
+ */
+Player* Player::chooseOpponent(Players* players) {
+    string opponentName;
+
+    while (true) {
+        cout << "[ GAME ] Choose an opponent." << endl;
+        cout << "[ GAME ] > ";
+        getline(cin, opponentName);
+
+        if (opponentName == *name) {
+            cerr << "[ ERROR! ] You can't destroy your own army." << endl;
+            continue;
+        }
+
+        if (players->find(opponentName) != players->end())
+            return players->find(opponentName)->second;
+
+        cerr << "[ ERROR! ] " << opponentName << " doesn't exist. Try again." << endl;
+    }
+}
+
+/**
+ * Player places new armies on a country.
+ *
+ * Checks if the player has enough free armies to place on the country.
+ * The country must either be the start country or contain a city.
+ *
+ * @param amount Number of armies to place.
+ * @param country A Vertex pointer to the country on which to place armies.
+ * @param start A string containing the name of the start country.
+ * @return a boolean that shows the action was successful.
+ */
+bool Player::executeAddArmies(const int& newArmies, Vertex* country, const string& start){
+    if (country->getKey() == start || country->getCities()->find(*name) != country->getCities()->end()){
+        if (newArmies > *armies || newArmies < 0) {
+            cout << "[ ERROR! ] " << *name << " doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
+            return false;
+        }
+
+        *armies -= newArmies;
+        addArmiesToCountry(country, newArmies);
+
+        cout << "{ " << *name << " } Added " << newArmies << " new armies to < "<< country->getName() << " >." << endl;
+        return true;
+    }
+    cout << "[ ERROR! ] " << *name << " Chose an invalid country. It must be either START or contain one of the player's cities->" << endl;
+    return false;
+}
+
+/**
+ * Moves a certain number of armies over to an adjacent country not separated by water.
+ *
+ * Detects whether or not the country contains the Player's armies and if the country has
+ * enough armies on it to move.
+ *
+ * @param numArmies Amount of armies to move.
+ * @param start A Vertex pointer to the start country.
+ * @param end A Vertex pointer to the end country.
+ * @param moveOverWater A boolean representing if armies can move over water.
+ * @return a boolean that shows the action was successful.
+ */
+bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater){
+    //Assumes: country is a valid vertex on the map
+    //is country an adjacent country to an occupied country?
+    if (isAdjacent(end, moveOverWater)) {
+        //does start vertex even have armies on it?
+        if (start->getArmies()->find(*name) != start->getArmies()->end()) {
+            int currentArmies = start->getArmies()->find(*name)->second;
+            if (numArmies > currentArmies) {
+                cout << "[ ERROR! ] " << *name << " doesn't have enough armies on < " << start->getName()
+                     << " > to move " << numArmies << "." << endl;
+                return false;
+            }
+
+            addArmiesToCountry(end, numArmies);
+            reMoveArmiesFromCountry(start, numArmies);
+
+            cout << "{ " << *name << " } Moved " << numArmies
+                 << " armies from < " << start->getName() << " > to < " << end->getName() << " >." << endl;
+            return true;
+        }
+
+        cout << "[ ERROR! ] " << *name << " doesn't have any armies on < " << start->getName() << " > to move." << endl;
+        return false;
+    }
+
+    cout << "[ ERROR! ] " << end->getName() << " > is not an adjacent country." << endl;
+    return false;
+}
+
+/**
+ * Builds a city on a country occupied by the Player.
+ *
+ * Detects whether or not the country contains any Player's armies.
+ *
+ * @param country A Vertex pointer to the country.
+ * @return a boolean that shows the action was successful.
+ */
+bool Player::executeBuildCity(Vertex* country){
+    unordered_map<string, int>* armies = country->getArmies();
+
+    //does country belong to the player and does it contain at least one army?
+    if (armies->find(*name) != armies->end()) {
+        if (armies->find(*name)->second > 0) {
+
+            //If country contains a player owned city, increase the count
+            int currentCities = 1;
+            if (country->getCities()->find(*name) != country->getCities()->end()) {
+                currentCities += country->getCities()->find(*name)->second;
+                country->getCities()->erase(*name);
+                country->getCities()->insert(pair<string,int>(*name, currentCities));
+            } else //Else insert new record
+                country->getCities()->insert(pair<string, int> (*name, currentCities));
+
+            cout << "{ " << *name << " } Added an city to < " << country->getName() << " >. (New city count = " << currentCities << ")." << endl;
+            return true;
+        }
+    }
+
+    cout << "[ ERROR! ] " << *name << " can't place city on < " << country->getName() << " > because the player has no armies on it." << endl;
+    return false;
+}
+
+/**
+ * Destroys an army belonging an opponent's country.
+ *
+ * Ensures the opponent is not the current player and that the chosen country
+ * contains armies belonging to the opponent.
+ *
+ * @param country A Vertex pointer to the target country.
+ * @param opponent A Player pointer to the opponent player.
+ * @return a boolean that shows the action was successful.
+ */
+bool Player::executeDestroyArmy(Vertex* country, Player* opponent){
+
+    if (opponent->getName() == *name) {
+        cout << "\n{ " << *name << " } Can't destroy own army." << endl;
+        return false;
+    }
+
+    //Does opponent country contain an army to destroy?
+    if (country->getArmies()->find(opponent->getName()) != country->getArmies()->end()
+        && country->getArmies()->find(opponent->getName())->second > 0) {
+
+        int currentArmies = country->getArmies()->find(opponent->getName())->second;
+        currentArmies--;
+
+        //Add destroyed army back in opponents available armies
+        opponent->increaseAvailableArmies(1);
+
+        //Remove old record of opponent's armies on country
+        country->getArmies()->erase(opponent->getName());
+
+        if (currentArmies != 0)
+            //Insert new record with decremented army count
+            country->getArmies()->insert(pair<string, int> (opponent->getName(), currentArmies));
+        else {
+            //Remove country from opponent's list of occupied countries because the last army was destroyed.
+            opponent->removeCountry(country);
+        }
+
+        cout << "{ " << *name << " } Destroyed one of " << opponent->getName() << "'s armies on < " << country->getName() << " >." << endl;
+        return true;
+    }
+
+
+    cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->getName() << " >." << endl;
+    return false;
 }

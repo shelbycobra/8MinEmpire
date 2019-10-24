@@ -7,21 +7,21 @@ void test_PlayerOwnsValidSetOfRegions();
 void test_PlayerOwnsValidHand();
 void test_PlayerHasValidBidding();
 void test_PayCoins();
-void test_PlaceNewArmies();
+void test_executeAddArmies();
 void test_MoveArmies();
 void test_MoveOverLand();
-void test_BuildCity();
-void test_DestroyArmy();
+void test_executeBuildCity();
+void test_executeDestroyArmy();
 
 int main() {
     test_PlayerHasValidBidding();
     test_PlayerOwnsValidSetOfRegions();
     test_PayCoins();
-    test_PlaceNewArmies();
+    test_executeAddArmies();
     test_MoveArmies();
     test_MoveOverLand();
-    test_BuildCity();
-    test_DestroyArmy();
+    test_executeBuildCity();
+    test_executeDestroyArmy();
     test_PlayerOwnsValidHand();
 
 	return 0;
@@ -176,9 +176,9 @@ void test_PayCoins(){
     player2 = nullptr;
 }
 
-void test_PlaceNewArmies(){
+void test_executeAddArmies(){
     cout << "\n=======================================================" << endl;
-    cout << "TEST: test_PlaceNewArmies" << endl;
+    cout << "TEST: test_executeAddArmies" << endl;
     cout << "=======================================================" << endl;
 
     GameMap* map = generateValidMap();
@@ -196,7 +196,7 @@ void test_PlaceNewArmies(){
     Vertex* startVertex = map->getVertices()->find(startName)->second;
 
     player1->getArmiesOnCountry(startVertex);
-    bool result = player1->PlaceNewArmies(3, startVertex, startName);
+    bool result = player1->executeAddArmies(3, startVertex, startName);
     startArmies = player1->getArmiesOnCountry(startVertex);
 
     assert (result == 1 && startArmies == 3);
@@ -210,7 +210,7 @@ void test_PlaceNewArmies(){
     Vertex* xVertex = map->getVertices()->find(xName)->second;
 
     player1->getArmiesOnCountry(xVertex);
-    result = player1->PlaceNewArmies(2, xVertex, startName);
+    result = player1->executeAddArmies(2, xVertex, startName);
     xArmies = player1->getArmiesOnCountry(xVertex);
 
     assert ( result == 0 && xArmies == 0 );
@@ -220,9 +220,9 @@ void test_PlaceNewArmies(){
     cout << "--------------------------------------------------------\n" << endl;
 
     player1->getArmiesOnCountry(xVertex);
-    result = player1->MoveOverLand(1, startVertex, xVertex);
-    result = result && player1->BuildCity(xVertex);
-    result = result && player1->PlaceNewArmies(2, xVertex, startName);
+    result = player1->executeMoveArmies(1, startVertex, xVertex, false);
+    result = result && player1->executeBuildCity(xVertex);
+    result = result && player1->executeAddArmies(2, xVertex, startName);
     xArmies = player1->getArmiesOnCountry(xVertex);
 
     assert ( result == 1 && xArmies == 3 );
@@ -250,7 +250,7 @@ void test_MoveArmies(){
     Player* player = new Player(name, 9);
 
     // Start out with 3 armies on the START country
-    player->PlaceNewArmies(3, startVertex, startName);
+    player->executeAddArmies(3, startVertex, startName);
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Player moves armies successfully from START to \"X\"." << endl;
@@ -262,7 +262,7 @@ void test_MoveArmies(){
     string xName = "X";
 
     Vertex* xVertex = map->getVertices()->find(xName)->second;
-    result = player->MoveArmies(2, startVertex, xVertex, true);
+    result = player->executeMoveArmies(2, startVertex, xVertex, true);
     xArmies = player->getArmiesOnCountry(xVertex);
     startArmies = player->getArmiesOnCountry(startVertex);
 
@@ -276,7 +276,7 @@ void test_MoveArmies(){
     string cName = "C";
     Vertex* cVertex = map->getVertices()->find(cName)->second;
 
-    result = player->MoveArmies(1, xVertex, cVertex, true);
+    result = player->executeMoveArmies(1, xVertex, cVertex, true);
     xArmies = player->getArmiesOnCountry(xVertex);
     cArmies = player->getArmiesOnCountry(cVertex);
 
@@ -290,7 +290,7 @@ void test_MoveArmies(){
     string bName = "B";
     Vertex* bVertex = map->getVertices()->find(bName)->second;
 
-    result = player->MoveArmies(1, xVertex, bVertex, true);
+    result = player->executeMoveArmies(1, xVertex, bVertex, true);
     xArmies = player->getArmiesOnCountry(xVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
@@ -300,7 +300,7 @@ void test_MoveArmies(){
     cout << "TEST: Player moves armies unsuccessfully from START to \"B\"." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    result = player->MoveArmies(1, startVertex, bVertex, true);
+    result = player->executeMoveArmies(1, startVertex, bVertex, true);
     startArmies = player->getArmiesOnCountry(startVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
@@ -331,7 +331,7 @@ void test_MoveOverLand(){
     Player* player = new Player(name, 9);
 
     // Start out with 3 armies on the START country
-    player->PlaceNewArmies(3, startVertex, startName);
+    player->executeAddArmies(3, startVertex, startName);
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Player moves armies successfully from START to \"B\"." << endl;
@@ -343,7 +343,7 @@ void test_MoveOverLand(){
     string bName = "B";
     Vertex* bVertex = map->getVertices()->find(bName)->second;
 
-    result = player->MoveOverLand(1, startVertex, bVertex);
+    result = player->executeMoveArmies(1, startVertex, bVertex, false);
     startArmies = player->getArmiesOnCountry(startVertex);
     bArmies = player->getArmiesOnCountry(bVertex);
 
@@ -357,7 +357,7 @@ void test_MoveOverLand(){
     string cName = "C";
     Vertex* cVertex = map->getVertices()->find(cName)->second;
 
-    result = player->MoveOverLand(1, startVertex, cVertex);
+    result = player->executeMoveArmies(1, startVertex, cVertex, false);
     startArmies = player->getArmiesOnCountry(startVertex);
     cArmies = player->getArmiesOnCountry(cVertex);
 
@@ -371,7 +371,7 @@ void test_MoveOverLand(){
     string xName = "X";
     Vertex* xVertex = map->getVertices()->find(xName)->second;
 
-    result = player->MoveOverLand(1, cVertex, xVertex);
+    result = player->executeMoveArmies(1, cVertex, xVertex, false);
     cArmies = player->getArmiesOnCountry(cVertex);
     xArmies = player->getArmiesOnCountry(xVertex);
 
@@ -387,9 +387,9 @@ void test_MoveOverLand(){
     bVertex = nullptr;
 }
 
-void test_BuildCity(){
+void test_executeBuildCity(){
     cout << "\n=======================================================" << endl;
-    cout << "TEST: test_BuildCity" << endl;
+    cout << "TEST: test_executeBuildCity" << endl;
     cout << "=======================================================" << endl;
 
     GameMap* map = generateValidMap();
@@ -401,7 +401,7 @@ void test_BuildCity(){
     Player* player = new Player(name, 9);
 
     // Start out with 3 armies on the START country
-    player->PlaceNewArmies(3, startVertex, startName);
+    player->executeAddArmies(3, startVertex, startName);
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Player builds a city on START." << endl;
@@ -410,7 +410,7 @@ void test_BuildCity(){
     int startCities;
     int result;
 
-    result = player->BuildCity(startVertex);
+    result = player->executeBuildCity(startVertex);
     startCities = player->getCitiesOnCountry(startVertex);
 
     assert( result == 1 && startCities == 1 );
@@ -423,9 +423,9 @@ void test_BuildCity(){
     string pName = "P";
     Vertex* pVertex = map->getVertices()->find(pName)->second;
 
-    result = player->MoveArmies(1, startVertex, pVertex, true);
-    result = result && player->BuildCity(pVertex);
-    result = result && player->BuildCity(pVertex);
+    result = player->executeMoveArmies(1, startVertex, pVertex, true);
+    result = result && player->executeBuildCity(pVertex);
+    result = result && player->executeBuildCity(pVertex);
     pCities = player->getCitiesOnCountry(pVertex);
 
     assert( result == 1 && pCities == 2 );
@@ -438,7 +438,7 @@ void test_BuildCity(){
     string rName = "R";
     Vertex* rVertex = map->getVertices()->find(rName)->second;
 
-    result = player->BuildCity(rVertex);
+    result = player->executeBuildCity(rVertex);
     rCities = player->getCitiesOnCountry(rVertex);
 
     assert( result == 0 && rCities == 0 );
@@ -453,9 +453,9 @@ void test_BuildCity(){
     rVertex = nullptr;
 }
 
-void test_DestroyArmy(){
+void test_executeDestroyArmy(){
     cout << "\n=======================================================" << endl;
-    cout << "TEST: test_DestroyArmy" << endl;
+    cout << "TEST: test_executeDestroyArmy" << endl;
     cout << "=======================================================" << endl;
 
     GameMap* map = generateValidMap();
@@ -470,9 +470,9 @@ void test_DestroyArmy(){
     Player* player3 = new Player(name3, 11);
 
     // Start out with 3 armies on the START country
-    player1->PlaceNewArmies(3, startVertex, startName);
-    player2->PlaceNewArmies(3, startVertex, startName);
-    player3->PlaceNewArmies(3, startVertex, startName);
+    player1->executeAddArmies(3, startVertex, startName);
+    player2->executeAddArmies(3, startVertex, startName);
+    player3->executeAddArmies(3, startVertex, startName);
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Player 1 destroys an army on START from Player 2." << endl;
@@ -482,7 +482,7 @@ void test_DestroyArmy(){
     int startArmies;
 
     player2->getArmiesOnCountry(startVertex);
-    result = player1->DestroyArmy(startVertex, player2);
+    result = player1->executeDestroyArmy(startVertex, player2);
     startArmies = player2->getArmiesOnCountry(startVertex);
 
     assert( result == 1 && startArmies == 2 );
@@ -492,7 +492,7 @@ void test_DestroyArmy(){
     cout << "--------------------------------------------------------\n" << endl;
 
     player1->getArmiesOnCountry(startVertex);
-    result = player1->DestroyArmy(startVertex, player1);
+    result = player1->executeDestroyArmy(startVertex, player1);
     startArmies = player1->getArmiesOnCountry(startVertex);
 
     assert( result == 0 && startArmies == 3 );
@@ -506,8 +506,8 @@ void test_DestroyArmy(){
     Vertex* pVertex = map->getVertices()->find(pName)->second;
 
     player3->getArmiesOnCountry(pVertex);
-    result = player3->MoveOverLand(1, startVertex, pVertex);
-    result = result && player1->DestroyArmy(pVertex, player3);
+    result = player3->executeMoveArmies(1, startVertex, pVertex, false);
+    result = result && player1->executeDestroyArmy(pVertex, player3);
     pArmies = player3->getArmiesOnCountry(pVertex);
 
     assert( result == 1 && pArmies == 0 );
@@ -517,7 +517,7 @@ void test_DestroyArmy(){
     cout << "--------------------------------------------------------\n" << endl;
 
     player2->getArmiesOnCountry(pVertex);
-    result = player1->DestroyArmy(pVertex, player2);
+    result = player1->executeDestroyArmy(pVertex, player2);
     pArmies = player2->getArmiesOnCountry(pVertex);
 
     assert( result == 0 && pArmies == 0);
@@ -526,9 +526,9 @@ void test_DestroyArmy(){
     cout << "TEST: Player 1 fails to destroy own army on \"P\"." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
-    result = player1->MoveOverLand(1, startVertex, pVertex);
+    result = player1->executeMoveArmies(1, startVertex, pVertex, false);
     player1->getArmiesOnCountry(pVertex);
-    result = result && player1->DestroyArmy(pVertex, player1);
+    result = result && player1->executeDestroyArmy(pVertex, player1);
     pArmies = player1->getArmiesOnCountry(pVertex);
 
     assert( result == 0 && pArmies == 1 );

@@ -14,8 +14,12 @@ enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD
 
 class Card;
 class Vertex;
-typedef unordered_map<string, Vertex*> Vertices;
 class Bidder;
+class Player;
+class GameMap;
+
+typedef unordered_map<string, Vertex*> Vertices;
+typedef unordered_map<string, Player*> Players;
 
 class Player {
 
@@ -36,12 +40,14 @@ public:
     ~Player();
 
     bool PayCoins(const int& amount);
-    bool PlaceNewArmies(const int& newArmies, Vertex* country, const string& start);
-    bool MoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater);
-    bool MoveOverLand(const int& numArmies, Vertex* start, Vertex* end);
-    bool BuildCity(Vertex* country);
-    bool DestroyArmy(Vertex* country, Player* opponent);
-    bool Ignore();
+    void PlaceNewArmies(const string& action, GameMap* map);
+    void MoveArmies(const string& action, GameMap* map);
+    void MoveOverLand(const string& action, GameMap* map);
+    void MoveOverWater(const string& action, GameMap* map);
+    void BuildCity(const string& action, GameMap* map);
+    void DestroyArmy(const string& action, GameMap* map, Players* players);
+    void AndOrAction(const string& action, GameMap* map, Players* players);
+    void Ignore();
 
     void addCardToHand(Card* card);
     void addCountry(Vertex* country);
@@ -52,6 +58,11 @@ public:
     int getArmiesOnCountry(Vertex* country);
     int getCitiesOnCountry(Vertex* country);
 
+    bool executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater);
+    bool executeAddArmies(const int& newArmies, Vertex* country, const string& start);
+    bool executeDestroyArmy(Vertex* country, Player* opponent);
+    bool executeBuildCity(Vertex* country);
+    
     // Getters
     string getName() { return *name; }
     Vertices* getCountries() { return countries; }
@@ -69,8 +80,13 @@ private:
     void reMoveArmiesFromCountry(Vertex* country, const int& numArmies);
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);
-};
 
-typedef unordered_map<string, Player*> Players;
+    void performCardAction(string& action, GameMap* map, Players* players);
+    Vertex* chooseStartVertex();
+    Vertex* chooseEndVertex(const ActionType& type, GameMap* map);
+    int chooseArmies(const int& maxArmies, const int& remainderArmies);
+    string chooseORAction(const string& action);
+    Player* chooseOpponent(Players* players);
+};
 
 #endif
