@@ -31,6 +31,8 @@ public:
 
     void playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand);
     void performCardAction(Player* player, const string action, GameMap* map, Players* players);
+    bool continueGame(Players* players, int maxNumCards);
+    Player* declareWinner(Players* players, GameMap* map);
 };
 
 #endif

@@ -46,7 +46,7 @@ void test_GameInit(){
 
     vector<Card*>::iterator c;
     for(c = hand->getHand()->begin(); c != hand->getHand()->end(); ++c)
-        cout << (*c)->getAction() << endl;
+        cout << (*c)->getGood() << " " << (*c)->getAction() << endl;
 
     cout << "\n--------------------------------------------------------" << endl;
     cout << "TEST: Verify map is same as during initialization." << endl;
@@ -58,6 +58,8 @@ void test_GameInit(){
     cout << "TEST: Verify players are the same as during initialization." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
+    cout << "Number of players are: " << players->size() << endl;
+
     Players::iterator pl;
     for(pl = players->begin(); pl != players->end(); ++pl)
         cout << pl->first << endl;
@@ -68,6 +70,13 @@ void test_GameInit(){
     for(pl = players->begin(); pl != players->end(); ++pl) {
         cout << pl->first << ": Num cards in hand is " << pl->second->getHand()->size() << endl;
 
+    }
+
+    cout << "\n--------------------------------------------------------" << endl;
+    cout << "TEST: Verify player has bidding facility and has not made a bid yet." << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+    for(pl = players->begin(); pl != players->end(); ++pl) {
+        cout << pl->first << " has made bid " << pl->second->getBidder()->getMadeBid() << endl;
     }
         
 }

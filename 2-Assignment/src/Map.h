@@ -17,14 +17,15 @@ using namespace std;
 class Player;
 class Vertex;
 typedef pair<Vertex*, bool> Edge;
+typedef pair<string, string> PlayerEntry;
 
 class Vertex {
     string *name;
     string *vertexKey;
     set<Player*> *owners;
     string *continent;
-    unordered_map<string, int> *armies;
-    unordered_map<string, int> *cities;
+    unordered_map<PlayerEntry*, int> *armies;
+    unordered_map<PlayerEntry*, int> *cities;
     vector<Edge> *edges;
 
 public:
@@ -36,12 +37,14 @@ public:
 
     void addEdge(Vertex* vertex, bool isWaterEdge);
     void print();
+    string calculateOwner();
+
     string getName(){return *name;}
     string getKey(){return *vertexKey;}
     string getContinent(){return *continent;}
     set<Player*>* getOwners(){return owners;}
-    unordered_map<string, int>* getArmies(){return armies;}
-    unordered_map<string, int>* getCities(){return cities;}
+    unordered_map<PlayerEntry*, int>* getArmies(){return armies;}
+    unordered_map<PlayerEntry*, int>* getCities(){return cities;}
     vector<Edge>* getEdges(){return edges;}
 };
 
@@ -68,6 +71,7 @@ public:
 
     void setImage(const string& newImage);
     bool setStartVertex(string& startVertexName);
+    vector<set<string>* > getContinents();
 };
 
 #endif

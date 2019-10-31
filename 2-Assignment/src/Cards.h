@@ -69,7 +69,7 @@ public:
     Deck* getDeck() { return deck; }
 
 private:
-    int selectCardPosition();
+    int selectCardPosition(Player* player);
 };
 
 #endif

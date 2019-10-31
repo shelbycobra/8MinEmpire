@@ -57,9 +57,9 @@ int Bidder::bid() {
 
         while(true) {
 
-            cout << "[ BIDDING ] " << player->getName() << ", please select your bid."
+            cout << "[ BIDDER ] " << player->getName() << ", please select your bid."
                     << " You have " << player->getCoins() << " coins." << endl;
-            cout << "[ BIDDING ] > ";
+            cout << "[ BIDDER ] > ";
             getline(cin, bidStr);
 
             stringstream toInt(bidStr);
@@ -92,9 +92,12 @@ Player* Bidder::startBid(Players* players) {
 
     Players::iterator it;
     for(it = players->begin(); it != players->end(); ++it){
-        int bid = it->second->getBidder()->bid();
 
-        bids->insert(pair<Player*, int>(it->second, bid));
+        if (it->first != ANON) {
+            int bid = it->second->getBidder()->bid();
+
+            bids->insert(pair<Player*, int>(it->second, bid));
+        }
     }
 
     Player* winner = Bidder::calculateWinner(bids, players);

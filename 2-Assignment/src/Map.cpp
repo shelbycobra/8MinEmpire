@@ -9,8 +9,8 @@ Vertex::Vertex():
     vertexKey(new string("None")),
     owners(new set<Player*>()),
     continent(new string("None")),
-    armies(new unordered_map<string, int>()),
-    cities(new unordered_map<string, int>()),
+    armies(new unordered_map<PlayerEntry*, int>()),
+    cities(new unordered_map<PlayerEntry*, int>()),
     edges(new vector<Edge>()) {}
 
 /**
@@ -25,8 +25,8 @@ Vertex::Vertex(string aName, string key, string continent):
     vertexKey(new string(key)), 
     owners(new set<Player*>()),
     continent(new string(continent)),
-    armies(new unordered_map<string, int>()),
-    cities(new unordered_map<string, int>()),
+    armies(new unordered_map<PlayerEntry*, int>()),
+    cities(new unordered_map<PlayerEntry*, int>()),
     edges(new vector<Edge>()) {}
 
 /**
@@ -37,8 +37,8 @@ Vertex::Vertex(Vertex* vertex){
     vertexKey = new string(vertex->getKey());
     continent = new string(vertex->getContinent());
     owners = new set<Player*>(*vertex->getOwners());
-    armies = new unordered_map<string, int>(*vertex->getArmies());
-    cities = new unordered_map<string, int>(*vertex->getCities());
+    armies = new unordered_map<PlayerEntry*, int>(*vertex->getArmies());
+    cities = new unordered_map<PlayerEntry*, int>(*vertex->getCities());
     edges = new vector<Edge>(*vertex->getEdges());
 }
 
@@ -50,8 +50,8 @@ Vertex& Vertex::operator=(Vertex& vertex) {
     vertexKey = new string(vertex.getKey());
     continent = new string(vertex.getContinent());
     owners = new set<Player*>(*vertex.getOwners());
-    armies = new unordered_map<string, int>(*vertex.getArmies());
-    cities = new unordered_map<string, int>(*vertex.getCities());
+    armies = new unordered_map<PlayerEntry*, int>(*vertex.getArmies());
+    cities = new unordered_map<PlayerEntry*, int>(*vertex.getCities());
     edges = new vector<Edge>(*vertex.getEdges());
     return *this;
 }
@@ -92,10 +92,10 @@ void Vertex::addEdge(Vertex* endVertex, bool isWaterEdge) {
  */ 
 void Vertex::print() {
     cout << "\t" << *vertexKey << " : " << *name << endl;
-    unordered_map<string, int>::iterator it;
+    unordered_map<PlayerEntry*, int>::iterator it;
 
     int numArmies, numCities;
-    string player;
+    PlayerEntry* player;
     for(it = armies->begin(); it != armies->end(); ++it) {
         numCities = 0;
         numArmies = it->second;
@@ -103,8 +103,33 @@ void Vertex::print() {
         if (cities->find(player) != cities->end())
             numCities = cities->find(player)->second;
 
-        printf("\t\t%-15sArmies: %-5dCities: %d\n", player.c_str(), numArmies, numCities);
+        printf("\t\t%-10s %-10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
     }
+}
+
+string Vertex::calculateOwner() {
+    unordered_map<PlayerEntry*, int>::iterator it;
+    int highestCount = 0;
+    string owner = "";
+    
+    for(it = armies->begin(); it != armies->end(); ++it) {
+        int numArmies = it->second;
+        int numCities = 0;
+
+        if (cities->find(it->first) != cities->end())
+            numCities = cities->find(it->first)->second;
+
+        int combinedCount = numArmies + numCities;
+
+        if (combinedCount > highestCount) {
+            highestCount = combinedCount;
+            owner = it->first->first;
+        } else if (combinedCount == highestCount) { 
+            owner = "";
+        }
+    }
+    cout << "< " << *name << " > is owned by " << owner << endl;
+    return owner;
 }
 
 /**
@@ -233,4 +258,79 @@ void GameMap::printMap(){
             it->second->print();
     }
     cout << "--------------------------------------------------------" << endl;
+}
+
+/**
+ * Conducts a Breadth-First-Search through the GameMap object to find all the continents
+ * in the map.
+ * 
+ * @return a list of country names grouped in sets representing the different continents on the map.
+ */
+vector<set<string>* > GameMap::getContinents(){
+    vector<set<string>* > continents;
+    unordered_set<string> notVisited;
+    queue<string> nextToVisit;
+
+    //Create copy of all vertices in set
+    Vertices::iterator it;
+    for(it = vertices->begin(); it != vertices->end(); ++it)
+        notVisited.insert(it->first);
+
+    int continentIndex = -1;
+    string continentName;
+
+    while(true) {
+        if(notVisited.empty())
+            break;
+
+        //nextToVisit will be empty when a new continent starts
+        if (nextToVisit.empty()) {
+            set<string>* newContinent = new set<string>;
+
+            //Get front node from notVisited and remove it.
+            string key = *notVisited.begin();
+            Vertex* firstNode = vertices->find(key)->second;
+            notVisited.erase(key);
+
+            //Create New continent and add first node.
+            continentName = firstNode->getContinent();
+            newContinent->insert(key);
+            continents.push_back(newContinent);
+            continentIndex++;
+
+            //add edgevertices to nextToVist
+            vector<Edge>* edges = firstNode->getEdges();
+            for(Edge& edge: *edges)
+                //Only add edge vertex if not a water edge and currently in notVisited
+                if (!edge.second && (notVisited.find(edge.first->getKey())!=notVisited.end()))
+                    nextToVisit.push(edge.first->getKey());
+        } else { //Still in a continent
+            string currentNodeKey = nextToVisit.front();
+            nextToVisit.pop();
+            Vertex* currentNode = vertices->find(currentNodeKey)->second;
+
+            //If exist in notVisited, remove it from notVisited, add it to continent, add non-water edges to nextToVisit
+            if(notVisited.find(currentNodeKey) != notVisited.end()) {
+
+                // allows for nodes to be put in multiple continents
+                if (currentNode->getContinent() == continentName) {
+                    notVisited.erase(currentNodeKey);
+                    continents.at(continentIndex)->insert(currentNodeKey);
+
+                    //add edgevertices to nextToVist
+                    vector<Edge> *edges = currentNode->getEdges();
+
+                    for(Edge& edge: *edges)
+                        //Only add edge vertex if not a water edge and currently in notVisited
+                        if (!edge.second && (notVisited.find(edge.first->getKey())!=notVisited.end()))
+                            nextToVisit.push(edge.first->getKey());
+                } else {
+                    continents.at(continentIndex)->insert(currentNodeKey);
+                    cout << "\n[WARNING] " << currentNodeKey << " had a different continent name: " << currentNode->getContinent();
+                }
+            }
+        }
+    }
+
+    return continents;
 }

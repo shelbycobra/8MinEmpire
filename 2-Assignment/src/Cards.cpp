@@ -152,7 +152,7 @@ Deck::~Deck(){
  * Shuffles the deck.
  */
 void Deck::shuffle() {
-    cout << "[ DECK ] Shuffling deck." << endl;
+    cout << "\n[ DECK ] Shuffling deck.\n" << endl;
 
     delete cardDeck;
 
@@ -270,7 +270,7 @@ Card* Hand::exchange(Player* player){
     int values[] = {0, 1, 1, 2, 2, 3};
 
     while(true) {
-        position = selectCardPosition();
+        position = selectCardPosition(player);
         if (player->PayCoins(values[position])) {
 
             Card* card = hand->at(position);
@@ -304,14 +304,14 @@ void Hand::drawCardFromDeck() {
  * 
  * @return The position of the card to be used in gameplay.
  */
-int Hand::selectCardPosition(){
+int Hand::selectCardPosition(Player* player){
     string pos;
     int position;
 
     printHand();
 
     while (true) {
-        cout << "[ GAME HAND ] Please choose a card from the game hand." << endl;
+        cout << "[ GAME HAND ] Please choose a card from the game hand. { Purse = " << player->getCoins() << " } { Cards in hand " << player->getHand()->size() << " }." << endl;
         cout << "[ GAME HAND ] > ";
 
         try {

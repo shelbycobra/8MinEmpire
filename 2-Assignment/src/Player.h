@@ -20,6 +20,9 @@ class GameMap;
 
 typedef unordered_map<string, Vertex*> Vertices;
 typedef unordered_map<string, Player*> Players;
+typedef pair<string, string> PlayerEntry;
+
+const string ANON = "Anon";
 
 class Player {
 
@@ -30,10 +33,12 @@ class Player {
     int* coins;
     vector<Card*>* hand;
     Bidder* bidder;
+    string* colour;
+    PlayerEntry* playerEntry;
 
 public:
     Player();
-    Player(const string &name);
+    Player(const string &name, const string& colour);
     Player(const string &name, const int& startCoins);
     Player(Player* player);
     Player& operator=(Player& player);
@@ -48,6 +53,11 @@ public:
     void DestroyArmy(const string action, GameMap* map, Players* players);
     void AndOrAction(const string action, GameMap* map, Players* players);
     void Ignore();
+    int ComputeScore(GameMap* map);
+
+    int getOwnedRegions();
+    int computeContinents(GameMap* map);
+    int computeGoods();
 
     void addCardToHand(Card* card);
     void addCountry(Vertex* country);
@@ -71,6 +81,8 @@ public:
     int getCoins() { return *coins; }
     vector<Card*>* getHand() { return hand;}
     Bidder* getBidder() { return bidder; }
+    string getColour() { return *colour; }
+    PlayerEntry* getPlayerEntry() { return playerEntry; }
 
     //Setters
     void setCoins(const int& coins) { *this->coins = coins; }

@@ -1,4 +1,6 @@
 #include <dirent.h>
+#include <algorithm>
+
 #include "GameInit.h"
 #include "MapLoader.h"
 #include "util/MapUtil.h"
@@ -8,7 +10,14 @@
  */
 GameInitEngine::GameInitEngine(): 
     map(new GameMap()), players(new Players()),
-    hand(new Hand()), numPlayers(new int()) {}
+    hand(new Hand()), numPlayers(new int()) {
+        colours = new list<string>();
+        colours->push_front("BLUE");
+        colours->push_front("GREEN");
+        colours->push_front("YELLOW");
+        colours->push_front("RED");
+        colours->push_front("WHITE");
+    }
 
 /**
  * Copy constructor
@@ -18,6 +27,7 @@ GameInitEngine::GameInitEngine(GameInitEngine* otherInitEngine) {
     players = new Players(*otherInitEngine->getPlayers());
     hand = new Hand(otherInitEngine->getHand());
     numPlayers = new int(otherInitEngine->getNumPlayers());
+    colours = new list<string>(*otherInitEngine->getColours());
 }
 
 /**
@@ -28,6 +38,7 @@ GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
     players = new Players(*otherInitEngine.getPlayers());
     hand = new Hand(otherInitEngine.getHand());
     numPlayers = new int(otherInitEngine.getNumPlayers());
+    colours = new list<string>(*otherInitEngine.getColours());
     return *this;
 }
 
@@ -42,11 +53,13 @@ GameInitEngine::~GameInitEngine() {
     delete players;
     delete hand;
     delete numPlayers;
+    delete colours;
 
     map = nullptr;
     players = nullptr;
     hand = nullptr;
     numPlayers = nullptr;
+    colours = nullptr;
 }
 
 /**
@@ -117,26 +130,63 @@ void GameInitEngine::selectNumPlayers() {
 }
 
 void GameInitEngine::createPlayers(){
+    vector<Player*> playerList;
     cout << "[ INIT ] Creating " << *numPlayers << " players." << endl;
     
     for (int i = 0; i < *numPlayers; i++) {
-        createPlayer();
+        Player* player = createPlayer();
+        playerList.push_back(player);
+    }
+
+    for (int i = playerList.size() - 1; i >= 0; i--) {
+        players->insert(pair<string, Player*>(playerList.at(i)->getName(), playerList.at(i)));
     }
 }
 
-void GameInitEngine::createPlayer(){
+Player* GameInitEngine::createPlayer(){
     string name;
+    string colour;
 
     cout << "\n[ INIT ] Creating a new player" << endl;
-    cout << "[ INIT ] Enter name of the player:" << endl;
-    cout << "[ INIT ] > ";
-    getline(cin, name);
 
-    if(players->find(name) != players->end())
-        name = name + "#2";
+    while(true) {
+        cout << "[ INIT ] Enter name of the player:" << endl;
+        cout << "[ INIT ] > ";
+        getline(cin, name);
+         
+        if(name != "")
+            break;
+
+        cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;
+    }
+
+    while(true) {
+
+        cout << "\n[ INIT ] Choose a colour for the player:" << endl;
+        printColours();
+        cout << "[ INIT ] > ";
+
+        getline(cin, colour);
+        transform(colour.begin(), colour.end(), colour.begin(), ::toupper);
+
+        bool colourMatched = 0;
+
+        for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
+            if ((*it) == colour) {
+                cout << "[ INIT ] You chose " << (*it) << "." << endl;
+                colourMatched = 1;
+                colours->remove(colour);
+                break;
+            }
+        }
+
+        if (colourMatched)
+            break;
+
+        cout << "[ ERROR! ] You must choose a colour from the list." << endl;
+    }
     
-    players->insert(pair<string,Player*>(name, new Player(name)));
-
+    return new Player(name, colour);
 }
 
 vector<string>* GameInitEngine::getMapFiles() {
@@ -189,3 +239,10 @@ string GameInitEngine::selectMap(vector<string>* maps) {
         }
     }
 }
+
+ void GameInitEngine::printColours() {
+     cout << "[ INIT ]  AVAILABLE COLOURS" << endl;
+     for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
+         cout << (*it) << endl;
+     }
+ }

@@ -26,6 +26,8 @@ private:
     void distributeCoins();
     void placeArmiesOnStartVertex();
     void setPlayerOrderInQueue(Player* firstPlayer);
+    void placeAnonArmies();
+    void chooseVertex(string &player, PlayerEntry* anonPlayerEntry);
 };
 
 #endif

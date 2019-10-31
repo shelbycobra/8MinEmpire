@@ -3,7 +3,7 @@
 GameMainEngine::GameMainEngine() {}
 GameMainEngine::GameMainEngine(GameStartUpEngine* startUpEngine) {}
 GameMainEngine::GameMainEngine(GameMainEngine* otherGameMainEngine) {}
-GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {}
+GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {return *this;}
 GameMainEngine::~GameMainEngine() {}
 
 void GameMainEngine::playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand) {
@@ -54,4 +54,35 @@ void GameMainEngine::performCardAction(Player* player, const string action, Game
         else 
             cout << "[ ERROR! ] Invalid action." << endl;
     }
+}
+
+bool GameMainEngine::continueGame(Players* players, int maxNumCards) {
+
+    Players::iterator it;
+
+    for(it = players->begin(); it != players->end(); ++it) {
+        if (it->second->getHand()->size() < size_t(maxNumCards))
+            return true;
+    }
+
+    return false;
+}
+
+Player* GameMainEngine::declareWinner(Players* players, GameMap* map) {
+
+    Player* winner;
+    int highestScore = 0;
+
+    Players::iterator it;
+
+    for(it = players->begin(); it != players->end(); ++it) {
+        int playerScore = it->second->ComputeScore(map);
+        if(playerScore > highestScore) {
+            highestScore = playerScore;
+            winner = it->second;
+        }
+    }
+
+    return winner;
+
 }
