@@ -10,9 +10,9 @@ int main() {
     Card buildCard(4, "GEM", "Build city");
     MapLoader loader("got.map");
     GameMap* map = loader.generateMap(); 
-    Player* player1 = new Player(string("shelby"), 11);
-    Player* player2 = new Player(string("bob"), 11);
-    Player* player3 = new Player(string("billy"), 11);
+    Player* player1 = new Player(string("shelby"), string("RED"));
+    Player* player2 = new Player(string("bob"), string("WHITE"));
+    Player* player3 = new Player(string("billy"), string("GREEN"));
     Players* players = new Players();
     players->insert(pair<string, Player*>(player1->getName(), player1));
     players->insert(pair<string, Player*>(player2->getName(), player2));
@@ -38,7 +38,7 @@ int main() {
     mainLoop.performCardAction(player2, orCard.getAction(), map, players);
 
     cout << "\n--------------------------------------------------------" << endl;
-    cout << "TEST: And card (Move over land and destory an army)." << endl;
+    cout << "TEST: And card (Move over water and destory an army)." << endl;
     cout << "--------------------------------------------------------\n" << endl;
 
     mainLoop.performCardAction(player3, andCard.getAction(), map, players);

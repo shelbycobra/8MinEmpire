@@ -7,10 +7,10 @@ class GameStartUpEngine {
 
     GameInitEngine* initPhase;
     queue<Player*>* nextTurn;
+    int* coinSupply;
 
 public:
     GameStartUpEngine();
-    GameStartUpEngine(GameInitEngine* initPhase);
     GameStartUpEngine(GameStartUpEngine* otherStartUpEngine);
     GameStartUpEngine& operator=(GameStartUpEngine& startUpEngine);
     ~GameStartUpEngine();
@@ -18,16 +18,20 @@ public:
     void startGame();
 
     //Getters
-    GameInitEngine* getGameInitEngine() { return initPhase; }
+    GameInitEngine* getInitPhase() { return initPhase; }
     queue<Player*>* getNextTurnQueue() { return nextTurn; }
 
+    int getCoinSupply() { return *coinSupply; }
+    void addCoinsToSupply(int amount);
+    void removeCoinsFromSupply(int amount);
+
 private:
+    void chooseAnonVertex(string &player, Player* anonPlayer);
     void selectStartVertex();
     void distributeCoins();
-    void placeArmiesOnStartVertex();
+    void placeStartingArmies();
     void setPlayerOrderInQueue(Player* firstPlayer);
     void placeAnonArmies();
-    void chooseVertex(string &player, PlayerEntry* anonPlayerEntry);
 };
 
 #endif

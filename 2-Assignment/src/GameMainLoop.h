@@ -22,17 +22,20 @@ where it is in the row.
 
 class GameMainEngine {
 
+    GameStartUpEngine* startUpPhase;
+
 public:
     GameMainEngine();
-    GameMainEngine(GameStartUpEngine* startUpEngine);
     GameMainEngine(GameMainEngine* otherGameMainEngine);
     GameMainEngine& operator=(GameMainEngine& otherGameMainEngine);
     ~GameMainEngine();
 
-    void playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand);
+    GameStartUpEngine* getStartUpPhase() { return startUpPhase; }
+
+    void playTurn();
     void performCardAction(Player* player, const string action, GameMap* map, Players* players);
-    bool continueGame(Players* players, int maxNumCards);
-    Player* declareWinner(Players* players, GameMap* map);
+    bool continueGame(int maxNumCards);
+    Player* declareWinner(GameMap* map);
 };
 
 #endif

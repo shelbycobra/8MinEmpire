@@ -12,15 +12,10 @@ graph, etc.), and invalid maps are rejected without the program crashing.
 #include "../GameStartUp.h"
 
 int main() {
-    GameInitEngine* initPhase = new GameInitEngine();
-    initPhase->initGame();
-
-    GameStartUpEngine* startPhase = new GameStartUpEngine(initPhase);
+    GameStartUpEngine* startPhase = new GameStartUpEngine();
     startPhase->startGame();
 
     delete startPhase;
-
-    initPhase = nullptr;
     startPhase = nullptr;
 
     return 0;

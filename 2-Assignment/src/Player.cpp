@@ -36,10 +36,10 @@ Player::Player(const string &playerName, const string& theColour):
 
 /**
  * Initializes a Player object.
- * 
+ *
  * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
  * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
- * 
+ *
  * @param playerName The name of the player.
  * @param startCoins The number of coins the player starts with.
  */
@@ -136,9 +136,9 @@ bool Player::PayCoins(const int& amount){
 
 /**
  * Executes the action "Build city".
- * 
+ *
  * The player can build a city on a country where they currently have armies.
- * 
+ *
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
@@ -168,9 +168,9 @@ void Player::MoveOverWater(const string action, GameMap* map){
 
 /**
  * Executes the action "Move # armies" or "Move # armies over water".
- * 
+ *
  * The player can move armies around the map to adjacent countries as many times as the card dictates.
- * 
+ *
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
@@ -198,7 +198,7 @@ void Player::MoveArmies(const string action, GameMap* map) {
         startVertex = chooseStartVertex();
         cout << "{ " << *name << " } Please choose a country to move armies to." << endl;
         endVertex = chooseEndVertex(type, map);
-        
+
         int startVertexArmies = startVertex->getArmies()->find(playerEntry)->second;
         armies = chooseArmies(maxArmies, remainderArmies, startVertexArmies, startVertex->getName());
 
@@ -213,9 +213,9 @@ void Player::MoveArmies(const string action, GameMap* map) {
 
 /**
  * Executes the action "Add # armies".
- * 
+ *
  * The player can add armies to any country the player currently has a city or to the start country.
- * 
+ *
  * @param action The action to be executed.
  * @param map A GameMap pointer to the map.
  */
@@ -250,7 +250,7 @@ void Player::PlaceNewArmies(const string action, GameMap* map) {
 
 /**
  * Executes the action "Destroy army".
- * 
+ *
  * The player chooses an opponent's army to destroy on a country where the oponnent has an army.
  *
  * @param action The action to be executed.
@@ -313,7 +313,7 @@ void Player::Ignore() {
 
 int Player::ComputeScore(GameMap* map) {
     /*
-The player who has the most victory points from regions, continents, and goods has 
+The player who has the most victory points from regions, continents, and goods has
 the most powerful empire and is the winner! If
 players are tied, the player with the most coins wins. If still tied, the player
 with the most armies on the board wins. If still tied, the player with the
@@ -333,7 +333,7 @@ int Player::getOwnedRegions() {
 Regions: A player gains one victory point for each region on the map he
 controls. A player controls a region if he has more armies there than any
 other player (cities count as armies when determining control). If players
-have the same number of armies in a region, no one controls it. 
+have the same number of armies in a region, no one controls it.
 */
 
     int ownedRegions = 0;
@@ -400,11 +400,11 @@ continent.
             if(rIt->second > highestRegionCount) {
                 highestRegionCount = rIt->second;
                 owner = rIt->first;
-            } 
+            }
             if (rIt->second == highestRegionCount) {
                 owner = "";
             }
-        } 
+        }
 
         if(owner == *name) {
             ownedContinents++;
@@ -425,7 +425,7 @@ goods cards can be added to any goods cards a player alreay owns for one
 extra of that good per “Wild” card. The amount of victory points each good
 is worth depends on how many cards of that good he has and is listed in the
 middle of the card in four amounts. For example, Crystals are worth 1 point
-for one card, 2 for two cards, 3 for three cards, and 5 for four cards. 
+for one card, 2 for two cards, 3 for three cards, and 5 for four cards.
 */
                                     // 0 1 2 3 4 5 6 7 8
     int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5};
@@ -701,8 +701,8 @@ void Player::decreaseAvailableArmies(const int& numArmies) {
 
 /**
  * Prompts a player to choose a start vertex among the player's occupied countries.
- * 
- * 
+ *
+ *
  * @param player A pointer to the Player being prompted.
  * @return A Vertex pointer to the start country.
  */
@@ -727,7 +727,7 @@ Vertex* Player::chooseStartVertex(){
 
 /**
  * Prompts a player to choose an end vertex on the map.
- * 
+ *
  * @param player A pointer to the Player being prompted.
  * @param type An ActionType enum representing the type of action being called.
  * @param map A GameMap pointer to the map.
@@ -762,7 +762,7 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
 
 /**
  * Prompts a player to choose how many armies to place on a country.
- * 
+ *
  * @param maxArmies The maximum number of armies the player can place. Determined by the card chosen.
  * @param remainderArmies The amount of armies left that the player can choose from.
  * @return The number of armies chosen to move.
@@ -794,7 +794,7 @@ int Player::chooseArmies(const int& maxArmies, const int& remainderArmies, int s
                 cout << "[ ERROR! ] You can only choose a maximum of " << remainderArmies << " " << remainderArmiesStr << "." << endl;
             else
                 cout << "[ ERROR! ] < " << startVertexName << " > only has " << startVertexArmies << " " << startVertexArmiesStr << " available." << endl;
-            
+
         } catch(invalid_argument& e) {
             cout << "[ ERROR! ] Please enter a number." << endl;
         }
@@ -805,7 +805,7 @@ int Player::chooseArmies(const int& maxArmies, const int& remainderArmies, int s
 
 /**
  * Prompts a player to choose one of the action in an OR'd card.
- * 
+ *
  * @param action The action containing an OR'd action.
  * @return The action chosen by the player.
  */
@@ -839,7 +839,7 @@ string Player::chooseORAction(const string action) {
 
 /**
  * Prompts a player to choose an opponent.
- * 
+ *
  * @param players A pointer to the list of Players in the game.
  * @param currentPlayer A pointer to the Player being prompted.
  * @return A Player pointer to the chosen opponent.
@@ -931,7 +931,7 @@ bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end,
         return false;
     }
 
-    cout << "[ ERROR! ] " << end->getName() << " > is not an adjacent country." << endl;
+    cout << "[ ERROR! ] < " << end->getName() << " > is not an adjacent country." << endl;
     return false;
 }
 
@@ -1011,7 +1011,17 @@ bool Player::executeDestroyArmy(Vertex* country, Player* opponent){
         return true;
     }
 
-
     cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->getName() << " >." << endl;
     return false;
+}
+
+void Player::fillPurseFromSupply(const int& numCoins) {
+    cout << "{ " << *name << " } Added " << numCoins << " to purse from coin supply." << endl;
+    *coins += numCoins;
+}
+
+void Player::setName(string &newName) {
+    *name = newName;
+    delete playerEntry;
+    playerEntry = new PlayerEntry(newName, *colour);
 }

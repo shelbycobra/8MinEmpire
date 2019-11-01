@@ -7,3 +7,4 @@
 7. Anon uses top most colour left over (DONE)
 8. Anon addd to list of players. ignored during turns but used to calculate scores.
 9. Documentation
+10. winner of bid chooses who to go first

@@ -32,7 +32,7 @@ bool playerOccupiedCountriesAreFoundOnMap(Player* player, GameMap* map) {
 
 /**
  * Creates a number of dummy players for testing purposes.
- * 
+ *
  * @param numPlayers The number of players to create. Must be between 2 and 5 inclusive.
  * @return A list of Player pointers.
  */

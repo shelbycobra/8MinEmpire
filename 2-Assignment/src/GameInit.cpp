@@ -63,7 +63,7 @@ GameInitEngine::~GameInitEngine() {
 }
 
 /**
- * 
+ *
  */
 void GameInitEngine::initGame() {
     // Only initialize the game once.
@@ -77,7 +77,7 @@ void GameInitEngine::initGame() {
 
 void GameInitEngine::initializeMap() {
     vector<string>* mapFiles = getMapFiles();
-    
+
     while(true) {
         string mapName = selectMap(mapFiles);
         MapLoader loader(mapName);
@@ -91,7 +91,7 @@ void GameInitEngine::initializeMap() {
         // Map file is valid and created a valid map object.
         if(isConnectedMap(map) && validateContinents(map) && validateEdges(map))
             break;
-        
+
         // Map file is valid but created a faulty map object.
         delete map;
     }
@@ -111,18 +111,18 @@ void GameInitEngine::selectNumPlayers() {
         cout << "[ INIT ] > ";
 
         getline(cin, answer);
-        
+
         try {
             int num = stoi(answer);
-        
+
             if (num >= MIN_NUM_PLAYERS && num <= MAX_NUM_PLAYERS) {
                 cout << "[ INIT ] You entered " << num << endl;
                 *numPlayers = num;
                 break;
             }
-        
+
             cout << "\n[ ERROR! ] Invalid answer. Please enter a number from 2 to 5." << endl;
-        
+
         } catch (invalid_argument& e) {
             cout << "\n[ ERROR! ] Invalid input. Please enter a number." << endl;
         }
@@ -132,9 +132,9 @@ void GameInitEngine::selectNumPlayers() {
 void GameInitEngine::createPlayers(){
     vector<Player*> playerList;
     cout << "[ INIT ] Creating " << *numPlayers << " players." << endl;
-    
+
     for (int i = 0; i < *numPlayers; i++) {
-        Player* player = createPlayer();
+        Player* player = createPlayer(&playerList);
         playerList.push_back(player);
     }
 
@@ -143,7 +143,7 @@ void GameInitEngine::createPlayers(){
     }
 }
 
-Player* GameInitEngine::createPlayer(){
+Player* GameInitEngine::createPlayer(vector<Player*>* playerList){
     string name;
     string colour;
 
@@ -153,11 +153,26 @@ Player* GameInitEngine::createPlayer(){
         cout << "[ INIT ] Enter name of the player:" << endl;
         cout << "[ INIT ] > ";
         getline(cin, name);
-         
-        if(name != "")
-            break;
 
-        cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;
+        if(name != "") {
+            bool nameIsFree = true;
+
+            vector<Player*>::iterator it;
+            for(it = playerList->begin(); it != playerList->end(); ++it) {
+                // Look through all players created previously and find matching name.
+
+                if ((*it)->getName() == name) {
+                    cout << "\n[ ERROR! ] That name is already taken. Please choose another.\n" << endl;
+                    nameIsFree = false;
+                    break;
+                }
+            }
+
+            if (nameIsFree)
+                break;
+        } else {
+            cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;
+        }
     }
 
     while(true) {
@@ -185,7 +200,7 @@ Player* GameInitEngine::createPlayer(){
 
         cout << "[ ERROR! ] You must choose a colour from the list." << endl;
     }
-    
+
     return new Player(name, colour);
 }
 
@@ -203,7 +218,7 @@ vector<string>* GameInitEngine::getMapFiles() {
             if(string(ent->d_name).compare(".") == string(ent->d_name).compare(".."))
                 files->push_back(string(ent->d_name));
         }
-        
+
         closedir (dir);
     }
 
@@ -222,18 +237,18 @@ string GameInitEngine::selectMap(vector<string>* maps) {
         cout << "\n[ INIT ] > ";
 
         getline(cin, answer);
-        
+
         try{
             int index = stoi(answer);
-        
+
             if (index > 0 && index <= NUM_MAPS) {
                 string chosenMap = maps->at(index-1);
                 cout << "[ INIT ] You have chosen " << chosenMap << endl;
                 return chosenMap;
             }
-        
+
             cout << "\n[ ERROR! ] Invalid answer. Please choose among the available maps." << endl;
-        
+
         } catch (invalid_argument& e) {
             cout << "\n[ ERROR! ] Invalid input. Please enter a number." << endl;
         }
@@ -241,8 +256,9 @@ string GameInitEngine::selectMap(vector<string>* maps) {
 }
 
  void GameInitEngine::printColours() {
-     cout << "[ INIT ]  AVAILABLE COLOURS" << endl;
+     cout << "[ INIT ]  AVAILABLE COLOURS\n" << endl;
      for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
          cout << (*it) << endl;
      }
+     cout << endl;
  }

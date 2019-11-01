@@ -4,20 +4,14 @@
 /**
  * Default Constructor
  */
-GameStartUpEngine::GameStartUpEngine(): 
-    initPhase(new GameInitEngine()), nextTurn(new queue<Player*>()) {}
-
-/**
- * Takes an GameInitEngine object.
- */
-GameStartUpEngine::GameStartUpEngine(GameInitEngine* gameInit): 
-    initPhase(gameInit), nextTurn(new queue<Player*>()) {}
+GameStartUpEngine::GameStartUpEngine():
+    initPhase(new GameInitEngine()), nextTurn(new queue<Player*>()), coinSupply(new int(44)) {}
 
 /**
  * Copy Constructor
  */
 GameStartUpEngine::GameStartUpEngine(GameStartUpEngine* otherStartUpEngine){
-    initPhase = new GameInitEngine(otherStartUpEngine->getGameInitEngine());
+    initPhase = new GameInitEngine(otherStartUpEngine->getInitPhase());
     nextTurn = new queue<Player*>(*otherStartUpEngine->getNextTurnQueue());
 }
 
@@ -25,7 +19,7 @@ GameStartUpEngine::GameStartUpEngine(GameStartUpEngine* otherStartUpEngine){
  * Assigment operator
  */
 GameStartUpEngine& GameStartUpEngine::operator=(GameStartUpEngine& otherStartUpEngine) {
-    initPhase = new GameInitEngine(otherStartUpEngine.getGameInitEngine());
+    initPhase = new GameInitEngine(otherStartUpEngine.getInitPhase());
     nextTurn = new queue<Player*>(*otherStartUpEngine.getNextTurnQueue());
     return *this;
 }
@@ -34,6 +28,7 @@ GameStartUpEngine& GameStartUpEngine::operator=(GameStartUpEngine& otherStartUpE
  * Deconstructor
  */
 GameStartUpEngine::~GameStartUpEngine(){
+    delete initPhase;
     delete nextTurn;
 
     initPhase = nullptr;
@@ -44,12 +39,26 @@ GameStartUpEngine::~GameStartUpEngine(){
  * Assumes initPhase has already been initialized
  */
 void GameStartUpEngine::startGame() {
+    if (nextTurn->size() == 0) {
+        // Create Map and Players
+        initPhase->initGame();
 
-    distributeCoins();
-    selectStartVertex();
-    placeArmiesOnStartVertex();
-    Player* firstPlayer = Bidder::startBid(initPhase->getPlayers());
-    setPlayerOrderInQueue(firstPlayer);
+        // Setup Game Board
+        distributeCoins();
+        selectStartVertex();
+        placeStartingArmies();
+
+        Player* winner = Bidder::startBid(initPhase->getPlayers());
+
+        int winningBid = winner->getBidder()->getBidAmount();
+        removeCoinsFromSupply(winningBid);
+
+        Player* firstPlayer = Bidder::getFirstPlayer(winner, initPhase->getPlayers());
+
+        setPlayerOrderInQueue(firstPlayer);
+    } else {
+        cout << "[ START ] The Start Up Phase has already occurred." << endl;
+    }
 }
 
 void GameStartUpEngine::distributeCoins() {
@@ -57,19 +66,23 @@ void GameStartUpEngine::distributeCoins() {
     if (initPhase->getNumPlayers() == 3 || initPhase->getNumPlayers() == 4)
         coins--;
 
-    cout << "\n[ START ] Distributing coins to players. Each player gets " << coins << " coins." << endl;
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "[ START ] Distributing coins to players. Each player gets " << coins << " coins." << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
+
     Players::iterator it;
     for(it = initPhase->getPlayers()->begin(); it != initPhase->getPlayers()->end(); ++it) {
-        it->second->setCoins(coins);
+        it->second->fillPurseFromSupply(coins);
+        removeCoinsFromSupply(coins);
     }
 }
 
 void GameStartUpEngine::selectStartVertex() {
     Vertices* vertices = initPhase->getMap()->getVertices();
-    
+
     while(true) {
         string answer;
-        
+
         initPhase->getMap()->printMap();
 
         cout << "\n[ START ] Please choose the start vertex on the map:" << endl;
@@ -88,23 +101,22 @@ void GameStartUpEngine::selectStartVertex() {
 
 }
 
-void GameStartUpEngine::placeArmiesOnStartVertex() {
+void GameStartUpEngine::placeStartingArmies() {
     string startName = initPhase->getMap()->getStartVertex();
 
-    cout << "\n[ START ] Placing 3 armies on the start vertex < " << startName << " >.\n" << endl;
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "[ START ] Placing 3 armies on the start vertex < " << startName << " >." << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
     Players* players = initPhase->getPlayers();
 
     Vertex* startVertex = initPhase->getMap()->getVertices()->find(startName)->second;
-    int i = 1;
+
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        cout << "\n" << i << ": ";
         it->second->executeAddArmies(3, startVertex, startName);
-        i++;
     }
 
-    if (players->size() == 2) {
+    if (initPhase->getPlayers()->size() == 2)
         placeAnonArmies();
-    }
 }
 
 void GameStartUpEngine::setPlayerOrderInQueue(Player* firstPlayer) {
@@ -123,35 +135,42 @@ void GameStartUpEngine::placeAnonArmies() {
 
     PlayerEntry anonPlayerEntry (ANON, initPhase->getColours()->front());
 
-    cout << "\n[ START ] Because there are only 2 players, pleast take turns placing 4 armies belonging to Anon on the map.\n" << endl;
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "[ START ] Because there are only 2 players, pleast take turns \n\t  placing 4 armies belonging to Anon on the map." << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 
     Players::iterator it;
     for (it = players->begin(); it != players->end(); ++it)
         nextTurn.push(it->first);
 
     int placedArmies = 0;
+    Player* anonPlayer = new Player(ANON, anonPlayerEntry.second);
 
     while(placedArmies < 4) {
         string player = nextTurn.front();
         nextTurn.pop();
         nextTurn.push(player);
 
-        chooseVertex(player, &anonPlayerEntry);
+        chooseAnonVertex(player, anonPlayer);
 
         placedArmies++;
     }
 
-    players->insert(pair<string, Player*>(ANON, new Player(ANON, anonPlayerEntry.second)));
+    initPhase->getMap()->printMap();
+
+    players->insert(pair<string, Player*>(ANON, anonPlayer));
 }
 
-void GameStartUpEngine::chooseVertex(string &player, PlayerEntry* anonPlayerEntry) {
+void GameStartUpEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
 
     string startName;
 
     while(true){
-        cout << "3: { " << player << " } Choose a region to place one of " << anonPlayerEntry->first << "'s armies." << endl;
+        cout << "\n---------------------------------------------------------------------" << endl;
+        cout << "{ " << player << " } Choose a region to place one of " << anonPlayer->getName() << "'s armies." << endl;
+        cout << "---------------------------------------------------------------------\n" << endl;
         initPhase->getMap()->printMap();
-        cout << "3: { " << player << " } > ";
+        cout << "{ " << player << " } > ";
         getline(cin, startName);
         transform(startName.begin(), startName.end(),startName.begin(), ::toupper);
 
@@ -159,16 +178,20 @@ void GameStartUpEngine::chooseVertex(string &player, PlayerEntry* anonPlayerEntr
             cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
         } else {
             Vertex* chosenVertex = initPhase->getMap()->getVertices()->find(startName)->second;
-
-            if (chosenVertex->getArmies()->find(anonPlayerEntry) == chosenVertex->getArmies()->end()) {
-                chosenVertex->getArmies()->insert(pair<PlayerEntry*, int>(anonPlayerEntry, 1));
-            } else {
-                int numCurrentArmies = chosenVertex->getArmies()->find(anonPlayerEntry)->second;
-                chosenVertex->getArmies()->erase(anonPlayerEntry);
-                chosenVertex->getArmies()->insert(pair<PlayerEntry*, int>(anonPlayerEntry, numCurrentArmies + 1));
-            }
-
+            anonPlayer->addArmiesToCountry(chosenVertex, 1);
             break;
         }
     }
+}
+
+//STATIC
+void GameStartUpEngine::addCoinsToSupply(int amount) {
+    *coinSupply += amount;
+    cout << "[ GAME COINS ] Coin supply now contains " << getCoinSupply() << " coins. " << endl;
+}
+
+//STATIC
+void GameStartUpEngine::removeCoinsFromSupply(int amount) {
+    *coinSupply -= amount;
+    cout << "[ GAME COINS ] Coin supply now contains " << getCoinSupply() << " coins. " << endl;
 }

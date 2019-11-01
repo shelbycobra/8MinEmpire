@@ -4,18 +4,16 @@
 
 
 int main() {
-    GameInitEngine initPhase;
-    initPhase.initGame();
 
-    GameStartUpEngine startPhase(&initPhase);
-    startPhase.startGame();
+    GameMainEngine* gameEngine = new GameMainEngine();
 
-    GameMainEngine mainLoop;
+    gameEngine->getStartUpPhase()->startGame();
+
     string cont;
 
     while(true) {
 
-        mainLoop.playTurn(initPhase.getPlayers(), startPhase.getNextTurnQueue(), initPhase.getMap(), initPhase.getHand());
+        gameEngine->playTurn();
 
         cout << "CONTINUE DEMO?" << endl;
         cout << "'y' or 'Y' to continue > ";

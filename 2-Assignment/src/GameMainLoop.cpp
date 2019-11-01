@@ -1,28 +1,56 @@
 #include "GameMainLoop.h"
 
-GameMainEngine::GameMainEngine() {}
-GameMainEngine::GameMainEngine(GameStartUpEngine* startUpEngine) {}
-GameMainEngine::GameMainEngine(GameMainEngine* otherGameMainEngine) {}
-GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {return *this;}
-GameMainEngine::~GameMainEngine() {}
+GameMainEngine::GameMainEngine(): startUpPhase(new GameStartUpEngine()) {}
 
-void GameMainEngine::playTurn(Players* players, queue<Player*>* nextTurn, GameMap* map, Hand* gameHand) {
+GameMainEngine::GameMainEngine(GameMainEngine* otherGameMainEngine) {
+    startUpPhase = new GameStartUpEngine(otherGameMainEngine->getStartUpPhase());
+}
+
+GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {
+    startUpPhase = new GameStartUpEngine(otherGameMainEngine.getStartUpPhase());
+    return *this;
+}
+
+GameMainEngine::~GameMainEngine() {
+    delete startUpPhase;
+
+    startUpPhase = nullptr;
+}
+
+void GameMainEngine::playTurn() {
+    Players* players = startUpPhase->getInitPhase()->getPlayers();
+    queue<Player*>* nextTurn = startUpPhase->getNextTurnQueue();
+    GameMap* map = startUpPhase->getInitPhase()->getMap();
+    Hand* gameHand = startUpPhase->getInitPhase()->getHand();
+
     Player* currentPlayer = nextTurn->front();
     nextTurn->pop();
     nextTurn->push(currentPlayer);
 
     cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
 
+    // Get the number of coins from the current player before and after they pay for a card.
+    // Add the difference to the game coin supply.
+    int startCoins = currentPlayer->getCoins();
     Card* currentCard = gameHand->exchange(currentPlayer);
+    int endCoins = currentPlayer->getCoins();
+
+    startUpPhase->addCoinsToSupply(startCoins - endCoins);
+
     performCardAction(currentPlayer, currentCard->getAction(), map, players);
 
     gameHand->drawCardFromDeck();
     gameHand->printHand();
+
+    players = nullptr;
+    nextTurn = nullptr;
+    map = nullptr;
+    gameHand = nullptr;
 }
 
 /**
  * Executes the action of a card.
- * 
+ *
  * @param player A pointer to the Player object who is using the card.
  * @param action The action to be performed.
  * @param map A pointer to the GameMap object of the game.
@@ -51,14 +79,15 @@ void GameMainEngine::performCardAction(Player* player, const string action, Game
             player->DestroyArmy(action, map, players);
         else if (action.find("Build") != size_t(-1))
             player->BuildCity(action, map);
-        else 
+        else
             cout << "[ ERROR! ] Invalid action." << endl;
     }
 }
 
-bool GameMainEngine::continueGame(Players* players, int maxNumCards) {
+bool GameMainEngine::continueGame(int maxNumCards) {
 
     Players::iterator it;
+    Players* players = startUpPhase->getInitPhase()->getPlayers();
 
     for(it = players->begin(); it != players->end(); ++it) {
         if (it->second->getHand()->size() < size_t(maxNumCards))
@@ -68,12 +97,13 @@ bool GameMainEngine::continueGame(Players* players, int maxNumCards) {
     return false;
 }
 
-Player* GameMainEngine::declareWinner(Players* players, GameMap* map) {
+Player* GameMainEngine::declareWinner(GameMap* map) {
 
     Player* winner;
     int highestScore = 0;
 
     Players::iterator it;
+    Players* players = startUpPhase->getInitPhase()->getPlayers();
 
     for(it = players->begin(); it != players->end(); ++it) {
         int playerScore = it->second->ComputeScore(map);
@@ -84,5 +114,4 @@ Player* GameMainEngine::declareWinner(Players* players, GameMap* map) {
     }
 
     return winner;
-
 }

@@ -20,16 +20,12 @@ player.
 
 
 int main() {
-    GameInitEngine initPhase;
-    initPhase.initGame();
+    GameMainEngine mainEngine;
 
-    GameStartUpEngine startPhase(&initPhase);
-    startPhase.startGame();
-
-    GameMainEngine mainLoop;
+    mainEngine.getStartUpPhase()->startGame();
 
     int maxNumCards;
-    int numPlayers = initPhase.getNumPlayers();
+    int numPlayers = mainEngine.getStartUpPhase()->getInitPhase()->getNumPlayers();
     if (numPlayers == 2)
         maxNumCards = 13;
     else if (numPlayers == 3)
@@ -42,9 +38,9 @@ int main() {
         cout << "[ ERROR! ] Invalid number of players." << endl;
     }
 
-    while(mainLoop.continueGame(initPhase.getPlayers(), maxNumCards)) {
+    while(mainEngine.continueGame(maxNumCards)) {
 
-        mainLoop.playTurn(initPhase.getPlayers(), startPhase.getNextTurnQueue(), initPhase.getMap(), initPhase.getHand());
+        mainEngine.playTurn();
 
         // string cont;
         // cout << "CONTINUE DEMO?" << endl;
@@ -54,7 +50,7 @@ int main() {
         //     break;
     }
 
-    Player* winner = mainLoop.declareWinner(initPhase.getPlayers(), initPhase.getMap());
+    Player* winner = mainEngine.declareWinner(initPhase.getPlayers(), initPhase.getMap());
 
     cout << "[ GAME ] " << winner->getName() << " is the winner!" << endl;
 

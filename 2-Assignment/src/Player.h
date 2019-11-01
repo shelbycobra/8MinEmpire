@@ -58,6 +58,7 @@ public:
     int getOwnedRegions();
     int computeContinents(GameMap* map);
     int computeGoods();
+    void fillPurseFromSupply(const int& coins);
 
     void addCardToHand(Card* card);
     void addCountry(Vertex* country);
@@ -72,7 +73,7 @@ public:
     bool executeAddArmies(const int& newArmies, Vertex* country, const string& start);
     bool executeDestroyArmy(Vertex* country, Player* opponent);
     bool executeBuildCity(Vertex* country);
-    
+
     // Getters
     string getName() { return *name; }
     Vertices* getCountries() { return countries; }
@@ -84,11 +85,12 @@ public:
     string getColour() { return *colour; }
     PlayerEntry* getPlayerEntry() { return playerEntry; }
 
-    //Setters
-    void setCoins(const int& coins) { *this->coins = coins; }
+    //SETTERS
+    void setName(string &newName);
+
+    void addArmiesToCountry(Vertex* country, const int& numArmies);
 
 private:
-    void addArmiesToCountry(Vertex* country, const int& numArmies);
     void removeArmiesFromCountry(Vertex* country, const int& numArmies);
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);

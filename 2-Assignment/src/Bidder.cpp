@@ -3,19 +3,21 @@
 /**
  * Default constructor
  */
-Bidder::Bidder(): 
+Bidder::Bidder():
     madeBid(new bool(false)),
-    player(new Player()) {}
+    player(new Player()),
+    bidAmount(new int(0)) {}
 
 /**
  * The Bidder object is initialized with a pointer to the Player who owns the Bidder object
  * and the boolean madeBid to false.
- * 
+ *
  * The boolean madeBid is used to prevent additional bids after the first one is made by the Player.
  */
-Bidder::Bidder(Player* player): 
-    madeBid(new bool(false)), 
-    player(player) {}
+Bidder::Bidder(Player* player):
+    madeBid(new bool(false)),
+    player(player),
+    bidAmount(new int(0)) {}
 
 /**
  * Copy constructor
@@ -23,6 +25,7 @@ Bidder::Bidder(Player* player):
 Bidder::Bidder(Bidder* bidder) {
     madeBid = new bool(bidder->getMadeBid());
     player = new Player(bidder->getPlayer());
+    bidAmount = new int(bidder->getBidAmount());
 }
 
 /**
@@ -31,6 +34,7 @@ Bidder::Bidder(Bidder* bidder) {
 Bidder& Bidder::operator=(Bidder& bidder) {
     madeBid = new bool(bidder.getMadeBid());
     player = new Player(bidder.getPlayer());
+    bidAmount = new int(bidder.getBidAmount());
     return *this;
 }
 
@@ -39,9 +43,11 @@ Bidder& Bidder::operator=(Bidder& bidder) {
  */
 Bidder::~Bidder(){
     delete madeBid;
+    delete bidAmount;
 
     madeBid = nullptr;
     player = nullptr;
+    bidAmount = nullptr;
 }
 
 /**
@@ -54,25 +60,29 @@ int Bidder::bid() {
     string bidStr;
 
     if (!*madeBid) {
-
         while(true) {
+            try {
+                cout << "[ BIDDER ] " << player->getName() << ", please select your bid."
+                        << " You have " << player->getCoins() << " coins." << endl;
+                cout << "[ BIDDER ] > ";
+                getline(cin, bidStr);
 
-            cout << "[ BIDDER ] " << player->getName() << ", please select your bid."
-                    << " You have " << player->getCoins() << " coins." << endl;
-            cout << "[ BIDDER ] > ";
-            getline(cin, bidStr);
+                bid = stoi(bidStr);
 
-            stringstream toInt(bidStr);
-            toInt >> bid;
+                if (bid <= player->getCoins()) {
+                    *bidAmount = bid;
+                    break;
+                }
 
-            if (bid <= player->getCoins()) 
-                break;
+                cout << "\n[ ERROR! ] You don't have enough coins to make that bid. Please try again.\n" << endl;
 
-            cout << "[ ERROR! ] You don't have enough coins to make that big. Please try again." << endl; 
+            } catch(invalid_argument &e) {
+                cout << "\n[ ERROR! ] Please enter a number.\n" << endl;
+            }
 
         }
     } else {
-        cout << "[ ERROR! ] A bid has already been made for " << player->getName() << endl;
+        cout << "\n[ ERROR! ] A bid has already been made for " << player->getName() << endl;
     }
 
     *madeBid = true;
@@ -82,7 +92,7 @@ int Bidder::bid() {
 
 /**
  * A class function that starts the bidding process for a group of players.
- * 
+ *
  * @param players A pointer to a vector of Player pointers representing all the players in the game.
  */
 Player* Bidder::startBid(Players* players) {
@@ -112,7 +122,7 @@ Player* Bidder::startBid(Players* players) {
 
 /**
  * A class function that calculates the winner from the bids of the players in the game.
- * 
+ *
  * @param bids An unordered_map pointer that maps Players to their bids.
  * @param players A pointer to a vector of Player pointers representing all the players in the game.
  * @return The player who won the bid.
@@ -156,7 +166,30 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
         }
     }
 
-    cout << "\n[ BIDDER ] " << winner->getName() << " has won the bid!\n" << endl;
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "[ BIDDER ] " << winner->getName() << " has won the bid!" << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 
     return winner;
+}
+
+Player* Bidder::getFirstPlayer(Player* winner, Players* players) {
+    string name = "";
+
+    while (true) {
+        cout << "[ BIDDER ] " << winner->getName() << ", please choose who goes first. " << endl;
+        cout << "[ BIDDER ] > ";
+        getline(cin, name);
+
+        if (players->find(name) != players->end()) {
+            cout << "\n---------------------------------------------------------------------" << endl;
+            cout << "[ BIDDER ] " << name << " goes first!" << endl;
+            cout << "---------------------------------------------------------------------\n" << endl;
+            break;
+        }
+
+        cout << "\n[ ERROR! ] " << name << " doesn't exist among current players.\n" << endl;
+    }
+
+    return players->find(name)->second;
 }

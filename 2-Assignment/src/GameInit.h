@@ -32,7 +32,7 @@ private:
 
     vector<string>* getMapFiles();
     string selectMap(vector<string>* maps);
-    Player* createPlayer();
+    Player* createPlayer(vector<Player*>* playerList);
     void printColours();
 };
 
