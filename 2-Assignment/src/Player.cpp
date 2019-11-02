@@ -436,33 +436,42 @@ for one card, 2 for two cards, 3 for three cards, and 5 for four cards.
 
     unordered_map<string, int> goodsCount;
 
-    vector<Card*>::iterator it;
-    for(it = hand->begin(); it != hand->end(); ++it) {
+    for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it) {
         string good = (*it)->getGood();
+
+        // Check if card has double good
+        size_t spaceCharIndex = good.find(" ");
+
+        int countIncrement = 1;
+        if (spaceCharIndex != size_t(-1))
+            countIncrement = 2;
+
         if (goodsCount.find(good) != goodsCount.end()) {
             int count = goodsCount.find(good)->second;
             goodsCount.erase(good);
-            goodsCount.insert(pair<string,int>(good,count+1));
+            goodsCount.insert(pair<string,int>(good,count+countIncrement));
         } else
-            goodsCount.insert(pair<string,int>(good,1));
+            goodsCount.insert(pair<string,int>(good,countIncrement));
     }
 
+    findAndDistributeWildCards(&goodsCount);
+
     int points = 0;
-    unordered_map<string, int>::iterator gIt;
-    for(gIt = goodsCount.begin(); gIt != goodsCount.end(); ++gIt) {
-        cout << "{ " << *name << " } Owns " << gIt->second << " " << gIt->first << " cards." << endl;
-        if (gIt->first == "GEM")
-            points += gemValuePerCardCount[gIt->second];
-        else if(gIt->first == "WOOD")
-            points += woodValuePerCardCount[gIt->second];
-        else if(gIt->first == "IRON")
-            points += ironValuePerCardCount[gIt->second];
-        else if(gIt->first == "STONE")
-            points += stoneValuePerCardCount[gIt->second];
-        else if(gIt->first == "CARROT")
-            points += carrotValuePerCardCount[gIt->second];
+
+    for(unordered_map<string, int>::iterator it = goodsCount.begin(); it != goodsCount.end(); ++it) {
+        cout << "{ " << *name << " } Owns " << it->second << " " << it->first << " cards." << endl;
+        if (it->first == GEM)
+            points += gemValuePerCardCount[it->second];
+        else if(it->first == WOOD)
+            points += woodValuePerCardCount[it->second];
+        else if(it->first == IRON)
+            points += ironValuePerCardCount[it->second];
+        else if(it->first == STONE)
+            points += stoneValuePerCardCount[it->second];
+        else if(it->first.find(CARROT) != size_t(-1))
+            points += carrotValuePerCardCount[it->second];
         else
-            cout << "[ ERROR! ] Invalid card type. " << gIt->first << endl;
+            cout << "[ ERROR! ] Invalid card type. " << it->first << endl;
     }
 
     cout << "{ " << *name << " } Has " << points << " card points." << endl;
@@ -1024,4 +1033,37 @@ void Player::setName(string &newName) {
     *name = newName;
     delete playerEntry;
     playerEntry = new PlayerEntry(newName, *colour);
+}
+
+//PRIVATE
+void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) {
+    if (goodsCount->find(WILD) != goodsCount->end()) {
+        int numWildCards = goodsCount->find(WILD)->second;
+        goodsCount->erase(WILD);
+
+        cout << "{ " << *name << " } You have " << numWildCards << " WILD cards!" << endl;
+
+        for (int i = 0; i < numWildCards; i++) {
+            while(true) {
+                string resource;
+
+                cout << "{ " << *name << " } Choose which resource to add the WILD card to ( " << i + 1 << " WILD cards left ):" << endl;
+
+                for (unordered_map<string, int>::iterator it  = goodsCount->begin(); it != goodsCount->end(); ++it)
+                    cout << it->first << endl;
+
+                getline(cin, resource);
+                transform(resource.begin(), resource.end(), resource.begin(), ::toupper);
+
+                if (goodsCount->find(resource) != goodsCount->end()) {
+                    int count = goodsCount->find(resource)->second;
+                    goodsCount->erase(resource);
+                    goodsCount->insert(pair<string,int>(resource,count+1));
+                    break;
+                }
+
+                cout << "\n[ ERROR! ] Invalid resource name. Please choose a resource that you own.\n" << endl;
+            }
+        }
+    }
 }

@@ -14,6 +14,13 @@ using namespace std;
 
 class Player;
 
+const string WOOD = "WOOD";
+const string IRON = "IRON";
+const string CARROT = "CARROT";
+const string GEM = "GEM";
+const string STONE = "STONE";
+const string WILD = "WILD";
+
 class Card {
     int* id;
     string* good;

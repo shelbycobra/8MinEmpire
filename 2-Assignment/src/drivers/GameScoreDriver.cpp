@@ -17,42 +17,94 @@ player.
 #include "../GameMainLoop.h"
 #include "../MapLoader.h"
 #include "../Cards.h"
+#include "../util/TestUtil.h"
 
+
+void test_onePlayerWinsGame();
+void test_twoPlayersTieButHaveDifferentNumCoins();
+void test_twoPlayersTieAndHaveSameNumCoins();
+void test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies();
+void test_playerHasWildCard();
 
 int main() {
+    // GameMainEngine mainEngine;
+    // mainEngine.getStartUpPhase()->startGame();
+    // int maxNumCards = mainEngine.getMaxNumberOfCards();
+    // while(mainEngine.continueGame(maxNumCards)) {
+    //     mainEngine.playTurn();
+    // }
+    // Player* winner = mainEngine.declareWinner();
+    // cout << "[ GAME ] " << winner->getName() << " is the winner!" << endl;
+
+    test_onePlayerWinsGame();
+    return 0;
+}
+
+
+void test_onePlayerWinsGame() {
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_onePlayerWinsGame" << endl;
+    cout << "=======================================================" << endl;
+
     GameMainEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
-    int maxNumCards;
-    int numPlayers = mainEngine.getStartUpPhase()->getInitPhase()->getNumPlayers();
-    if (numPlayers == 2)
-        maxNumCards = 13;
-    else if (numPlayers == 3)
-        maxNumCards = 10;
-    else if (numPlayers == 4)
-        maxNumCards = 8;
-    else if (numPlayers == 5)
-        maxNumCards = 7;
-    else {
-        cout << "[ ERROR! ] Invalid number of players." << endl;
+    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+
+    //Create cards
+    Card cardArr[] = {
+        Card(0, WOOD, "Add 3 armies"),
+        Card(0, WOOD, "Add 3 armies"),
+        Card(0, WOOD, "Add 3 armies"),
+        Card(0, WOOD, "Add 3 armies"),
+        Card(0, WOOD, "Add 3 armies"),
+        Card(0, STONE, "Add 3 armies"),
+        Card(0, STONE, "Add 3 armies"),
+        Card(0, STONE, "Add 3 armies"),
+        Card(0, STONE, "Add 3 armies"),
+        Card(0, STONE, "Add 3 armies"),
+        Card(0, CARROT, "Add 3 armies"),
+        Card(0, CARROT, "Add 3 armies"),
+        Card(0, CARROT, "Add 3 armies"),
+        Card(0, CARROT, "Add 3 armies"),
+        Card(0, CARROT, "Add 3 armies")
+    };
+
+    int i = 0;
+
+    // Add cards to player hand
+    for(Players::iterator it = players->begin(); it != players->end(); ++it) {
+        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(&cardArr[i++]);
     }
 
-    while(mainEngine.continueGame(maxNumCards)) {
-
-        mainEngine.playTurn();
-
-        // string cont;
-        // cout << "CONTINUE DEMO?" << endl;
-        // cout << "'y' or 'Y' to continue > ";
-        // getline(cin, cont);
-        // if(cont != "y" && cont != "Y")
-        //     break;
-    }
-
-    Player* winner = mainEngine.declareWinner(initPhase.getPlayers(), initPhase.getMap());
+    Player* winner = mainEngine.declareWinner();
 
     cout << "[ GAME ] " << winner->getName() << " is the winner!" << endl;
+}
 
-    return 0;
+void test_twoPlayersTieButHaveDifferentNumCoins() {
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_twoPlayersTieButHaveDifferentNumCoins" << endl;
+    cout << "=======================================================" << endl;
+}
+void test_twoPlayersTieAndHaveSameNumCoins() {
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_twoPlayersTieAndHaveSameNumCoins" << endl;
+    cout << "=======================================================" << endl;
+}
+void test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies" << endl;
+    cout << "=======================================================" << endl;
+}
+
+void test_playerHasWildCard() {
+    cout << "\n=======================================================" << endl;
+    cout << "TEST: test_playerHasWildCard" << endl;
+    cout << "=======================================================" << endl;
 }

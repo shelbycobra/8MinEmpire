@@ -101,6 +101,7 @@ private:
     int chooseArmies(const int& maxArmies, const int& remainderArmies, int endVertexArmies, const string& startVertexName);
     string chooseORAction(const string action);
     Player* chooseOpponent(Players* players);
+    void findAndDistributeWildCards(unordered_map<string, int>* goodsCount);
 };
 
 #endif

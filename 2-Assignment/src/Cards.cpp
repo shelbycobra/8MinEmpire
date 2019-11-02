@@ -10,20 +10,20 @@ using namespace std;
  * Default Constructor
  */
 Card::Card():
-    id(new int(0)), 
-    good(new string("No good")), 
+    id(new int(0)),
+    good(new string("No good")),
     action(new string("No action")) {}
 
 /**
  * Initializes a Card object with an ID number, a good and an action.
- * 
+ *
  * @param theId The ID of the card.
  * @param theGood The good of the card.
  * @param theAction The action of the card.
  */
-Card::Card(const int& theId, const string& theGood, const string& theAction): 
-    id(new int(theId)), 
-    good(new string(theGood)), 
+Card::Card(const int& theId, const string& theGood, const string& theAction):
+    id(new int(theId)),
+    good(new string(theGood)),
     action(new string(theAction)) {}
 
 /**
@@ -64,54 +64,67 @@ Card::~Card() {
  * meaning no two Deck object will have the same order of cards.
  */
 Deck::Deck(){
-    string resources[] = {"GEM", "IRON", "STONE", "WOOD", "CARROT"};
-    string actions[] = {"Add 3 armies", "Add 2 armies", "Add 4 armies", "Move 3 armies", "Move 5 armies",
-    "Move 4 armies", "Move 5 armies over water", "Move 4 armies over water", "Build city", "Destroy army"};
 
-    int numResources = 5;
-    int numActions = 10;
+    typedef pair<string, string>  CardInfo;
 
-    int resourceIndex = 0;
-    int actionIndex = 0;
-    int count = 0;
-    int joinedCard = 0;
+    CardInfo cardInfo[] = {
+        CardInfo(WOOD,   "Add 2 armies OR Move 3 armies"),
+        CardInfo(WOOD,   "Destroy an army OR Build a city"),
+        CardInfo(WOOD,   "Add 3 armies"),
+        CardInfo(WOOD,   "Move 6 armies"),
+        CardInfo(WOOD,   "Move 4 armies over water"),
+        CardInfo(WOOD,   "Build a city"),
+        CardInfo(WOOD,   "Move 3 armies over water"),
+        CardInfo(WOOD,   "Move 3 armies"),
+        CardInfo(IRON,   "Add 3 armies"),
+        CardInfo(IRON,   "Add 3 armies"),
+        CardInfo(IRON,   "Move 3 armies over water"),
+        CardInfo(IRON,   "Build a city"),
+        CardInfo(IRON,   "Add 3 armies OR Move 3 armies"),
+        CardInfo(IRON,   "Move 4 armies"),
+        CardInfo(IRON,   "Add 3 armies OR Move 4 armies"),
+        CardInfo(IRON,   "Move 5 armies"),
+        CardInfo(IRON + " " + IRON, "Move 4 armies"),
+        CardInfo(CARROT, "Build a city"),
+        CardInfo(CARROT, "Move 4 armies"),
+        CardInfo(CARROT, "Add 4 armies OR Move 2 armies"),
+        CardInfo(CARROT, "Move 3 armies over water"),
+        CardInfo(CARROT, "Add 3 armies"),
+        CardInfo(CARROT, "Move 5 armies"),
+        CardInfo(CARROT, "Move 4 armies"),
+        CardInfo(CARROT, "Add 3 armies"),
+        CardInfo(CARROT, "Build a city"),
+        CardInfo(CARROT, "Destroy an army AND Add 1 army"),
+        CardInfo(GEM,    "Add 2 armies"),
+        CardInfo(GEM,    "Add 2 armies"),
+        CardInfo(GEM,    "Add 2 armies"),
+        CardInfo(GEM,    "Add 1 army"),
+        CardInfo(GEM,    "Move 2 armies"),
+        CardInfo(STONE,  "Add 3 armies"),
+        CardInfo(STONE,  "Move 2 armies over water"),
+        CardInfo(STONE,  "Move 2 armies over water"),
+        CardInfo(STONE,  "Move 3 armies over water"),
+        CardInfo(STONE,  "Move 2 armies"),
+        CardInfo(STONE,  "Add 2 armies OR Build a city"),
+        CardInfo(STONE,  "Add 3 armies"),
+        CardInfo(WILD,   "Move 2 armies over water"),
+        CardInfo(WILD,   "Move 2 armies over water"),
+        CardInfo(WILD,   "Add 2 armies")
+    };
 
     cardDeck = new queue<pair<int, Card*>>();
     cardMap = new map<int,Card*>();
 
     for(int i = 0; i < 42; i++) {
 
-        string good = resources[resourceIndex];
-        string action = actions[actionIndex];
+        string good = cardInfo[i].first;
+        string action = cardInfo[i].second;
 
-        // if count divisible by 7, make OR with actionIndex and 8 or 9
-        if (count % 7 == 0) {
-            if (actionIndex == 7 + joinedCard) { // prevents the same action being or'd
-                action = actions[actionIndex-2] + " OR " + actions[8 + joinedCard];
-            } else
-                action = actions[actionIndex] + " OR " + actions[8 + joinedCard];
-            joinedCard = joinedCard == 0 ? 1 : 0; // adds a more "randomness"
-        }
-
-        // if count divisible by 10, make AND actionIndex and 7 or 8
-        if (count % 10 == 0) {
-            if (actionIndex == 7 + joinedCard) { // prevents the same action being and'd
-                action = actions[actionIndex-2] + " AND " + actions[8 + joinedCard];
-            } else
-                action = actions[actionIndex] + " AND " + actions[8 + joinedCard];
-            joinedCard = joinedCard == 0 ? 1 : 0; 
-        }
-
-        Card* newCard = new Card(count, good, action);
-        pair<int, Card*> cardEntry(count, newCard);
+        Card* newCard = new Card(i+1, good, action);
+        pair<int, Card*> cardEntry(i+1, newCard);
 
         cardMap->insert(cardEntry);
         cardDeck->push(cardEntry);
-
-        actionIndex = (actionIndex + 1) % numActions;
-        resourceIndex = (resourceIndex + 1) % numResources;
-
-        count++;
     }
 }
 
@@ -142,10 +155,10 @@ Deck::~Deck(){
 
     delete cardDeck;
     delete cardMap;
-    
+
     cardDeck = nullptr;
     cardMap = nullptr;
-    
+
 }
 
 /**
@@ -170,7 +183,7 @@ void Deck::shuffle() {
 
 /**
  * Removes a Cards from the top of the Deck.
- * 
+ *
  * @return A Card pointer to the removed card.
  */
 Card* Deck::draw(){
@@ -257,12 +270,12 @@ void Hand::fill() {
 
 /**
  * The current player is asked to choose a card from the Hand.
- * If the player has enough coins, the card will be removed from the 
- * hand and added to the Player's hand. The Player will pay the corresponding 
- * amount of coins for the card and the Hand object will draw another card from the 
+ * If the player has enough coins, the card will be removed from the
+ * hand and added to the Player's hand. The Player will pay the corresponding
+ * amount of coins for the card and the Hand object will draw another card from the
  * top of the deck and place it in the back of the hand.
- * 
- * @param player A Player pointer to the current player. 
+ *
+ * @param player A Player pointer to the current player.
  * @return A Card pointer to the removed card.
  */
 Card* Hand::exchange(Player* player){
@@ -301,7 +314,7 @@ void Hand::drawCardFromDeck() {
 /**
  * Prompts the current player to select the position in the Hand of the
  * desired card.
- * 
+ *
  * @return The position of the card to be used in gameplay.
  */
 int Hand::selectCardPosition(Player* player){
@@ -330,7 +343,7 @@ int Hand::selectCardPosition(Player* player){
 }
 
 /**
- * Prints the cards in the hand "face up". 
+ * Prints the cards in the hand "face up".
  */
 void Hand::printHand() {
     cout << "\n[ GAME HAND ] C U R R E N T   H A N D" << endl;

@@ -97,7 +97,7 @@ bool GameMainEngine::continueGame(int maxNumCards) {
     return false;
 }
 
-Player* GameMainEngine::declareWinner(GameMap* map) {
+Player* GameMainEngine::declareWinner() {
 
     Player* winner;
     int highestScore = 0;
@@ -106,7 +106,7 @@ Player* GameMainEngine::declareWinner(GameMap* map) {
     Players* players = startUpPhase->getInitPhase()->getPlayers();
 
     for(it = players->begin(); it != players->end(); ++it) {
-        int playerScore = it->second->ComputeScore(map);
+        int playerScore = it->second->ComputeScore(startUpPhase->getInitPhase()->getMap());
         if(playerScore > highestScore) {
             highestScore = playerScore;
             winner = it->second;
@@ -115,3 +115,20 @@ Player* GameMainEngine::declareWinner(GameMap* map) {
 
     return winner;
 }
+
+ int GameMainEngine::getMaxNumberOfCards() {
+    int numPlayers = startUpPhase->getInitPhase()->getNumPlayers();
+
+    if (numPlayers == 2)
+        return 13;
+    else if (numPlayers == 3)
+        return 10;
+    else if (numPlayers == 4)
+        return 8;
+    else if (numPlayers == 5)
+        return 7;
+    else {
+        cout << "[ ERROR! ] Invalid number of players." << endl;
+        return 0;
+    }
+ }
