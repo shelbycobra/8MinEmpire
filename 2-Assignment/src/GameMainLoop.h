@@ -35,7 +35,7 @@ public:
     void playTurn();
     void performCardAction(Player* player, const string action, GameMap* map, Players* players);
     bool continueGame(int maxNumCards);
-    Player* declareWinner();
+    void declareWinner();
     int getMaxNumberOfCards();
 };
 

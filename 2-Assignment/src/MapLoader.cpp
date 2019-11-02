@@ -97,7 +97,6 @@ bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<str
     getline(*mapFile, line);
 
     if (line == "" || line.at(0) != '$') {
-        cout << line << endl;
         cout << "[ ERROR! ] Invalid file. First line must be a continent in the form of \"$CONTINENT\"." << endl;
         return false;
     }
@@ -107,7 +106,6 @@ bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<str
     while (line != "&") {
 
         if (line.at(0) != '$') {
-            cout << line << endl;
             size_t pos = line.find(':');
 
             if (pos == size_t(-1)) {
@@ -155,7 +153,6 @@ bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string,
     getline(*mapFile, line);
 
     while(line != "%") {
-        cout << line << endl;
         //Split line into a vector of strings
         string text = line;
         istringstream iss(text);

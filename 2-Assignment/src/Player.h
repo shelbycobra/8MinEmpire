@@ -9,6 +9,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Bidder.h"
+#include "util/ScoreTest.h"
 
 enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
@@ -25,7 +26,6 @@ typedef pair<string, string> PlayerEntry;
 const string ANON = "Anon";
 
 class Player {
-
     string* name;
     Vertices* countries;
     int* armies;
@@ -35,6 +35,9 @@ class Player {
     Bidder* bidder;
     string* colour;
     PlayerEntry* playerEntry;
+    int* controlledRegions;
+
+    friend class ScoreTest;
 
 public:
     Player();
@@ -74,7 +77,10 @@ public:
     bool executeDestroyArmy(Vertex* country, Player* opponent);
     bool executeBuildCity(Vertex* country);
 
-    // Getters
+    void addArmiesToCountry(Vertex* country, const int& numArmies);
+    void removeArmiesFromCountry(Vertex* country, const int& numArmies);
+
+    //GETTERS
     string getName() { return *name; }
     Vertices* getCountries() { return countries; }
     int getArmies() { return *armies; }
@@ -84,17 +90,14 @@ public:
     Bidder* getBidder() { return bidder; }
     string getColour() { return *colour; }
     PlayerEntry* getPlayerEntry() { return playerEntry; }
+    int getControlledRegions() { return *controlledRegions; }
 
     //SETTERS
     void setName(string &newName);
 
-    void addArmiesToCountry(Vertex* country, const int& numArmies);
-
 private:
-    void removeArmiesFromCountry(Vertex* country, const int& numArmies);
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);
-
     void performCardAction(string& action, GameMap* map, Players* players);
     Vertex* chooseStartVertex();
     Vertex* chooseEndVertex(const ActionType& type, GameMap* map);

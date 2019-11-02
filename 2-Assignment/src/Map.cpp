@@ -128,7 +128,6 @@ string Vertex::calculateOwner() {
             owner = "";
         }
     }
-    cout << "< " << *name << " > is owned by " << owner << endl;
     return owner;
 }
 

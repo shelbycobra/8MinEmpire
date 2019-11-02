@@ -18,9 +18,10 @@ Player::Player():
     hand(new vector<Card*>()),
     bidder(new Bidder(this)),
     colour(new string("none")),
-    playerEntry(new PlayerEntry(*name, *colour)) {}
+    playerEntry(new PlayerEntry(*name, *colour)),
+    controlledRegions(new int(0)) {}
 
-Player::Player(const string &playerName, const string& theColour): 
+Player::Player(const string &playerName, const string& theColour):
     name(new string(playerName)),
     countries(new Vertices()),
     armies(new int(14)),
@@ -29,7 +30,8 @@ Player::Player(const string &playerName, const string& theColour):
     hand(new vector<Card*>()),
     bidder(new Bidder(this)),
     colour(new string(theColour)),
-    playerEntry(new PlayerEntry(*name, *colour))
+    playerEntry(new PlayerEntry(*name, *colour)),
+    controlledRegions(new int(0))
 {
     cout << "\n{ " << *name << " } CREATED. [ " << *colour << " ] (Purse = 0)." << endl;
 }
@@ -52,7 +54,8 @@ Player::Player(const string& playerName, const int& startCoins):
     hand(new vector<Card*>()),
     bidder(new Bidder(this)),
     colour(new string("")),
-    playerEntry(new PlayerEntry(*name, *colour))
+    playerEntry(new PlayerEntry(*name, *colour)),
+    controlledRegions(new int(0))
 {
     cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
 }
@@ -70,6 +73,7 @@ Player::Player(Player* player){
     bidder = new Bidder(player->getBidder());
     colour = new string(player->getColour());
     playerEntry = new PlayerEntry(player->getPlayerEntry()->first, player->getPlayerEntry()->second);
+    controlledRegions = new int(player->getControlledRegions());
 }
 
 /**
@@ -85,6 +89,7 @@ Player& Player::operator=(Player& player) {
     bidder = new Bidder(player.getBidder());
     colour = new string(player.getColour());
     playerEntry = new PlayerEntry(player.getPlayerEntry()->first, player.getPlayerEntry()->second);
+    controlledRegions = new int(player.getControlledRegions());
     return *this;
 }
 
@@ -104,6 +109,8 @@ Player::~Player(){
     delete hand;
     delete bidder;
     delete colour;
+    delete playerEntry;
+    delete controlledRegions;
 
     name = nullptr;
     countries = nullptr;
@@ -113,6 +120,8 @@ Player::~Player(){
     hand = nullptr;
     bidder = nullptr;
     colour = nullptr;
+    playerEntry = nullptr;
+    controlledRegions = nullptr;
 }
 
 /**
@@ -319,10 +328,14 @@ players are tied, the player with the most coins wins. If still tied, the player
 with the most armies on the board wins. If still tied, the player with the
 most controlled regions wins.
 */
+    cout << "{ " << *name << " } CALCULATING SCORE ... \n" << endl;
+
     int totalPoints = 0;
     totalPoints += getOwnedRegions();
     totalPoints += computeContinents(map);
     totalPoints += computeGoods();
+
+    cout << "\n{ " << *name << " } Final score : " << totalPoints << "\n" << endl;
 
     return totalPoints;
 }
@@ -350,6 +363,8 @@ have the same number of armies in a region, no one controls it.
 
     cout << "{ " << *name << " } Owns " << ownedRegions << " regions." << endl;
 
+    *controlledRegions = ownedRegions;
+
     return ownedRegions;
 }
 
@@ -369,8 +384,6 @@ continent.
     for(it = continents.begin(); it != continents.end(); ++it) {
         set<string>* continent = *it;
         string continentName = map->getVertices()->find(*continent->begin())->second->getContinent();
-
-        cout << continentName << endl;
         unordered_map<string, int> ownedRegionsPerPlayer;
 
         set<string>::iterator cIt;
@@ -383,15 +396,12 @@ continent.
                     int numOwnedRegions = ownedRegionsPerPlayer.find(owner)->second;
                     ownedRegionsPerPlayer.erase(owner);
                     ownedRegionsPerPlayer.insert(pair<string,int>(owner, numOwnedRegions+1));
-                    cout << "Incrementing " << owner << " owned regions to " << numOwnedRegions << " + 1" << endl;
                 } else {
-                    ownedRegionsPerPlayer.insert(pair<string,int>(owner, 1));\
-                    cout << "Incrementing " << owner << " owned regions to 1" << endl;
+                    ownedRegionsPerPlayer.insert(pair<string,int>(owner, 1));
                 }
             }
 
         }
-
 
         int highestRegionCount = 0;
         string owner = "";
@@ -1047,15 +1057,18 @@ void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) 
             while(true) {
                 string resource;
 
-                cout << "{ " << *name << " } Choose which resource to add the WILD card to ( " << i + 1 << " WILD cards left ):" << endl;
+                cout << "\n{ " << *name << " } Choose which resource to add the WILD card to ( " << numWildCards - i << " WILD cards left ):" << endl;
 
                 for (unordered_map<string, int>::iterator it  = goodsCount->begin(); it != goodsCount->end(); ++it)
-                    cout << it->first << endl;
+                    cout << "{ " << *name << " } You have " << it->second << " " << it->first << " cards." << endl;
+
+                cout << "{ " << *name << " } > ";
 
                 getline(cin, resource);
                 transform(resource.begin(), resource.end(), resource.begin(), ::toupper);
 
                 if (goodsCount->find(resource) != goodsCount->end()) {
+                    cout << "{ " << *name << " } Adding 1 count of " << resource << "." << endl;
                     int count = goodsCount->find(resource)->second;
                     goodsCount->erase(resource);
                     goodsCount->insert(pair<string,int>(resource,count+1));

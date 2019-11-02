@@ -68,6 +68,14 @@ GameInitEngine::~GameInitEngine() {
 void GameInitEngine::initGame() {
     // Only initialize the game once.
     if (players->size() == 0 && map->getVertices()->size() == 0) {
+
+        cout << "\n---------------------------------------------------------------------" << endl;
+        cout << "---------------------------------------------------------------------" << endl;
+        cout << "                            W E L C O M E  T O " << endl;
+        cout << "                      8  M I N U T E  E M P I R E !" << endl;
+        cout << "---------------------------------------------------------------------" << endl;
+        cout << "---------------------------------------------------------------------\n" << endl;
+
         initializeMap();
         selectNumPlayers();
         createPlayers();
@@ -231,7 +239,7 @@ string GameInitEngine::selectMap(vector<string>* maps) {
     while(true) {
         string answer;
 
-        cout << "\n[ INIT ] Please select a map [ 1 - " << NUM_MAPS << " ]:" << endl;
+        cout << "\n[ INIT ] Please select a map [ 1 - " << NUM_MAPS << " ]:\n" << endl;
         for (int i = 0; i < NUM_MAPS; i++)
             cout << i+1 << " : " << maps->at(i) << endl;
         cout << "\n[ INIT ] > ";

@@ -94,26 +94,74 @@ bool GameMainEngine::continueGame(int maxNumCards) {
             return true;
     }
 
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "                      E N D  O F  T H E  G A M E " << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
+
     return false;
 }
 
-Player* GameMainEngine::declareWinner() {
+void GameMainEngine::declareWinner() {
+
+    cout << "\n[ GAME ] Finding the winner.\n" << endl;
 
     Player* winner;
     int highestScore = 0;
 
-    Players::iterator it;
     Players* players = startUpPhase->getInitPhase()->getPlayers();
 
-    for(it = players->begin(); it != players->end(); ++it) {
+    map<Player*, int> scores;
+
+    for(Players::iterator it = players->begin(); it != players->end(); it++) {
         int playerScore = it->second->ComputeScore(startUpPhase->getInitPhase()->getMap());
+
+        scores.insert(pair<Player*, int>(it->second, playerScore));
+
         if(playerScore > highestScore) {
             highestScore = playerScore;
             winner = it->second;
         }
     }
 
-    return winner;
+    for(map<Player*, int>::iterator it = scores.begin(); it != scores.end(); it++) {
+        if (it->second == highestScore && it->first != winner) {
+            cout << "[ GAME ] " << it->first->getName() << " has the same score as " << winner->getName() << "." << endl;
+            cout << "\n[ GAME ] Comparing number of coins instead ... " << endl;
+            cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getCoins()
+                 << " coins and " << winner->getName() << " has " << winner->getCoins()
+                 << " coins." << endl;
+            if (it->first->getCoins() > winner->getCoins()) {
+                winner = it->first;
+                break;
+            } else if (it->first->getCoins() == winner->getCoins()) {
+                cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
+                cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
+                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getArmies()
+                     << " armies and " << winner->getName() << " has " << winner->getArmies()
+                     << " armies." << endl;
+                if (it->first->getArmies() > winner->getArmies()) {
+                    winner = it->first;
+                    break;
+                } else if (it->first->getArmies() == winner->getArmies()) {
+                    cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
+                    cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
+                    cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
+                         << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
+                         << " controlled regions." << endl;
+                    if (it->first->getControlledRegions() > winner->getControlledRegions()) {
+                        winner = it->first;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+    cout << "                     W I N N E R  I S  " << winner->getName() << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 }
 
  int GameMainEngine::getMaxNumberOfCards() {

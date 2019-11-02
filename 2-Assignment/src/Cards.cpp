@@ -84,7 +84,7 @@ Deck::Deck(){
         CardInfo(IRON,   "Move 4 armies"),
         CardInfo(IRON,   "Add 3 armies OR Move 4 armies"),
         CardInfo(IRON,   "Move 5 armies"),
-        CardInfo(IRON + " " + IRON, "Move 4 armies"),
+        CardInfo("2" + IRON, "Move 4 armies"),
         CardInfo(CARROT, "Build a city"),
         CardInfo(CARROT, "Move 4 armies"),
         CardInfo(CARROT, "Add 4 armies OR Move 2 armies"),
