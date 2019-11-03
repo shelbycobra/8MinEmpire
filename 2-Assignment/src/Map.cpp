@@ -91,7 +91,7 @@ void Vertex::addEdge(Vertex* endVertex, bool isWaterEdge) {
  * Prints a list to the console of the armies and cities currently on the vertex.
  */ 
 void Vertex::print() {
-    cout << "\t" << *vertexKey << " : " << *name << endl;
+    cout << "      " << *vertexKey << " : " << *name << endl;
     unordered_map<PlayerEntry*, int>::iterator it;
 
     int numArmies, numCities;
@@ -107,7 +107,12 @@ void Vertex::print() {
     }
 }
 
-string Vertex::calculateOwner() {
+/**
+ * Gets the owner of the region, if any.
+ * 
+ * @return The owner of the region. Returns an empty string if no one owns it.
+ */
+string Vertex::getRegionOwner() {
     unordered_map<PlayerEntry*, int>::iterator it;
     int highestCount = 0;
     string owner = "";
@@ -251,12 +256,12 @@ void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, 
 void GameMap::printMap(){
     cout << *image << endl;
     Vertices::iterator it;
-    cout << "--------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
     for(it = vertices->begin(); it != vertices->end(); ++it) {
         if (it->second->getArmies()->size() > 0 || it->second->getCities()->size() > 0)
             it->second->print();
     }
-    cout << "--------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
 }
 
 /**
@@ -311,7 +316,7 @@ vector<set<string>* > GameMap::getContinents(){
             //If exist in notVisited, remove it from notVisited, add it to continent, add non-water edges to nextToVisit
             if(notVisited.find(currentNodeKey) != notVisited.end()) {
 
-                // allows for nodes to be put in multiple continents
+                // allows for nodes to erroneously be put in multiple continents indicating a faulty map file.
                 if (currentNode->getContinent() == continentName) {
                     notVisited.erase(currentNodeKey);
                     continents.at(continentIndex)->insert(currentNodeKey);

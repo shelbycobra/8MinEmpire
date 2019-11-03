@@ -2,9 +2,9 @@
 #include "../GameMainLoop.h"
 
 void ScoreTest::test_onePlayerWinsGame() {
-    cout << "\n=======================================================" << endl;
+    cout << "\n=====================================================================" << endl;
     cout << "TEST: test_onePlayerWinsGame" << endl;
-    cout << "=======================================================" << endl;
+    cout << "=====================================================================" << endl;
 
     GameMainEngine mainEngine;
 
@@ -46,9 +46,9 @@ void ScoreTest::test_onePlayerWinsGame() {
 }
 
 void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
-    cout << "\n=======================================================" << endl;
+    cout << "\n=====================================================================" << endl;
     cout << "TEST: test_twoPlayersTieButHaveDifferentNumCoins" << endl;
-    cout << "=======================================================" << endl;
+    cout << "=====================================================================" << endl;
 
     GameMainEngine mainEngine;
 
@@ -90,9 +90,9 @@ void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
 }
 
 void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
-    cout << "\n=======================================================" << endl;
+    cout << "\n=====================================================================" << endl;
     cout << "TEST: test_twoPlayersTieAndHaveSameNumCoins" << endl;
-    cout << "=======================================================" << endl;
+    cout << "=====================================================================" << endl;
 
     GameMainEngine mainEngine;
 
@@ -132,10 +132,8 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
 
     Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
 
-    Vertex* BAVertex = vertices->find("BA")->second;
     Vertex* PEVertex = vertices->find("PE")->second;
 
-    players->begin()->second->addArmiesToCountry(BAVertex, 1);
     players->begin()->second->addArmiesToCountry(PEVertex, 1);
     *players->begin()->second->armies -= 2;
 
@@ -143,9 +141,9 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
 }
 
 void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
-    cout << "\n=======================================================" << endl;
+    cout << "\n=====================================================================" << endl;
     cout << "TEST: test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies" << endl;
-    cout << "=======================================================" << endl;
+    cout << "=====================================================================" << endl;
 
     GameMainEngine mainEngine;
 
@@ -186,18 +184,16 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
     Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
 
     Vertex* BAVertex = vertices->find("BA")->second;
-    Vertex* PEVertex = vertices->find("PE")->second;
 
     players->begin()->second->addArmiesToCountry(BAVertex, 1);
-    players->begin()->second->addArmiesToCountry(PEVertex, 1);
 
     mainEngine.declareWinner();
 }
 
 void ScoreTest::test_playerHasWildCard() {
-    cout << "\n=======================================================" << endl;
+    cout << "\n=====================================================================" << endl;
     cout << "TEST: test_playerHasWildCard" << endl;
-    cout << "=======================================================" << endl;
+    cout << "=====================================================================" << endl;
 
     GameMainEngine mainEngine;
 
@@ -233,6 +229,31 @@ void ScoreTest::test_playerHasWildCard() {
         it->second->addCardToHand(&cardArr[i++]);
         it->second->addCardToHand(&cardArr[i++]);
         it->second->addCardToHand(&cardArr[i++]);
+    }
+
+    mainEngine.declareWinner();
+}
+
+
+void ScoreTest::test_gameEndsWhenPlayersHaveMaxNumCards() {
+    cout << "\n=====================================================================" << endl;
+    cout << "TEST: test_gameEndsWhenPlayersHaveMaxNumCards" << endl;
+    cout << "=====================================================================" << endl;
+
+    GameMainEngine mainEngine;
+
+    mainEngine.getStartUpPhase()->startGame();
+
+    int maxNumCards = mainEngine.getMaxNumberOfCards();
+
+    while(true) {
+
+        Player* currentPlayer = mainEngine.getNextPlayer();
+
+        currentPlayer->addCardToHand(new Card(1, STONE, ""));
+
+        if (!mainEngine.continueGame(maxNumCards))
+            break;
     }
 
     mainEngine.declareWinner();

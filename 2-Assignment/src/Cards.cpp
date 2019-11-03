@@ -84,7 +84,7 @@ Deck::Deck(){
         CardInfo(IRON,   "Move 4 armies"),
         CardInfo(IRON,   "Add 3 armies OR Move 4 armies"),
         CardInfo(IRON,   "Move 5 armies"),
-        CardInfo("2" + IRON, "Move 4 armies"),
+        CardInfo(IRON + " " + IRON, "Move 4 armies"),
         CardInfo(CARROT, "Build a city"),
         CardInfo(CARROT, "Move 4 armies"),
         CardInfo(CARROT, "Add 4 armies OR Move 2 armies"),
@@ -347,11 +347,15 @@ int Hand::selectCardPosition(Player* player){
  */
 void Hand::printHand() {
     cout << "\n[ GAME HAND ] C U R R E N T   H A N D" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+
     int values[] = {0, 1, 1, 2, 2, 3};
     int count= 0;
     for(Card* c : *hand) {
         printf("%d [ %d ] Card ID: %-5d Good: %-10s Action: %s\n", count+1, values[count], c->getID(), c->getGood().c_str(), c->getAction().c_str());
         count++;
     }
+
+    cout << "---------------------------------------------------------------------" << endl;
     cout << endl;
 }

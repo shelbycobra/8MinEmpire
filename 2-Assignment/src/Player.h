@@ -92,9 +92,6 @@ public:
     PlayerEntry* getPlayerEntry() { return playerEntry; }
     int getControlledRegions() { return *controlledRegions; }
 
-    //SETTERS
-    void setName(string &newName);
-
 private:
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);

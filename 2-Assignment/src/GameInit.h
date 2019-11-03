@@ -10,6 +10,7 @@ class GameInitEngine {
     Hand* hand;
     int* numPlayers;
     list<string>* colours;
+    vector<string>* playerOrder;
 
 public:
     GameInitEngine();
@@ -24,16 +25,18 @@ public:
     Hand* getHand() { return hand;}
     int getNumPlayers() { return *numPlayers; }
     list<string>* getColours() { return colours; }
+    vector<string>* getPlayerOrder() { return playerOrder; }
 
 private:
     void initializeMap();
     void selectNumPlayers();
     void createPlayers();
-
     vector<string>* getMapFiles();
     string selectMap(vector<string>* maps);
-    Player* createPlayer(vector<Player*>* playerList);
+    Player* createPlayer();
     void printColours();
+    string chooseColour();
+    string chooseName();
 };
 
 #endif

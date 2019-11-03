@@ -9,6 +9,7 @@ void test_twoPlayersTieButHaveDifferentNumCoins();
 void test_twoPlayersTieAndHaveSameNumCoins();
 void test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies();
 void test_playerHasWildCard();
+void test_gameEndsWhenPlayersHaveMaxNumCards();
 };
 
 

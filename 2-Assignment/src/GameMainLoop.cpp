@@ -1,51 +1,72 @@
 #include "GameMainLoop.h"
 
+/**
+ * Default Constructor
+ */
 GameMainEngine::GameMainEngine(): startUpPhase(new GameStartUpEngine()) {}
 
+/**
+ * Copy Constructor
+ */
 GameMainEngine::GameMainEngine(GameMainEngine* otherGameMainEngine) {
     startUpPhase = new GameStartUpEngine(otherGameMainEngine->getStartUpPhase());
 }
 
+/**
+ * Assignment Operator
+ */
 GameMainEngine& GameMainEngine::operator=(GameMainEngine& otherGameMainEngine) {
     startUpPhase = new GameStartUpEngine(otherGameMainEngine.getStartUpPhase());
     return *this;
 }
 
+/**
+ * Destructor
+ */
 GameMainEngine::~GameMainEngine() {
     delete startUpPhase;
 
     startUpPhase = nullptr;
 }
 
-void GameMainEngine::playTurn() {
-    Players* players = startUpPhase->getInitPhase()->getPlayers();
+/**
+ * Gets the next player in the nextTurn queue.
+ * 
+ * @return Player pointer to the next player.
+ */
+Player* GameMainEngine::getNextPlayer() {
     queue<Player*>* nextTurn = startUpPhase->getNextTurnQueue();
-    GameMap* map = startUpPhase->getInitPhase()->getMap();
-    Hand* gameHand = startUpPhase->getInitPhase()->getHand();
 
     Player* currentPlayer = nextTurn->front();
     nextTurn->pop();
     nextTurn->push(currentPlayer);
 
-    cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
+    startUpPhase->getInitPhase()->getMap()->printMap();
+
+    cout << "\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
+
+    return currentPlayer;
+}
+
+/**
+ * Prompts the current player to select a card from the game hand, which displays 6 card. 
+ * The price of each card depends on the cards position. Starting from left, the value of
+ * each card is 0, 1, 1, 2, 2, 3. The player pays for the selected card immediately after. 
+ * 
+ * @param currentPlayer A Player pointer to the current player. 
+ * @return A Card pointer to the card the player chooses from the game hand.
+ */
+Card* GameMainEngine::chooseCardFromHand(Player* currentPlayer) {
 
     // Get the number of coins from the current player before and after they pay for a card.
     // Add the difference to the game coin supply.
     int startCoins = currentPlayer->getCoins();
-    Card* currentCard = gameHand->exchange(currentPlayer);
+    Card* currentCard = startUpPhase->getInitPhase()->getHand()->exchange(currentPlayer);
     int endCoins = currentPlayer->getCoins();
 
     startUpPhase->addCoinsToSupply(startCoins - endCoins);
 
-    performCardAction(currentPlayer, currentCard->getAction(), map, players);
-
-    gameHand->drawCardFromDeck();
-    gameHand->printHand();
-
-    players = nullptr;
-    nextTurn = nullptr;
-    map = nullptr;
-    gameHand = nullptr;
+    return currentCard;
 }
 
 /**
@@ -53,10 +74,11 @@ void GameMainEngine::playTurn() {
  *
  * @param player A pointer to the Player object who is using the card.
  * @param action The action to be performed.
- * @param map A pointer to the GameMap object of the game.
- * @param players A pointer to the list of all players in the game.
  */
-void GameMainEngine::performCardAction(Player* player, const string action, GameMap* map, Players* players) {
+void GameMainEngine::performCardAction(Player* player, const string action) {
+    GameMap* map = startUpPhase->getInitPhase()->getMap();
+    Players* players = startUpPhase->getInitPhase()->getPlayers();
+
     string answer;
     cout << "[ GAME ] Ignore card action < " << action << " > (y/n)?" << endl;
     cout << "[ GAME ] > ";
@@ -84,13 +106,34 @@ void GameMainEngine::performCardAction(Player* player, const string action, Game
     }
 }
 
+/**
+ * Draws a card from the deck and adds it to the 6th position of the game hand,
+ * effectively shifting each card left one slot up until the empty slot is filled.
+ */
+void GameMainEngine::addNewCardToBackOfHand() {
+    Hand* gameHand = startUpPhase->getInitPhase()->getHand();
+
+    gameHand->drawCardFromDeck();
+    gameHand->printHand();
+
+    gameHand = nullptr;
+}
+
+/**
+ * Checks whether the game should continue based on the number of cards
+ * in each player's hand.
+ * 
+ * @param maxNumCards The maximum number of cards a player can have.
+ * @return A boolean indicating whether the game should continue. Returns
+ * false only when all players have reached the maxNumCards. 
+ */
 bool GameMainEngine::continueGame(int maxNumCards) {
 
     Players::iterator it;
     Players* players = startUpPhase->getInitPhase()->getPlayers();
 
     for(it = players->begin(); it != players->end(); ++it) {
-        if (it->second->getHand()->size() < size_t(maxNumCards))
+        if (it->first != ANON && it->second->getHand()->size() < size_t(maxNumCards))
             return true;
     }
 
@@ -101,6 +144,19 @@ bool GameMainEngine::continueGame(int maxNumCards) {
     return false;
 }
 
+/**
+ * Declares the winner of the game.
+ * 
+ * Calls on each player to calculate their total score and uses that information to determine
+ * the winner. 
+ * 
+ * From the Game Rules:
+ *  "The player who has the most victory points from regions, continents, 
+ * and goods has the most powerful empire and is the winner! If
+ * players are tied, the player with the most coins wins. If still tied, the player
+ * with the most armies on the board wins. If still tied, the player with the
+ * most controlled regions wins.""
+ */
 void GameMainEngine::declareWinner() {
 
     cout << "\n[ GAME ] Finding the winner.\n" << endl;
@@ -134,15 +190,19 @@ void GameMainEngine::declareWinner() {
                 winner = it->first;
                 break;
             } else if (it->first->getCoins() == winner->getCoins()) {
+                int winnerArmies = 14 - winner->getArmies();
+                int otherArmies = 14 - it->first->getArmies();
+
                 cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
                 cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
-                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getArmies()
-                     << " armies and " << winner->getName() << " has " << winner->getArmies()
+                cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
+                     << " armies and " << winner->getName() << " has " << winnerArmies
                      << " armies." << endl;
-                if (it->first->getArmies() > winner->getArmies()) {
+
+                if ( otherArmies > winnerArmies) {
                     winner = it->first;
                     break;
-                } else if (it->first->getArmies() == winner->getArmies()) {
+                } else if (otherArmies == winnerArmies) {
                     cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
                     cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
                     cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
@@ -164,7 +224,19 @@ void GameMainEngine::declareWinner() {
     cout << "---------------------------------------------------------------------\n" << endl;
 }
 
- int GameMainEngine::getMaxNumberOfCards() {
+/**
+ * Gets the maxumim number of cards the players can have. This is the number of cards
+ * each player must have in order to end the game and calculate the winner.
+ * 
+ * The max number of cards depends on the number of players.
+ * 2 Players -> 13 Cards
+ * 3 Players -> 10 Cards
+ * 4 Players -> 8 Cards
+ * 5 Players -> 7 Cards
+ * 
+ * @return The number of cards in each player's hand required to end the game.
+ */
+int GameMainEngine::getMaxNumberOfCards() {
     int numPlayers = startUpPhase->getInitPhase()->getNumPlayers();
 
     if (numPlayers == 2)

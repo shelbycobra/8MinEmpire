@@ -37,7 +37,7 @@ public:
 
     void addEdge(Vertex* vertex, bool isWaterEdge);
     void print();
-    string calculateOwner();
+    string getRegionOwner();
 
     string getName(){return *name;}
     string getKey(){return *vertexKey;}

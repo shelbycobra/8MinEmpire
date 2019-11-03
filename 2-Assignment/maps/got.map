@@ -28,7 +28,7 @@ $VALYRIA
 LS:Land of Long Summer
 VY:Valyria
 &
-NO HF II SK w BA
+NO HF II SK w BA w WL
 II HF w WL
 SK w BA
 RL VA CL WL
@@ -66,8 +66,8 @@ WL--RL--VA     |   \    =   \  /   \  /      |     THE SOUTH         | VO:Volant
     |  /   ==  | /  \ |      =      =        | SL:Stormlands         | KS:Kingdom of Sarnor|
     DO       = TY----VO=====LS-----VY        | DO:Dorne              | RW:The Red Waste    |
                                              | CL:Crownlands         | YT:Yi Ti            |
-                                             |-----------------------|---------------------
-                                             |       VALYRIA         |
-                                             | LS:Land of Long Summer|
-                                             | VY:Valyria            |
-                                              -----------------------
+                                             |-----------------------|---------------------|
+                                             |       VALYRIA         |        EDGES        |
+                                             | LS:Land of Long Summer| ==== Water Edge     |
+                                             | VY:Valyria            | ---- Land Edge      |
+                                              ---------------------------------------------

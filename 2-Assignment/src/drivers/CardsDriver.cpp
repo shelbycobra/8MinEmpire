@@ -20,11 +20,11 @@ int main() {
 void test_DeckObject() {
     cout << "\n\n========================================================" << endl;
     cout << "TEST: test_DeckObject" << endl;
-    cout << "========================================================\n" << endl;
+    cout << "======================================================================\n" << endl;
 
-    cout << "\n--------------------------------------------------------" << endl;
+    cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Deck contains 42 cards and each card has a good and an action." << endl;
-    cout << "--------------------------------------------------------\n" << endl;
+    cout << "--------------------------------------------------------------------\n" << endl;
 
     Deck deck;
     queue<pair<int,Card*>>* cardDeck = deck.getDeck();
@@ -46,11 +46,11 @@ void test_DeckObject() {
 void test_HandObject() {
     cout << "\n\n========================================================" << endl;
     cout << "TEST: test_HandObject" << endl;
-    cout << "========================================================\n" << endl;
+    cout << "======================================================================\n" << endl;
 
-    cout << "\n--------------------------------------------------------" << endl;
+    cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Hand object creates deck and fills hand with cards from the deck." << endl;
-    cout << "--------------------------------------------------------\n" << endl;
+    cout << "--------------------------------------------------------------------\n" << endl;
 
     Hand* gameHand = new Hand();
     gameHand->fill();
@@ -67,7 +67,7 @@ void test_HandObject() {
 void test_FullGame() {
     cout << "\n\n========================================================" << endl;
     cout << "TEST: test_CardActions" << endl;
-    cout << "========================================================\n" << endl;
+    cout << "======================================================================\n" << endl;
 
     MapLoader loader("largeValid.map");
     GameMap* map = loader.generateMap();

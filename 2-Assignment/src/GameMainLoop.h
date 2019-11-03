@@ -31,9 +31,11 @@ public:
     ~GameMainEngine();
 
     GameStartUpEngine* getStartUpPhase() { return startUpPhase; }
-
-    void playTurn();
-    void performCardAction(Player* player, const string action, GameMap* map, Players* players);
+    
+    Player* getNextPlayer();
+    Card* chooseCardFromHand(Player* player);
+    void performCardAction(Player* player, const string action);
+    void addNewCardToBackOfHand();
     bool continueGame(int maxNumCards);
     void declareWinner();
     int getMaxNumberOfCards();

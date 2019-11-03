@@ -10,7 +10,8 @@
  */
 GameInitEngine::GameInitEngine(): 
     map(new GameMap()), players(new Players()),
-    hand(new Hand()), numPlayers(new int()) {
+    hand(new Hand()), numPlayers(new int()), 
+    playerOrder(new vector<string>()) {
         colours = new list<string>();
         colours->push_front("BLUE");
         colours->push_front("GREEN");
@@ -28,6 +29,7 @@ GameInitEngine::GameInitEngine(GameInitEngine* otherInitEngine) {
     hand = new Hand(otherInitEngine->getHand());
     numPlayers = new int(otherInitEngine->getNumPlayers());
     colours = new list<string>(*otherInitEngine->getColours());
+    playerOrder = new vector<string>(*otherInitEngine->getPlayerOrder());
 }
 
 /**
@@ -39,6 +41,7 @@ GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
     hand = new Hand(otherInitEngine.getHand());
     numPlayers = new int(otherInitEngine.getNumPlayers());
     colours = new list<string>(*otherInitEngine.getColours());
+    playerOrder = new vector<string>(*otherInitEngine.getPlayerOrder());
     return *this;
 }
 
@@ -54,16 +57,18 @@ GameInitEngine::~GameInitEngine() {
     delete hand;
     delete numPlayers;
     delete colours;
+    delete playerOrder;
 
     map = nullptr;
     players = nullptr;
     hand = nullptr;
     numPlayers = nullptr;
     colours = nullptr;
+    playerOrder = nullptr;
 }
 
 /**
- *
+ * Creates the GameMap object and the Players.
  */
 void GameInitEngine::initGame() {
     // Only initialize the game once.
@@ -83,7 +88,17 @@ void GameInitEngine::initGame() {
     }
 }
 
+//PRIVATE
+/**
+ * Prompts the user to pick among map files found in the maps/ directory and creates
+ * a GameMap object from the map file.
+ *
+ * It validates map files and map objects created from a valid map file.
+ *
+ */
 void GameInitEngine::initializeMap() {
+    delete map; //Delete the empty map created by the default constructor.
+
     vector<string>* mapFiles = getMapFiles();
 
     while(true) {
@@ -108,6 +123,11 @@ void GameInitEngine::initializeMap() {
     mapFiles = nullptr;
 }
 
+//PRIVATE
+/**
+ * Prompts the user to select the number of players. 
+ * The user can choose between 2 and 5 players, inclusively.
+ */
 void GameInitEngine::selectNumPlayers() {
     const int MAX_NUM_PLAYERS = 5;
     const int MIN_NUM_PLAYERS = 2;
@@ -137,81 +157,47 @@ void GameInitEngine::selectNumPlayers() {
     }
 }
 
+//PRIVATE
+/**
+ * Populates the Players object (typedef unordered_map<string, Player*>) with new Player objects.
+ */
 void GameInitEngine::createPlayers(){
     vector<Player*> playerList;
     cout << "[ INIT ] Creating " << *numPlayers << " players." << endl;
 
     for (int i = 0; i < *numPlayers; i++) {
-        Player* player = createPlayer(&playerList);
-        playerList.push_back(player);
-    }
-
-    for (int i = playerList.size() - 1; i >= 0; i--) {
-        players->insert(pair<string, Player*>(playerList.at(i)->getName(), playerList.at(i)));
+        Player* player = createPlayer();
+        players->insert(pair<string, Player*>(player->getName(), player));
+        playerOrder->push_back(player->getName());
     }
 }
 
-Player* GameInitEngine::createPlayer(vector<Player*>* playerList){
+//PRIVATE
+/**
+ * Creates a Player object.
+ * 
+ * Prompts the user to write in a unique name and choose a colour from
+ * the five available colours. Once a player selects a colour, it is no
+ * longer available for the other players to choose.
+ */
+Player* GameInitEngine::createPlayer(){
     string name;
     string colour;
 
     cout << "\n[ INIT ] Creating a new player" << endl;
 
-    while(true) {
-        cout << "[ INIT ] Enter name of the player:" << endl;
-        cout << "[ INIT ] > ";
-        getline(cin, name);
-
-        if(name != "") {
-            bool nameIsFree = true;
-
-            vector<Player*>::iterator it;
-            for(it = playerList->begin(); it != playerList->end(); ++it) {
-                // Look through all players created previously and find matching name.
-
-                if ((*it)->getName() == name) {
-                    cout << "\n[ ERROR! ] That name is already taken. Please choose another.\n" << endl;
-                    nameIsFree = false;
-                    break;
-                }
-            }
-
-            if (nameIsFree)
-                break;
-        } else {
-            cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;
-        }
-    }
-
-    while(true) {
-
-        cout << "\n[ INIT ] Choose a colour for the player:" << endl;
-        printColours();
-        cout << "[ INIT ] > ";
-
-        getline(cin, colour);
-        transform(colour.begin(), colour.end(), colour.begin(), ::toupper);
-
-        bool colourMatched = 0;
-
-        for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
-            if ((*it) == colour) {
-                cout << "[ INIT ] You chose " << (*it) << "." << endl;
-                colourMatched = 1;
-                colours->remove(colour);
-                break;
-            }
-        }
-
-        if (colourMatched)
-            break;
-
-        cout << "[ ERROR! ] You must choose a colour from the list." << endl;
-    }
+    name = chooseName();
+    colour = chooseColour();
 
     return new Player(name, colour);
 }
 
+//PRIVATE
+/**
+ * Gets a vector pointer of all the map files in the maps/ directory.
+ * 
+ * @return A vector of the names of the files in the maps/ directory.
+ */
 vector<string>* GameInitEngine::getMapFiles() {
     vector<string>* files = new vector<string>();
 
@@ -233,6 +219,10 @@ vector<string>* GameInitEngine::getMapFiles() {
     return files;
 }
 
+//PRIVATE
+/**
+ * Prompts the user to select a map file among the files in the maps/ directory.
+ */
 string GameInitEngine::selectMap(vector<string>* maps) {
     const int NUM_MAPS = maps->size();
 
@@ -263,10 +253,73 @@ string GameInitEngine::selectMap(vector<string>* maps) {
     }
 }
 
- void GameInitEngine::printColours() {
-     cout << "[ INIT ]  AVAILABLE COLOURS\n" << endl;
-     for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
-         cout << (*it) << endl;
-     }
-     cout << endl;
- }
+//PRIVATE
+/**
+ * Prints the available colours that a player can choose from.
+ */
+void GameInitEngine::printColours() {
+    cout << "[ INIT ]  AVAILABLE COLOURS\n" << endl;
+    for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
+        cout << (*it) << endl;
+    }
+    cout << endl;
+}
+
+//PRIVATE
+/**
+ * Prompts the user to choose among available colours.
+ */
+string GameInitEngine::chooseColour() {
+    string colour;
+
+    while(true) {
+        cout << "\n[ INIT ] Choose a colour for the player:" << endl;
+        printColours();
+        cout << "[ INIT ] > ";
+
+        getline(cin, colour);
+        transform(colour.begin(), colour.end(), colour.begin(), ::toupper);
+
+        bool colourMatched = 0;
+
+        for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
+            if ((*it) == colour) {
+                cout << "[ INIT ] You chose " << (*it) << "." << endl;
+                colourMatched = 1;
+                colours->remove(colour);
+                break;
+            }
+        }
+
+        if (colourMatched)
+            break;
+
+        cout << "[ ERROR! ] You must choose a colour from the list." << endl;
+    }
+
+    return colour;
+}
+
+//PRIVATE
+/**
+ * Prompts the user to choose a unique player name.
+ */
+string GameInitEngine::chooseName() {
+    string name;
+
+    while(true) {
+        cout << "[ INIT ] Enter name of the player:" << endl;
+        cout << "[ INIT ] > ";
+        getline(cin, name);
+
+        if(name != "") {
+            if(players->find(name) != players->end())
+                cout << "\n[ ERROR! ] That name is already taken. Please choose another.\n" << endl;
+            else 
+                break;
+        } else
+            cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;
+    }
+
+    return name;
+}

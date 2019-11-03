@@ -2,15 +2,16 @@
 
 
 int main() {
-    GameMainEngine* gameEngine = new GameMainEngine();
+    GameMainEngine gameEngine;
 
-    gameEngine->getStartUpPhase()->startGame();
+    gameEngine.getStartUpPhase()->startGame();
 
     string cont;
 
     while(true) {
 
-        gameEngine->playTurn();
+        Player* currentPlayer = gameEngine.getNextPlayer();
+        gameEngine.chooseCardFromHand(currentPlayer);
 
         cout << "CONTINUE DEMO?" << endl;
         cout << "'y' or 'Y' to continue > ";
