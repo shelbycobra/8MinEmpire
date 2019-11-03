@@ -37,6 +37,7 @@ void test_GameInit(){
     int decksize = deck->getDeck()->size();
     int handsize = hand->getHand()->size();
 
+    cout << decksize << "+" << handsize << endl;
     assert(decksize + handsize == 42);
     cout << "Size of deck is " << decksize + handsize << endl;
 
@@ -78,5 +79,5 @@ void test_GameInit(){
     for(pl = players->begin(); pl != players->end(); ++pl) {
         cout << pl->first << " has made bid " << pl->second->getBidder()->getMadeBid() << endl;
     }
-        
+
 }

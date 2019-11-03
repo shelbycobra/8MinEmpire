@@ -17,7 +17,7 @@ int main() {
 
 void test_ReadValidMapFilesAndGenerateValidMaps() {
 
-    cout << "\n\n\n========================================================" << endl;
+    cout << "\n\n\n======================================================================" << endl;
     cout << "TEST: test_ReadValidMapFilesAndGenerateValidMaps" << endl;
     cout << "======================================================================\n\n" << endl;
 

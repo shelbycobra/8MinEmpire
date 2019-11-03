@@ -204,7 +204,7 @@ int Deck::generateRandomInt(set<int>* nums){
     srand (time(0));
 
     while (true){
-        int num = rand() % DECK_SIZE;
+        int num = (rand() % DECK_SIZE) + 1;
         if(nums->find(num) == nums->end()) {
             nums->insert(num);
             return num;
