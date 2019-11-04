@@ -102,6 +102,7 @@ private:
     string chooseORAction(const string action);
     Player* chooseOpponent(Players* players);
     void findAndDistributeWildCards(unordered_map<string, int>* goodsCount);
+    string findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer);
 };
 
 #endif

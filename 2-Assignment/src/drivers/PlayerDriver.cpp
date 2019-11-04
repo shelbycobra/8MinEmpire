@@ -80,8 +80,8 @@ void test_PlayerOwnsValidHand(){
     string name = "player 1";
     Player player(name, 9);
 
-    Card card(1, "CARROT", "Move 4 armies");
-    player.addCardToHand(&card);
+    Card* card = new Card(1, "CARROT", "Move 4 armies");
+    player.addCardToHand(card);
 
     vector<Card*>* hand = player.getHand();
     cout << "Hand size is " << hand->size() << endl;

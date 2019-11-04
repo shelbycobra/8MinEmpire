@@ -22,5 +22,17 @@ int main() {
             break;
     }
 
+    Players* players = gameEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+
+    for (Players::iterator it = players->begin(); it != players->end(); ++it) {
+        cout << "\n[ PLAYER CARDS ] " << it->first << endl;
+
+        for (Card* c : *it->second->getHand()) {
+            cout << "{ CARD: " << c->getGood() << " : " << c->getAction() << " }" << endl;
+        }
+    }
+
+    players = nullptr;
+
     return 0;
 }

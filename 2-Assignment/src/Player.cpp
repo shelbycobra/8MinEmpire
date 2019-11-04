@@ -393,23 +393,27 @@ int Player::getOwnedRegions() {
  * Calculates the total owned continent for a player. A continent is considered owned
  * if the player has the most controlled regions on a continent. If two players have
  * the same count, then no one owns the continents.
- * 
+ *
  * @return The total number of owned continents.
  */
 int Player::computeContinents(GameMap* map) {
     int ownedContinents = 0;
     vector<set<string>* > continents = map->getContinents();
 
-    vector<set<string>* >::iterator it;
-    for(it = continents.begin(); it != continents.end(); ++it) {
+    //Iterate through each continent and count how many regions each player owns.
+    for(vector<set<string>* >::iterator it = continents.begin(); it != continents.end(); ++it) {
+
         set<string>* continent = *it;
         string continentName = map->getVertices()->find(*continent->begin())->second->getContinent();
-        unordered_map<string, int> ownedRegionsPerPlayer;
-        set<string>::iterator cIt;
-        for(cIt = continent->begin(); cIt != continent->end(); ++cIt) {
-            Vertex* region = map->getVertices()->find(*cIt)->second;
-            string owner = region->getRegionOwner();
 
+        // Create an empty map that tracks the number of owned regions per player.
+        unordered_map<string, int> ownedRegionsPerPlayer;
+
+        for(set<string>::iterator contIt = continent->begin(); contIt != continent->end(); ++contIt) {
+            Vertex* region = map->getVertices()->find(*contIt)->second;
+            string owner = region->getRegionOwner(); // Returns "" if owned by no one.
+
+            // Increment the number of owned regions per player.
             if(ownedRegionsPerPlayer.find(owner) != ownedRegionsPerPlayer.end()) {
                 int numOwnedRegions = ownedRegionsPerPlayer.find(owner)->second;
                 ownedRegionsPerPlayer.erase(owner);
@@ -419,21 +423,7 @@ int Player::computeContinents(GameMap* map) {
             }
         }
 
-        int highestRegionCount = 0;
-        string owner = "";
-
-        unordered_map<string, int>::iterator rIt;
-        for(rIt = ownedRegionsPerPlayer.begin(); rIt != ownedRegionsPerPlayer.end(); ++rIt) {
-            if (rIt->first != "") {
-                if(rIt->second > highestRegionCount) {
-                    highestRegionCount = rIt->second;
-                    owner = rIt->first;
-                }
-                else if (rIt->second == highestRegionCount) {
-                    owner = "";
-                }
-            }
-        }
+        string owner = findOwnerOfContinent(&ownedRegionsPerPlayer);
 
         if(owner == *name) {
             ownedContinents++;
@@ -441,16 +431,20 @@ int Player::computeContinents(GameMap* map) {
         }
     }
 
+    for ( set<string>* c : continents) {
+        delete c;
+    }
+
     cout << "{ " << *name << " } Owns " << ownedContinents << " continents." << endl;
     return ownedContinents;
 }
 
 /**
- * Computes the victory points for the player's set of cards. 
- * 
+ * Computes the victory points for the player's set of cards.
+ *
  * WILD goods cards can be added to any goods cards a player alreay owns for one
  * extra of that good per WILD card.
- * 
+ *
  * @return The total victory points for each card type.
  */
 int Player::computeGoods() {
@@ -593,9 +587,8 @@ int Player::getCitiesOnCountry(Vertex* country){
  * @param card A Card pointer. Used to create a deep copy of the card for the Player's hand.
  */
 void Player::addCardToHand(Card* card) {
-    cout << "{ " << *name << " } Added card { " << card->getGood() << " : \"" << card->getAction() << "\" } to hand.\n" << endl; 
-	Card *newCard = new Card(card);
-    hand->push_back(newCard);
+    cout << "{ " << *name << " } Added card { " << card->getGood() << " : \"" << card->getAction() << "\" } to hand.\n" << endl;
+    hand->push_back(card);
 }
 
 /**
@@ -1106,4 +1099,33 @@ Player* Player::chooseOpponent(Players* players) {
 
         cerr << "[ ERROR! ] " << opponentName << " doesn't exist. Try again." << endl;
     }
+}
+
+//PRIAVTE
+/**
+ * Looks through a map of the number of owned regions per player in a continent to find the owner of the continent.
+ *
+ * @param ownedRegionsPerPlayer A pointer to the an unordered_map of the number of regions owned per player.
+ * @return The owner of the continent. Returns "" if no owner.
+ */
+string Player::findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer) {
+    int highestRegionCount = 0;
+    string owner = "";
+
+    // Iterate through the ownedRegionsPerPlayer map and find the number of regions owned by the player to determine
+    // the owner of the current continent.
+    for(unordered_map<string, int>::iterator it = ownedRegionsPerPlayer->begin(); it != ownedRegionsPerPlayer->end(); ++it) {
+
+        if (it->first != "") {
+            if(it->second > highestRegionCount) {
+                highestRegionCount = it->second;
+                owner = it->first;
+            }
+            else if (it->second == highestRegionCount) {
+                owner = "";
+            }
+        }
+    }
+
+    return owner;
 }

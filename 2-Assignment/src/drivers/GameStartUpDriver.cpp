@@ -1,11 +1,8 @@
 #include "../GameStartUp.h"
 
 int main() {
-    GameStartUpEngine* startPhase = new GameStartUpEngine();
-    startPhase->startGame();
-
-    delete startPhase;
-    startPhase = nullptr;
+    GameStartUpEngine startPhase;
+    startPhase.startGame();
 
     return 0;
 }

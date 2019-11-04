@@ -13,33 +13,33 @@ void ScoreTest::test_onePlayerWinsGame() {
     Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
 
     //Create cards
-    Card cardArr[] = {
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies")
+    Card* cardArr[] = {
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies")
     };
 
     int i = 0;
 
     // Add cards to player hand
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
     }
 
     mainEngine.declareWinner();
@@ -57,33 +57,33 @@ void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
     Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
 
     //Create cards
-    Card cardArr[] = {
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies")
+    Card* cardArr[] = {
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies")
     };
 
     int i = 0;
 
     // Add cards to player hand
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
     }
 
     mainEngine.declareWinner();
@@ -101,33 +101,33 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
     Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
 
     //Create cards
-    Card cardArr[] = {
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies")
+    Card* cardArr[] = {
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies")
     };
 
     int i = 0;
 
     // Add cards to player hand
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
     }
 
     Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
@@ -152,33 +152,33 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
     Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
 
     //Create cards
-    Card cardArr[] = {
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies")
+    Card* cardArr[] = {
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies")
     };
 
     int i = 0;
 
     // Add cards to player hand
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
     }
 
     Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
@@ -202,33 +202,33 @@ void ScoreTest::test_playerHasWildCard() {
     Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
 
     //Create cards
-    Card cardArr[] = {
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WILD, "Add 3 armies"),
-        Card(0, WILD, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, WILD, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, STONE, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, WOOD, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies"),
-        Card(0, CARROT, "Add 3 armies")
+    Card* cardArr[] = {
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WILD, "Add 3 armies"),
+        new Card(0, WILD, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, WILD, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, STONE, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, WOOD, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies"),
+        new Card(0, CARROT, "Add 3 armies")
     };
 
     int i = 0;
 
     // Add cards to player hand
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
-        it->second->addCardToHand(&cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
+        it->second->addCardToHand(cardArr[i++]);
     }
 
     mainEngine.declareWinner();

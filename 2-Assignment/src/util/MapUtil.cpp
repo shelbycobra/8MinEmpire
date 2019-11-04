@@ -108,6 +108,10 @@ bool validateContinents(GameMap* map) {
         }
     }
 
+    for ( set<string>* c : continents) {
+        delete c;
+    }
+
     return true;
 }
 

@@ -114,6 +114,14 @@ void test_FullGame() {
         getline(cin, cont);
     }
 
+    for (Players::iterator it = players.begin(); it != players.end(); ++it) {
+        cout << "[ PLAYER CARDS ] " << it->first << endl;
+
+        for (Card* c : *it->second->getHand()) {
+            cout << "{ CARD: " << c->getGood() << " : " << c->getAction() << endl;
+        }
+    }
+
     // Deallocate heap memory
     delete gameHand;
     delete map;

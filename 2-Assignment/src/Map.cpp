@@ -5,7 +5,7 @@
  * Default Constructor
  */
 Vertex::Vertex():
-    name(new string("None")), 
+    name(new string("None")),
     vertexKey(new string("None")),
     owners(new set<Player*>()),
     continent(new string("None")),
@@ -15,14 +15,14 @@ Vertex::Vertex():
 
 /**
  * Initializes a Vertex object that represents a country on a GameMap object.
- * 
+ *
  * @param aName The name of the country.
  * @param key The key corresponding to the name of the country.
  * @param continent The name of the continent where the country sits.
  */
 Vertex::Vertex(string aName, string key, string continent):
-    name(new string(aName)), 
-    vertexKey(new string(key)), 
+    name(new string(aName)),
+    vertexKey(new string(key)),
     owners(new set<Player*>()),
     continent(new string(continent)),
     armies(new unordered_map<PlayerEntry*, int>()),
@@ -89,7 +89,7 @@ void Vertex::addEdge(Vertex* endVertex, bool isWaterEdge) {
 
 /**
  * Prints a list to the console of the armies and cities currently on the vertex.
- */ 
+ */
 void Vertex::print() {
     cout << "      " << *vertexKey << " : " << *name << endl;
     unordered_map<PlayerEntry*, int>::iterator it;
@@ -109,14 +109,14 @@ void Vertex::print() {
 
 /**
  * Gets the owner of the region, if any.
- * 
+ *
  * @return The owner of the region. Returns an empty string if no one owns it.
  */
 string Vertex::getRegionOwner() {
     unordered_map<PlayerEntry*, int>::iterator it;
     int highestCount = 0;
     string owner = "";
-    
+
     for(it = armies->begin(); it != armies->end(); ++it) {
         int numArmies = it->second;
         int numCities = 0;
@@ -129,7 +129,7 @@ string Vertex::getRegionOwner() {
         if (combinedCount > highestCount) {
             highestCount = combinedCount;
             owner = it->first->first;
-        } else if (combinedCount == highestCount) { 
+        } else if (combinedCount == highestCount) {
             owner = "";
         }
     }
@@ -204,9 +204,9 @@ bool GameMap::setStartVertex(string& startVertexKey){
 }
 
 /**
- * Sets the image string of the GameMap object. This string produces an 
+ * Sets the image string of the GameMap object. This string produces an
  * ASCII based image of the map that is printed throughout the game.
- * 
+ *
  * The image comes from the text file used to create the map (see MapLoader.cpp).
  *
  * @param newImage The string representing an image of the map.
@@ -251,7 +251,7 @@ void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, 
 
 /**
  * Prints the image of the GameMap along with a list of all the currently occupied
- * countries. 
+ * countries.
  */
 void GameMap::printMap(){
     cout << *image << endl;
@@ -267,7 +267,7 @@ void GameMap::printMap(){
 /**
  * Conducts a Breadth-First-Search through the GameMap object to find all the continents
  * in the map.
- * 
+ *
  * @return a list of country names grouped in sets representing the different continents on the map.
  */
 vector<set<string>* > GameMap::getContinents(){

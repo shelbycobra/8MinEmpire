@@ -196,7 +196,8 @@ void GameStartUpEngine::placeAnonArmies() {
     PlayerEntry anonPlayerEntry (ANON, initPhase->getColours()->front());
 
     cout << "\n---------------------------------------------------------------------" << endl;
-    cout << "[ START ] Because there are only 2 players, pleast take turns \n\t  placing 4 armies belonging to Anon on the map." << endl;
+    cout << "[ START ] Because there are only 2 players, pleast take turns" << endl;
+    cout << "\t  placing 4 armies belonging to a third Anon player on the map." << endl;
     cout << "---------------------------------------------------------------------\n" << endl;
 
     Players::iterator it;
