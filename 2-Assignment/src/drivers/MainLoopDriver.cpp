@@ -13,6 +13,8 @@ int main() {
         Player* currentPlayer = gameEngine.getNextPlayer();
         gameEngine.chooseCardFromHand(currentPlayer);
 
+        gameEngine.addNewCardToBackOfHand();
+
         cout << "CONTINUE DEMO?" << endl;
         cout << "'y' or 'Y' to continue > ";
         getline(cin, cont);

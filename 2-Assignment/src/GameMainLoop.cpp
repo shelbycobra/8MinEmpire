@@ -31,7 +31,7 @@ GameMainEngine::~GameMainEngine() {
 
 /**
  * Gets the next player in the nextTurn queue.
- * 
+ *
  * @return Player pointer to the next player.
  */
 Player* GameMainEngine::getNextPlayer() {
@@ -48,12 +48,12 @@ Player* GameMainEngine::getNextPlayer() {
     return currentPlayer;
 }
 
-/**
- * Prompts the current player to select a card from the game hand, which displays 6 card. 
+/*
+ * Prompts the current player to select a card from the game hand, which displays 6 card.
  * The price of each card depends on the cards position. Starting from left, the value of
- * each card is 0, 1, 1, 2, 2, 3. The player pays for the selected card immediately after. 
- * 
- * @param currentPlayer A Player pointer to the current player. 
+ * each card is 0, 1, 1, 2, 2, 3. The player pays for the selected card immediately after.
+ *
+ * @param currentPlayer A Player pointer to the current player.
  * @return A Card pointer to the card the player chooses from the game hand.
  */
 Card* GameMainEngine::chooseCardFromHand(Player* currentPlayer) {
@@ -122,10 +122,10 @@ void GameMainEngine::addNewCardToBackOfHand() {
 /**
  * Checks whether the game should continue based on the number of cards
  * in each player's hand.
- * 
+ *
  * @param maxNumCards The maximum number of cards a player can have.
  * @return A boolean indicating whether the game should continue. Returns
- * false only when all players have reached the maxNumCards. 
+ * false only when all players have reached the maxNumCards.
  */
 bool GameMainEngine::continueGame(int maxNumCards) {
 
@@ -146,12 +146,12 @@ bool GameMainEngine::continueGame(int maxNumCards) {
 
 /**
  * Declares the winner of the game.
- * 
+ *
  * Calls on each player to calculate their total score and uses that information to determine
- * the winner. 
- * 
+ * the winner.
+ *
  * From the Game Rules:
- *  "The player who has the most victory points from regions, continents, 
+ *  "The player who has the most victory points from regions, continents,
  * and goods has the most powerful empire and is the winner! If
  * players are tied, the player with the most coins wins. If still tied, the player
  * with the most armies on the board wins. If still tied, the player with the
@@ -227,13 +227,13 @@ void GameMainEngine::declareWinner() {
 /**
  * Gets the maxumim number of cards the players can have. This is the number of cards
  * each player must have in order to end the game and calculate the winner.
- * 
+ *
  * The max number of cards depends on the number of players.
  * 2 Players -> 13 Cards
  * 3 Players -> 10 Cards
  * 4 Players -> 8 Cards
  * 5 Players -> 7 Cards
- * 
+ *
  * @return The number of cards in each player's hand required to end the game.
  */
 int GameMainEngine::getMaxNumberOfCards() {

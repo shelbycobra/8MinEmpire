@@ -2,17 +2,7 @@
 #include <cassert>
 #include "../GameInit.h"
 
-
-void test_GameInit();
-
 int main() {
-
-    test_GameInit();
-
-    return 0;
-}
-
-void test_GameInit(){
     cout << "\n=====================================================================" << endl;
     cout << "TEST: test_GameInitObject" << endl;
     cout << "=====================================================================" << endl;
@@ -79,5 +69,7 @@ void test_GameInit(){
     for(pl = players->begin(); pl != players->end(); ++pl) {
         cout << pl->first << " has made bid " << pl->second->getBidder()->getMadeBid() << endl;
     }
+
+    return 0;
 
 }
