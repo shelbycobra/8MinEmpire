@@ -1,0 +1,28 @@
+$Continent1
+Z:Country Z
+$Continent2
+A:Country A
+B:Country B
+C:Country C
+D:Country D
+E:Country E
+$Continent3
+O:Country O
+P:Country P
+Q:Country Q
+R:Country R
+&
+A B D w Z C
+B D E
+D E
+E w O
+O P R
+P Q R
+R Q
+%
+
+Z===A---B----E===O---P---Q
+    |\  |   /     \  |  /
+    | \ |  /       \ | /
+    |  \| /         \|/
+    C   D            R
