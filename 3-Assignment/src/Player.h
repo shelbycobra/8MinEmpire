@@ -10,6 +10,7 @@
 #include "Map.h"
 #include "Bidder.h"
 #include "util/ScoreTest.h"
+#include "PlayerStrategies.h"
 
 enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
@@ -36,6 +37,7 @@ class Player {
     string* colour;
     PlayerEntry* playerEntry;
     int* controlledRegions;
+    Strategy* strategy;
 
     friend class ScoreTest;
 
@@ -80,6 +82,8 @@ public:
     void addArmiesToCountry(Vertex* country, const int& numArmies);
     void removeArmiesFromCountry(Vertex* country, const int& numArmies);
 
+    void executeStrategy(Card*, GameMap*, Players*);
+
     //GETTERS
     string getName() { return *name; }
     Vertices* getCountries() { return countries; }
@@ -91,6 +95,7 @@ public:
     string getColour() { return *colour; }
     PlayerEntry* getPlayerEntry() { return playerEntry; }
     int getControlledRegions() { return *controlledRegions; }
+    Strategy* getStrategy() { return strategy; }
 
 private:
     void increaseAvailableArmies(const int& numArmies);

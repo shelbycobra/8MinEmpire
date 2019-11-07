@@ -1129,3 +1129,8 @@ string Player::findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerP
 
     return owner;
 }
+
+
+void Player::executeStrategy(Card* card, GameMap* map, Players* players) {
+    strategy->execute(card, map, players);
+}
