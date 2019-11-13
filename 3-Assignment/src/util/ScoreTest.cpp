@@ -6,7 +6,7 @@ void ScoreTest::test_onePlayerWinsGame() {
     cout << "TEST: test_onePlayerWinsGame" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
@@ -50,7 +50,7 @@ void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
     cout << "TEST: test_twoPlayersTieButHaveDifferentNumCoins" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
@@ -94,7 +94,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
     cout << "TEST: test_twoPlayersTieAndHaveSameNumCoins" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
@@ -145,7 +145,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
     cout << "TEST: test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
@@ -195,7 +195,7 @@ void ScoreTest::test_playerHasWildCard() {
     cout << "TEST: test_playerHasWildCard" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 
@@ -240,7 +240,7 @@ void ScoreTest::test_gameEndsWhenPlayersHaveMaxNumCards() {
     cout << "TEST: test_gameEndsWhenPlayersHaveMaxNumCards" << endl;
     cout << "=====================================================================" << endl;
 
-    GameMainEngine mainEngine;
+    MainGameEngine mainEngine;
 
     mainEngine.getStartUpPhase()->startGame();
 

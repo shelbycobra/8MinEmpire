@@ -3,7 +3,7 @@
 
 
 int main() {
-    GameMainEngine mainLoop;
+    MainGameEngine mainLoop;
 
     mainLoop.getStartUpPhase()->startGame();
 

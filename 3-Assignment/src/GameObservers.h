@@ -1,6 +1,10 @@
 #ifndef GAME_OBSERVERS_H
 #define GAME_OBSERVERS_H
 
+#include <list>
+
+using namespace std;
+
 /*
 Using the Observer design pattern, implement a view that displays information happening in the
 current turn. It should first display a header showing what player and what is currently being
@@ -26,5 +30,47 @@ displays a celebratory message with each player scoring..
 The Observer and Observable classes code must be implemented in a new
 GameObservers.cpp/GameObservers.h file duo (same as for Part 2).
 */
+
+class MainGameEngine;
+
+class Observer {
+public:
+    ~Observer();
+    virtual void Update() = 0;
+protected:
+    Observer();
+};
+
+class Subject {
+public:
+    virtual void Attach(Observer* o);
+    virtual void Detach(Observer* o);
+    virtual void Notify();
+    Subject();
+    ~Subject();
+private:
+    list<Observer*> *observers;
+};
+
+// This needs to be included AFTER the Subject get defined to avoid errors.
+#include "GameMainLoop.h"
+
+class GameObserver : public Observer {
+    MainGameEngine* mainEngine;
+public:
+    GameObserver();
+    GameObserver(MainGameEngine* mainEngine);
+    ~GameObserver();
+    void Update();
+};
+
+class StatsObserver : public Observer {
+    MainGameEngine* mainEngine;
+public:
+    StatsObserver();
+    StatsObserver(MainGameEngine* mainEngine);
+    ~StatsObserver();
+    void Update();
+};
 
 #endif

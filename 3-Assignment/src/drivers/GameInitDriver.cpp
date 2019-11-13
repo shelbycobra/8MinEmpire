@@ -7,7 +7,7 @@ int main() {
     cout << "TEST: test_GameInitObject" << endl;
     cout << "=====================================================================" << endl;
 
-    GameInitEngine initPhase;
+    InitGameEngine initPhase;
 
     initPhase.initGame();
 

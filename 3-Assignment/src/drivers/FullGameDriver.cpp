@@ -1,7 +1,7 @@
 #include "../GameMainLoop.h"
 
 int main() {
-    GameMainEngine gameEngine;
+    MainGameEngine gameEngine;
 
     gameEngine.getStartUpPhase()->startGame();
 

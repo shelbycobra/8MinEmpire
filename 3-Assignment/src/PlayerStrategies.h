@@ -1,9 +1,13 @@
 #ifndef PLAYER_STRATEGIES_H
 #define PLAYER_STRATEGIES_H
 
+#include "Cards.h"
+#include "Map.h"
+#include "Player.h"
+
 class Card;
 class GameMap;
-class Players;
+typedef unordered_map<string, Player*> Players;
 
 class Strategy {
 

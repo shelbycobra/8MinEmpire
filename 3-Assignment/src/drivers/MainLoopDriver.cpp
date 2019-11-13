@@ -2,7 +2,7 @@
 
 
 int main() {
-    GameMainEngine gameEngine;
+    MainGameEngine gameEngine;
 
     gameEngine.getStartUpPhase()->startGame();
 

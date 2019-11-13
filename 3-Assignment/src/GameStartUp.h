@@ -3,22 +3,22 @@
 
 #include "GameInit.h"
 
-class GameStartUpEngine {
+class StartUpGameEngine {
 
-    GameInitEngine* initPhase;
+    InitGameEngine* initPhase;
     queue<Player*>* nextTurn;
     int* coinSupply;
 
 public:
-    GameStartUpEngine();
-    GameStartUpEngine(GameStartUpEngine* otherStartUpEngine);
-    GameStartUpEngine& operator=(GameStartUpEngine& startUpEngine);
-    ~GameStartUpEngine();
+    StartUpGameEngine();
+    StartUpGameEngine(StartUpGameEngine* otherStartUpEngine);
+    StartUpGameEngine& operator=(StartUpGameEngine& startUpEngine);
+    ~StartUpGameEngine();
 
     void startGame();
 
     //Getters
-    GameInitEngine* getInitPhase() { return initPhase; }
+    InitGameEngine* getInitPhase() { return initPhase; }
     queue<Player*>* getNextTurnQueue() { return nextTurn; }
 
     int getCoinSupply() { return *coinSupply; }

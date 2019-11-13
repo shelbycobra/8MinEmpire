@@ -8,7 +8,7 @@
 /**
  * Default Constructor
  */
-GameInitEngine::GameInitEngine(): 
+InitGameEngine::InitGameEngine(): 
     map(new GameMap()), players(new Players()),
     hand(new Hand()), numPlayers(new int()), 
     playerOrder(new vector<string>()) {
@@ -23,7 +23,7 @@ GameInitEngine::GameInitEngine():
 /**
  * Copy constructor
  */
-GameInitEngine::GameInitEngine(GameInitEngine* otherInitEngine) {
+InitGameEngine::InitGameEngine(InitGameEngine* otherInitEngine) {
     map = new GameMap(otherInitEngine->getMap());
     players = new Players(*otherInitEngine->getPlayers());
     hand = new Hand(otherInitEngine->getHand());
@@ -35,7 +35,7 @@ GameInitEngine::GameInitEngine(GameInitEngine* otherInitEngine) {
 /**
  * Assignment operator
  */
-GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
+InitGameEngine& InitGameEngine::operator=(InitGameEngine& otherInitEngine) {
     map = new GameMap(otherInitEngine.getMap());
     players = new Players(*otherInitEngine.getPlayers());
     hand = new Hand(otherInitEngine.getHand());
@@ -48,7 +48,7 @@ GameInitEngine& GameInitEngine::operator=(GameInitEngine& otherInitEngine) {
 /**
  * Destructor
  */
-GameInitEngine::~GameInitEngine() {
+InitGameEngine::~InitGameEngine() {
     for (pair<string, Player*> player: *players) {
         delete player.second;
     }
@@ -70,7 +70,7 @@ GameInitEngine::~GameInitEngine() {
 /**
  * Creates the GameMap object and the Players.
  */
-void GameInitEngine::initGame() {
+void InitGameEngine::initGame() {
     // Only initialize the game once.
     if (players->size() == 0 && map->getVertices()->size() == 0) {
 
@@ -96,7 +96,7 @@ void GameInitEngine::initGame() {
  * It validates map files and map objects created from a valid map file.
  *
  */
-void GameInitEngine::initializeMap() {
+void InitGameEngine::initializeMap() {
     delete map; //Delete the empty map created by the default constructor.
 
     vector<string>* mapFiles = getMapFiles();
@@ -128,7 +128,7 @@ void GameInitEngine::initializeMap() {
  * Prompts the user to select the number of players. 
  * The user can choose between 2 and 5 players, inclusively.
  */
-void GameInitEngine::selectNumPlayers() {
+void InitGameEngine::selectNumPlayers() {
     const int MAX_NUM_PLAYERS = 5;
     const int MIN_NUM_PLAYERS = 2;
 
@@ -161,7 +161,7 @@ void GameInitEngine::selectNumPlayers() {
 /**
  * Populates the Players object (typedef unordered_map<string, Player*>) with new Player objects.
  */
-void GameInitEngine::createPlayers(){
+void InitGameEngine::createPlayers(){
     vector<Player*> playerList;
     cout << "[ INIT ] Creating " << *numPlayers << " players." << endl;
 
@@ -180,7 +180,7 @@ void GameInitEngine::createPlayers(){
  * the five available colours. Once a player selects a colour, it is no
  * longer available for the other players to choose.
  */
-Player* GameInitEngine::createPlayer(){
+Player* InitGameEngine::createPlayer(){
     string name;
     string colour;
 
@@ -198,7 +198,7 @@ Player* GameInitEngine::createPlayer(){
  * 
  * @return A vector of the names of the files in the maps/ directory.
  */
-vector<string>* GameInitEngine::getMapFiles() {
+vector<string>* InitGameEngine::getMapFiles() {
     vector<string>* files = new vector<string>();
 
     DIR *dir;
@@ -223,7 +223,7 @@ vector<string>* GameInitEngine::getMapFiles() {
 /**
  * Prompts the user to select a map file among the files in the maps/ directory.
  */
-string GameInitEngine::selectMap(vector<string>* maps) {
+string InitGameEngine::selectMap(vector<string>* maps) {
     const int NUM_MAPS = maps->size();
 
     while(true) {
@@ -257,7 +257,7 @@ string GameInitEngine::selectMap(vector<string>* maps) {
 /**
  * Prints the available colours that a player can choose from.
  */
-void GameInitEngine::printColours() {
+void InitGameEngine::printColours() {
     cout << "[ INIT ]  AVAILABLE COLOURS\n" << endl;
     for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
         cout << (*it) << endl;
@@ -269,7 +269,7 @@ void GameInitEngine::printColours() {
 /**
  * Prompts the user to choose among available colours.
  */
-string GameInitEngine::chooseColour() {
+string InitGameEngine::chooseColour() {
     string colour;
 
     while(true) {
@@ -304,7 +304,7 @@ string GameInitEngine::chooseColour() {
 /**
  * Prompts the user to choose a unique player name.
  */
-string GameInitEngine::chooseName() {
+string InitGameEngine::chooseName() {
     string name;
 
     while(true) {

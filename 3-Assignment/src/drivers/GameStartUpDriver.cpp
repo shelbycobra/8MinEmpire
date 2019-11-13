@@ -1,7 +1,7 @@
 #include "../GameStartUp.h"
 
 int main() {
-    GameStartUpEngine startPhase;
+    StartUpGameEngine startPhase;
     startPhase.startGame();
 
     return 0;

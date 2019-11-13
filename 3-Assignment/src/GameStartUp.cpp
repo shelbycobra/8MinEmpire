@@ -4,22 +4,22 @@
 /**
  * Default Constructor
  */
-GameStartUpEngine::GameStartUpEngine():
-    initPhase(new GameInitEngine()), nextTurn(new queue<Player*>()), coinSupply(new int(44)) {}
+StartUpGameEngine::StartUpGameEngine():
+    initPhase(new InitGameEngine()), nextTurn(new queue<Player*>()), coinSupply(new int(44)) {}
 
 /**
  * Copy Constructor
  */
-GameStartUpEngine::GameStartUpEngine(GameStartUpEngine* otherStartUpEngine){
-    initPhase = new GameInitEngine(otherStartUpEngine->getInitPhase());
+StartUpGameEngine::StartUpGameEngine(StartUpGameEngine* otherStartUpEngine){
+    initPhase = new InitGameEngine(otherStartUpEngine->getInitPhase());
     nextTurn = new queue<Player*>(*otherStartUpEngine->getNextTurnQueue());
 }
 
 /**
  * Assigment operator
  */
-GameStartUpEngine& GameStartUpEngine::operator=(GameStartUpEngine& otherStartUpEngine) {
-    initPhase = new GameInitEngine(otherStartUpEngine.getInitPhase());
+StartUpGameEngine& StartUpGameEngine::operator=(StartUpGameEngine& otherStartUpEngine) {
+    initPhase = new InitGameEngine(otherStartUpEngine.getInitPhase());
     nextTurn = new queue<Player*>(*otherStartUpEngine.getNextTurnQueue());
     return *this;
 }
@@ -27,7 +27,7 @@ GameStartUpEngine& GameStartUpEngine::operator=(GameStartUpEngine& otherStartUpE
 /**
  * Deconstructor
  */
-GameStartUpEngine::~GameStartUpEngine(){
+StartUpGameEngine::~StartUpGameEngine(){
     delete initPhase;
     delete nextTurn;
 
@@ -38,7 +38,7 @@ GameStartUpEngine::~GameStartUpEngine(){
 /**
  * Starts the game.
  * 
- * Uses the GameInitEngine object to initialize map and players, then
+ * Uses the InitGameEngine object to initialize map and players, then
  * sets up the "game board" by distributing the starter coins to each player, asking for the start
  * region, and placing 3 armies on the start region for each player.
  * 
@@ -47,7 +47,7 @@ GameStartUpEngine::~GameStartUpEngine(){
  * 4 armies belonging to Anon on the map.
  * 
  */
-void GameStartUpEngine::startGame() {
+void StartUpGameEngine::startGame() {
     if (nextTurn->size() == 0) {
         // Create Map and Players
         initPhase->initGame();
@@ -79,7 +79,7 @@ void GameStartUpEngine::startGame() {
  * three players ->  11 coins
  * two players   ->  14 coins.
  */
-void GameStartUpEngine::distributeCoins() {
+void StartUpGameEngine::distributeCoins() {
     int coins = 18 - initPhase->getNumPlayers() * 2;
     if (initPhase->getNumPlayers() == 3 || initPhase->getNumPlayers() == 4)
         coins--;
@@ -98,7 +98,7 @@ void GameStartUpEngine::distributeCoins() {
 /**
  * Prompts a user to choose a start region on the map.
  */
-void GameStartUpEngine::selectStartVertex() {
+void StartUpGameEngine::selectStartVertex() {
     Vertices* vertices = initPhase->getMap()->getVertices();
 
     while(true) {
@@ -129,7 +129,7 @@ void GameStartUpEngine::selectStartVertex() {
  * two players each take turns placing armies anywhere on the map until there are
  * 4 armies belonging to Anon on the map.
  */
-void GameStartUpEngine::placeStartingArmies() {
+void StartUpGameEngine::placeStartingArmies() {
     string startName = initPhase->getMap()->getStartVertex();
 
     cout << "\n---------------------------------------------------------------------" << endl;
@@ -153,7 +153,7 @@ void GameStartUpEngine::placeStartingArmies() {
  * 
  * @param firstPlayer A Player pointer to the first player chosen by the winner during bidding. 
  */
-void GameStartUpEngine::setPlayerOrderInQueue(Player* firstPlayer) {
+void StartUpGameEngine::setPlayerOrderInQueue(Player* firstPlayer) {
     nextTurn->push(firstPlayer);
 
     Players* players = initPhase->getPlayers();
@@ -189,7 +189,7 @@ void GameStartUpEngine::setPlayerOrderInQueue(Player* firstPlayer) {
  * This method is called when there are only 2 players. Each players
  * chooses 2 regions to add an army, up to 4 total Anon armies.
  */
-void GameStartUpEngine::placeAnonArmies() {
+void StartUpGameEngine::placeAnonArmies() {
     Players* players = initPhase->getPlayers();
     queue<string> nextTurn;
 
@@ -226,7 +226,7 @@ void GameStartUpEngine::placeAnonArmies() {
 /**
  * Prompts the player to choose a vertex for the Anon player.
  */
-void GameStartUpEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
+void StartUpGameEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
 
     string startName;
 
@@ -252,7 +252,7 @@ void GameStartUpEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
 /**
  * Adds coins to the coin supply.
  */
-void GameStartUpEngine::addCoinsToSupply(int amount) {
+void StartUpGameEngine::addCoinsToSupply(int amount) {
     *coinSupply += amount;
     cout << "[ GAME COINS ] Coin supply now contains " << getCoinSupply() << " coins. " << endl;
 }
@@ -260,7 +260,7 @@ void GameStartUpEngine::addCoinsToSupply(int amount) {
 /**
  * Removes coins from the coin supply.
  */
-void GameStartUpEngine::removeCoinsFromSupply(int amount) {
+void StartUpGameEngine::removeCoinsFromSupply(int amount) {
     *coinSupply -= amount;
     cout << "[ GAME COINS ] Coin supply now contains " << getCoinSupply() << " coins. " << endl;
 }

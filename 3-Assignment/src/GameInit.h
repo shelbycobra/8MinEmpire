@@ -4,7 +4,7 @@
 #include "Player.h"
 #include <list>
 
-class GameInitEngine {
+class InitGameEngine {
     GameMap* map;
     Players* players;
     Hand* hand;
@@ -13,10 +13,10 @@ class GameInitEngine {
     vector<string>* playerOrder;
 
 public:
-    GameInitEngine();
-    GameInitEngine(GameInitEngine* otherInitEngine);
-    GameInitEngine& operator=(GameInitEngine& otherInitEngine);
-    ~GameInitEngine();
+    InitGameEngine();
+    InitGameEngine(InitGameEngine* otherInitEngine);
+    InitGameEngine& operator=(InitGameEngine& otherInitEngine);
+    ~InitGameEngine();
 
     void initGame();
 

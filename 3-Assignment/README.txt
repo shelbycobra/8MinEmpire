@@ -51,7 +51,7 @@ Part 1: Game Start
 
     DRIVER: GameInitDriver.cpp
 
-        An interactive driver that tests the GameInitEngine class. It loads a map from one of 
+        An interactive driver that tests the InitGameEngine class. It loads a map from one of 
     the map files in the maps/ directory and creates the players for the game.
 
 
@@ -59,7 +59,7 @@ Part 2: Game Play: Startup Phase
 
     DRIVER: GameStartUpDriver.cpp
 
-        An interactive driver that tests the GameStartEngine class. The class uses a GameInitEngine
+        An interactive driver that tests the GameStartEngine class. The class uses a InitGameEngine
     object to initialize the map and the players before setting up the map with the starter armies, 
     starting the bidding process and determining which player goes first.
 
@@ -68,7 +68,7 @@ Part 3: Game Play: Main Game Loop
 
     DRIVER: MainLoopDriver.cpp
 
-        An interactive driver that tests part of the GameMainEngine class. It uses the GameStartUpEngine to start
+        An interactive driver that tests part of the MainGameEngine class. It uses the StartUpGameEngine to start
     the game. It then runs a game loop with each player turn starting with the first and going clockwise order,
     which, in other words means, going in player creation order starting with the first player chosen by the bid winner.
     Each player takes one face-up card and pays the appropriate cost for the card depending on its position in 
@@ -88,7 +88,7 @@ Part 5: Main Game Loop: After The Action
 
     DRIVER: AfterActionDriver.cpp
 
-        An interactive driver that demonstrates part of the GameMainEngine class. It shows the behaviour after
+        An interactive driver that demonstrates part of the MainGameEngine class. It shows the behaviour after
     the player completes the card action. A card gets drawn from the deck and placed at the back of the game 
     hand and the play passes to the next clockwise player.
 
@@ -97,7 +97,7 @@ Part 6: Main Game Loop: Compute The Game Score
 
     DRIVER: GameScoreDriver.cpp
 
-        An interactive driver that demonstrates part of the GameMainEngine class and the Player ComputeScore methods.
+        An interactive driver that demonstrates part of the MainGameEngine class and the Player ComputeScore methods.
     This driver uses a separate class called ScoreTest that is a friend of the Player class for easier testing.
     Each test in the driver requires specific input:
 

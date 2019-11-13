@@ -19,6 +19,7 @@ class Vertex;
 class Bidder;
 class Player;
 class GameMap;
+class Strategy;
 
 typedef unordered_map<string, Vertex*> Vertices;
 typedef unordered_map<string, Player*> Players;
