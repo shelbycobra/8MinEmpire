@@ -36,12 +36,24 @@ InitGameEngine::InitGameEngine(InitGameEngine* otherInitEngine) {
  * Assignment operator
  */
 InitGameEngine& InitGameEngine::operator=(InitGameEngine& otherInitEngine) {
-    map = new GameMap(otherInitEngine.getMap());
-    players = new Players(*otherInitEngine.getPlayers());
-    hand = new Hand(otherInitEngine.getHand());
-    numPlayers = new int(otherInitEngine.getNumPlayers());
-    colours = new list<string>(*otherInitEngine.getColours());
-    playerOrder = new vector<string>(*otherInitEngine.getPlayerOrder());
+    if (&otherInitEngine != this) {
+        for (pair<string, Player*> player: *players) {
+            delete player.second;
+        }
+        delete map;
+        delete players;
+        delete hand;
+        delete numPlayers;
+        delete colours;
+        delete playerOrder;
+
+        map = new GameMap(otherInitEngine.getMap());
+        players = new Players(*otherInitEngine.getPlayers());
+        hand = new Hand(otherInitEngine.getHand());
+        numPlayers = new int(otherInitEngine.getNumPlayers());
+        colours = new list<string>(*otherInitEngine.getColours());
+        playerOrder = new vector<string>(*otherInitEngine.getPlayerOrder());
+    }
     return *this;
 }
 

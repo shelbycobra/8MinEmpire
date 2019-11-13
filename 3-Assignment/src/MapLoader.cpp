@@ -15,7 +15,7 @@ MapLoader::MapLoader() : mapFilePath(new string(".")){}
 
 /**
  * Initializes a MapLoader object.
- * 
+ *
  * @param fileName The name of the file. This can be a path start from any directory inside the maps/ directory.
  */
 MapLoader::MapLoader(const string& fileName): mapFilePath(new string(PATH_PREFIX + fileName)){}
@@ -31,7 +31,10 @@ MapLoader::MapLoader(MapLoader* mapLoader){
  * Assignment operator
  */
 MapLoader& MapLoader::operator=(MapLoader& mapLoader){
-    mapFilePath = new string(mapLoader.getMapFilePath());
+    if(&mapLoader != this) {
+        delete mapFilePath;
+        mapFilePath = new string(mapLoader.getMapFilePath());
+    }
     return *this;
 }
 

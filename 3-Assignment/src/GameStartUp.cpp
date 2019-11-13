@@ -19,8 +19,13 @@ StartUpGameEngine::StartUpGameEngine(StartUpGameEngine* otherStartUpEngine){
  * Assigment operator
  */
 StartUpGameEngine& StartUpGameEngine::operator=(StartUpGameEngine& otherStartUpEngine) {
-    initPhase = new InitGameEngine(otherStartUpEngine.getInitPhase());
-    nextTurn = new queue<Player*>(*otherStartUpEngine.getNextTurnQueue());
+    if(&otherStartUpEngine != this) {
+        delete initPhase;
+        delete nextTurn;
+
+        initPhase = new InitGameEngine(otherStartUpEngine.getInitPhase());
+        nextTurn = new queue<Player*>(*otherStartUpEngine.getNextTurnQueue());
+    }
     return *this;
 }
 
@@ -37,15 +42,15 @@ StartUpGameEngine::~StartUpGameEngine(){
 
 /**
  * Starts the game.
- * 
+ *
  * Uses the InitGameEngine object to initialize map and players, then
  * sets up the "game board" by distributing the starter coins to each player, asking for the start
  * region, and placing 3 armies on the start region for each player.
- * 
+ *
  * If there are only two players, a third player "Anon" is created and the other
  * two players each take turns placing armies anywhere on the map until there are
  * 4 armies belonging to Anon on the map.
- * 
+ *
  */
 void StartUpGameEngine::startGame() {
     if (nextTurn->size() == 0) {
@@ -73,7 +78,7 @@ void StartUpGameEngine::startGame() {
 /**
  * Distrbutes coins to each player from the coin supply. The amount depends on how
  * many players there are:
- * 
+ *
  * five players  ->  8 coins
  * four players  ->  9 coins
  * three players ->  11 coins
@@ -124,7 +129,7 @@ void StartUpGameEngine::selectStartVertex() {
 
 /**
  * Places 3 armies on the start region for each player.
- * 
+ *
  * If there are only two players, a third player "Anon" is created and the other
  * two players each take turns placing armies anywhere on the map until there are
  * 4 armies belonging to Anon on the map.
@@ -150,8 +155,8 @@ void StartUpGameEngine::placeStartingArmies() {
 /**
  * Populates the nextTurn queue in "clock-wise order" (aka, the order of creation) starting with
  * the first player.
- * 
- * @param firstPlayer A Player pointer to the first player chosen by the winner during bidding. 
+ *
+ * @param firstPlayer A Player pointer to the first player chosen by the winner during bidding.
  */
 void StartUpGameEngine::setPlayerOrderInQueue(Player* firstPlayer) {
     nextTurn->push(firstPlayer);
@@ -163,7 +168,7 @@ void StartUpGameEngine::setPlayerOrderInQueue(Player* firstPlayer) {
 
     bool afterFirstPlayer = false;
 
-    // Add all players created after firstPlayer to nextTurn queue 
+    // Add all players created after firstPlayer to nextTurn queue
     // so that it matches the "clock wise" order of players.
     for(it = playerOrder->begin(); it != playerOrder->end(); ++it) {
         if ((*it) == firstPlayer->getName()) {

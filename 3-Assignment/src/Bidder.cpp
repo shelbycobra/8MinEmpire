@@ -32,9 +32,16 @@ Bidder::Bidder(Bidder* bidder) {
  * Assignment operator
  */
 Bidder& Bidder::operator=(Bidder& bidder) {
-    madeBid = new bool(bidder.getMadeBid());
-    player = new Player(bidder.getPlayer());
-    bidAmount = new int(bidder.getBidAmount());
+    if (&bidder != this) {
+        delete madeBid;
+        delete bidAmount;
+        // We don't delete the player object since it has other pointers
+        // pointing to it throughout the game.
+
+        madeBid = new bool(bidder.getMadeBid());
+        player = new Player(bidder.getPlayer());
+        bidAmount = new int(bidder.getBidAmount());
+    }
     return *this;
 }
 

@@ -46,13 +46,23 @@ Vertex::Vertex(Vertex* vertex){
  * Assignment operator
  */
 Vertex& Vertex::operator=(Vertex& vertex) {
-    name = new string(vertex.getName());
-    vertexKey = new string(vertex.getKey());
-    continent = new string(vertex.getContinent());
-    owners = new set<Player*>(*vertex.getOwners());
-    armies = new unordered_map<PlayerEntry*, int>(*vertex.getArmies());
-    cities = new unordered_map<PlayerEntry*, int>(*vertex.getCities());
-    edges = new vector<Edge>(*vertex.getEdges());
+    if (&vertex != this) {
+        delete name;
+        delete vertexKey;
+        delete owners;
+        delete continent;
+        delete armies;
+        delete cities;
+        delete edges;
+
+        name = new string(vertex.getName());
+        vertexKey = new string(vertex.getKey());
+        continent = new string(vertex.getContinent());
+        owners = new set<Player*>(*vertex.getOwners());
+        armies = new unordered_map<PlayerEntry*, int>(*vertex.getArmies());
+        cities = new unordered_map<PlayerEntry*, int>(*vertex.getCities());
+        edges = new vector<Edge>(*vertex.getEdges());
+    }
     return *this;
 }
 
@@ -139,9 +149,9 @@ string Vertex::getRegionOwner() {
 /**
  * Default Constructor
  */
-GameMap::GameMap(): 
+GameMap::GameMap():
     vertices(new Vertices()),
-    start(new string("none")), 
+    start(new string("none")),
     image(new string("")) {}
 
 /**
@@ -154,10 +164,19 @@ GameMap::GameMap(GameMap* map) {
 }
 
 GameMap& GameMap::operator=(GameMap& map) {
-    vertices = new Vertices(*map.getVertices());
-    start = new string(map.getStartVertex());
-    image = new string(map.getImage());
+    if(&map != this) {
+        // Delete all vertices on the map.
+        for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it)
+            delete it->second;
 
+        delete vertices;
+        delete start;
+        delete image;
+
+        vertices = new Vertices(*map.getVertices());
+        start = new string(map.getStartVertex());
+        image = new string(map.getImage());
+    }
     return *this;
 }
 

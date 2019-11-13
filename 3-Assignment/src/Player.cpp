@@ -80,16 +80,33 @@ Player::Player(Player* player){
  * Assignment operator
  */
 Player& Player::operator=(Player& player) {
-    name = new string(player.getName());
-    countries = new Vertices(*player.getCountries());
-    armies = new int(player.getArmies());
-    cities = new int(player.getCities());
-    coins = new int(player.getCoins());
-    hand = new vector<Card*>(*player.getHand());
-    bidder = new Bidder(player.getBidder());
-    colour = new string(player.getColour());
-    playerEntry = new PlayerEntry(player.getPlayerEntry()->first, player.getPlayerEntry()->second);
-    controlledRegions = new int(player.getControlledRegions());
+    if (&player != this) {
+        //Delete all the cards the player holds.
+        for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it)
+            delete *it;
+
+        delete name;
+        delete countries;
+        delete armies;
+        delete cities;
+        delete coins;
+        delete hand;
+        delete bidder;
+        delete colour;
+        delete playerEntry;
+        delete controlledRegions;
+
+        name = new string(player.getName());
+        countries = new Vertices(*player.getCountries());
+        armies = new int(player.getArmies());
+        cities = new int(player.getCities());
+        coins = new int(player.getCoins());
+        hand = new vector<Card*>(*player.getHand());
+        bidder = new Bidder(player.getBidder());
+        colour = new string(player.getColour());
+        playerEntry = new PlayerEntry(player.getPlayerEntry()->first, player.getPlayerEntry()->second);
+        controlledRegions = new int(player.getControlledRegions());
+    }
     return *this;
 }
 

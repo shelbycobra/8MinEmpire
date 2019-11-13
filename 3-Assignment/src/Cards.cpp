@@ -39,9 +39,15 @@ Card::Card(Card* card) {
  * Assignment operator
  */
 Card& Card::operator =(Card& card){
-    id = new int(card.getID());
-    good = new string(card.getGood());
-    action = new string(card.getAction());
+    if (&card != this) {
+        delete id;
+        delete good;
+        delete action;
+
+        id = new int(card.getID());
+        good = new string(card.getGood());
+        action = new string(card.getAction());
+    }
     return *this;
 }
 
@@ -139,7 +145,10 @@ Deck::Deck(Deck* deck) {
  * Assignment operator
  */
 Deck& Deck::operator =(Deck& deck) {
-    cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
+    if (&deck != this) {
+        delete cardDeck;
+        cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
+    }
     return *this;
 }
 
@@ -229,9 +238,12 @@ Hand::Hand(Hand* otherGameHand) {
  * Assignment operator
  */
 Hand& Hand::operator=(Hand& otherGameHand) {
-    hand = new vector<Card*>(*otherGameHand.getHand());
-    deck = new Deck(otherGameHand.getDeck());
-
+    if (&otherGameHand != this) {
+        delete hand;
+        delete deck;
+        hand = new vector<Card*>(*otherGameHand.getHand());
+        deck = new Deck(otherGameHand.getDeck());
+    }
     return *this;
 }
 

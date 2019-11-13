@@ -17,7 +17,10 @@ MainGameEngine::MainGameEngine(MainGameEngine* otherMainGameEngine) {
  * Assignment Operator
  */
 MainGameEngine& MainGameEngine::operator=(MainGameEngine& otherMainGameEngine) {
-    startUpPhase = new StartUpGameEngine(otherMainGameEngine.getStartUpPhase());
+    if(&otherMainGameEngine != this) {
+        delete startUpPhase;
+        startUpPhase = new StartUpGameEngine(otherMainGameEngine.getStartUpPhase());
+    }
     return *this;
 }
 
@@ -80,6 +83,9 @@ void MainGameEngine::performCardAction(Player* player, const string action) {
     GameMap* map = startUpPhase->getInitPhase()->getMap();
     Players* players = startUpPhase->getInitPhase()->getPlayers();
 
+    // Notify observers of changes
+    Notify();
+
     string answer;
     cout << "[ GAME ] Ignore card action < " << action << " > (y/n)?" << endl;
     cout << "[ GAME ] > ";
@@ -105,9 +111,6 @@ void MainGameEngine::performCardAction(Player* player, const string action) {
         else
             cout << "[ ERROR! ] Invalid action." << endl;
     }
-
-    // Notify obsevers of changes
-    Notify();
 }
 
 /**
