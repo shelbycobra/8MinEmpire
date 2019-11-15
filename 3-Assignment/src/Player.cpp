@@ -6,6 +6,7 @@
 #include <algorithm>
 
 class GameMap;
+
 /**
  * Default constructor
  */
@@ -362,17 +363,19 @@ void Player::Ignore() {
 /**
  * Calculates the total victory points of a player at the end of the game.
  * Totals the number of owned regions, owned continents and resource victory points.
- * 
+ *
  * @param map A GameMap pointer to the map.
  * @return The total victory points.
  */
 int Player::ComputeScore(GameMap* map) {
-    cout << "{ " << *name << " } CALCULATING SCORE ... \n" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+    cout << "{ " << *name << " } CALCULATING SCORE ..." << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 
     int totalPoints = 0;
-    totalPoints += getOwnedRegions();
-    totalPoints += computeContinents(map);
-    totalPoints += computeGoods();
+    totalPoints += getVPFromRegions();
+    totalPoints += getVPFromContinents(map);
+    totalPoints += getVPFromGoods();
 
     cout << "\n{ " << *name << " } Final score : " << totalPoints << "\n" << endl;
 
@@ -383,10 +386,10 @@ int Player::ComputeScore(GameMap* map) {
  * Calculates the total owned regions for a player. A region is considered owned
  * if the player has the most armies and cities on that region. If two players have
  * the same count, then no one owns the region.
- * 
+ *
  * @return The total number of owned regions.
  */
-int Player::getOwnedRegions() {
+int Player::getVPFromRegions() {
     int ownedRegions = 0;
 
     Vertices::iterator it;
@@ -413,34 +416,17 @@ int Player::getOwnedRegions() {
  *
  * @return The total number of owned continents.
  */
-int Player::computeContinents(GameMap* map) {
+int Player::getVPFromContinents(GameMap* map) {
     int ownedContinents = 0;
     vector<set<string>* > continents = map->getContinents();
 
-    //Iterate through each continent and count how many regions each player owns.
+    //Iterate through each continent and get the owner.
     for(vector<set<string>* >::iterator it = continents.begin(); it != continents.end(); ++it) {
 
         set<string>* continent = *it;
         string continentName = map->getVertices()->find(*continent->begin())->second->getContinent();
 
-        // Create an empty map that tracks the number of owned regions per player.
-        unordered_map<string, int> ownedRegionsPerPlayer;
-
-        for(set<string>::iterator contIt = continent->begin(); contIt != continent->end(); ++contIt) {
-            Vertex* region = map->getVertices()->find(*contIt)->second;
-            string owner = region->getRegionOwner(); // Returns "" if owned by no one.
-
-            // Increment the number of owned regions per player.
-            if(ownedRegionsPerPlayer.find(owner) != ownedRegionsPerPlayer.end()) {
-                int numOwnedRegions = ownedRegionsPerPlayer.find(owner)->second;
-                ownedRegionsPerPlayer.erase(owner);
-                ownedRegionsPerPlayer.insert(pair<string,int>(owner, numOwnedRegions+1));
-            } else {
-                ownedRegionsPerPlayer.insert(pair<string,int>(owner, 1));
-            }
-        }
-
-        string owner = findOwnerOfContinent(&ownedRegionsPerPlayer);
+        string owner = map->getContinentOwner(continent);
 
         if(owner == *name) {
             ownedContinents++;
@@ -464,7 +450,7 @@ int Player::computeContinents(GameMap* map) {
  *
  * @return The total victory points for each card type.
  */
-int Player::computeGoods() {
+int Player::getVPFromGoods() {
                                     // 0 1 2 3 4 5 6 7 8
     int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5};
     int ironValuePerCardCount[]     = {0,0,1,1,2,2,3,5,5};
@@ -875,7 +861,7 @@ bool Player::executeDestroyArmy(Vertex* country, Player* opponent){
 
 /**
  * Puts coins taken from the game coin supply into the player's purse.
- * 
+ *
  * @param numCoins Number of coins to add to purse from the game coin supply.
  */
 void Player::fillPurseFromSupply(const int& numCoins) {
@@ -985,9 +971,10 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
     while(true){
         if (type == ActionType::ADD_ARMY || type == ActionType::BUILD_CITY)
             printCountries();
-        else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY)
+        else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY) {
             map->printMap();
-        else {
+            map->printOccupiedRegions();
+        } else {
             cerr << "[ ERROR! ] Invalid action type." << endl;
             return 0;
         }
@@ -1117,36 +1104,6 @@ Player* Player::chooseOpponent(Players* players) {
         cerr << "[ ERROR! ] " << opponentName << " doesn't exist. Try again." << endl;
     }
 }
-
-//PRIAVTE
-/**
- * Looks through a map of the number of owned regions per player in a continent to find the owner of the continent.
- *
- * @param ownedRegionsPerPlayer A pointer to the an unordered_map of the number of regions owned per player.
- * @return The owner of the continent. Returns "" if no owner.
- */
-string Player::findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer) {
-    int highestRegionCount = 0;
-    string owner = "";
-
-    // Iterate through the ownedRegionsPerPlayer map and find the number of regions owned by the player to determine
-    // the owner of the current continent.
-    for(unordered_map<string, int>::iterator it = ownedRegionsPerPlayer->begin(); it != ownedRegionsPerPlayer->end(); ++it) {
-
-        if (it->first != "") {
-            if(it->second > highestRegionCount) {
-                highestRegionCount = it->second;
-                owner = it->first;
-            }
-            else if (it->second == highestRegionCount) {
-                owner = "";
-            }
-        }
-    }
-
-    return owner;
-}
-
 
 void Player::executeStrategy(Card* card, GameMap* map, Players* players) {
     strategy->execute(card, map, players);

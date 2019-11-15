@@ -20,6 +20,8 @@
 class MainGameEngine : public Subject {
 
     StartUpGameEngine* startUpPhase;
+    Player* currentPlayer;
+    Card* currentCard;
 
 public:
     MainGameEngine();
@@ -28,14 +30,25 @@ public:
     ~MainGameEngine();
 
     StartUpGameEngine* getStartUpPhase() { return startUpPhase; }
-    
-    Player* getNextPlayer();
-    Card* chooseCardFromHand(Player* player);
-    void performCardAction(Player* player, const string action);
+
+    void getNextPlayer();
+    void chooseCardFromHand();
+    void performCardAction();
     void addNewCardToBackOfHand();
     bool continueGame(int maxNumCards);
     void declareWinner();
     int getMaxNumberOfCards();
+
+    void startGame() { startUpPhase->startGame(); }
+
+    Player* getCurrentPlayer() { return currentPlayer; }
+    Card* getCurrentCard() { return currentCard; }
+    GameMap* getMap() { return startUpPhase->getMap(); }
+    Players* getPlayers() { return startUpPhase->getPlayers(); }
+    Hand* getHand() { return startUpPhase->getHand();}
+    int getNumPlayers() { return startUpPhase->getNumPlayers(); }
+    list<string>* getColours() { return startUpPhase->getColours(); }
+    vector<string>* getPlayerOrder() { return startUpPhase->getPlayerOrder(); }
 };
 
 #endif

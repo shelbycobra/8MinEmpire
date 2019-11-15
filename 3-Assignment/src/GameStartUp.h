@@ -20,10 +20,17 @@ public:
     //Getters
     InitGameEngine* getInitPhase() { return initPhase; }
     queue<Player*>* getNextTurnQueue() { return nextTurn; }
-
     int getCoinSupply() { return *coinSupply; }
+
     void addCoinsToSupply(int amount);
     void removeCoinsFromSupply(int amount);
+
+    GameMap* getMap() { return initPhase->getMap(); }
+    Players* getPlayers() { return initPhase->getPlayers(); }
+    Hand* getHand() { return initPhase->getHand();}
+    int getNumPlayers() { return initPhase->getNumPlayers(); }
+    list<string>* getColours() { return initPhase->getColours(); }
+    vector<string>* getPlayerOrder() { return initPhase->getPlayerOrder(); }
 
 private:
     void chooseAnonVertex(string &player, Player* anonPlayer);

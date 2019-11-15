@@ -101,20 +101,36 @@ void Vertex::addEdge(Vertex* endVertex, bool isWaterEdge) {
  * Prints a list to the console of the armies and cities currently on the vertex.
  */
 void Vertex::print() {
-    cout << "      " << *vertexKey << " : " << *name << endl;
-    unordered_map<PlayerEntry*, int>::iterator it;
+    string owner = getRegionOwner();
+
+    printf("%10s %s : %s\n", ("{ " + owner + " }").c_str(), vertexKey->c_str(), name->c_str());
 
     int numArmies, numCities;
     PlayerEntry* player;
+    unordered_map<PlayerEntry*, int>::iterator it;
+
     for(it = armies->begin(); it != armies->end(); ++it) {
         numCities = 0;
         numArmies = it->second;
         player = it->first;
         if (cities->find(player) != cities->end())
             numCities = cities->find(player)->second;
-
-        printf("\t\t%-10s %-10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+        if (numArmies > 0 || numCities > 0)
+            printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
     }
+
+    for (it = cities->begin(); it != cities->end(); ++it) {
+        player = it->first;
+
+        // Vertex has 0 armies but at least one city belonging to Player
+        if (armies->find(player) == armies->end()) {
+            numArmies = 0;
+            numCities = it->second;
+            printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+        }
+    }
+
+    cout << endl;
 }
 
 /**
@@ -274,6 +290,9 @@ void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, 
  */
 void GameMap::printMap(){
     cout << *image << endl;
+}
+
+void GameMap::printOccupiedRegions() {
     Vertices::iterator it;
     cout << "---------------------------------------------------------------------" << endl;
     for(it = vertices->begin(); it != vertices->end(); ++it) {
@@ -356,4 +375,56 @@ vector<set<string>* > GameMap::getContinents(){
     }
 
     return continents;
+}
+
+
+string GameMap::getContinentOwner(set<string>* continent) {
+    // Create an empty map that tracks the number of owned regions per player.
+    unordered_map<string, int> ownedRegionsPerPlayer;
+
+    // Iterate through the vertices on the continent and count the number of regions owned per player.
+    for(set<string>::iterator it = continent->begin(); it != continent->end(); ++it) {
+        Vertex* region = vertices->find(*it)->second;
+        string owner = region->getRegionOwner(); // Returns "" if owned by no one.
+
+        // Increment the number of owned regions per player.
+        if(ownedRegionsPerPlayer.find(owner) != ownedRegionsPerPlayer.end()) {
+            int numOwnedRegions = ownedRegionsPerPlayer.find(owner)->second;
+            ownedRegionsPerPlayer.erase(owner);
+            ownedRegionsPerPlayer.insert(pair<string,int>(owner, numOwnedRegions+1));
+        } else {
+            ownedRegionsPerPlayer.insert(pair<string,int>(owner, 1));
+        }
+    }
+
+    return findOwnerOfContinent(&ownedRegionsPerPlayer);
+}
+
+//PRIVATE
+/**
+ * Looks through a map of the number of owned regions per player in a continent to find the owner of the continent.
+ *
+ * @param ownedRegionsPerPlayer A pointer to the an unordered_map of the number of regions owned per player.
+ * @return The owner of the continent. Returns "" if no owner.
+ */
+string GameMap::findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer) {
+    int highestRegionCount = 0;
+    string owner = "";
+
+    // Iterate through the ownedRegionsPerPlayer map and find the number of regions owned by the player to determine
+    // the owner of the current continent.
+    for(unordered_map<string, int>::iterator it = ownedRegionsPerPlayer->begin(); it != ownedRegionsPerPlayer->end(); ++it) {
+
+        if (it->first != "") {
+            if(it->second > highestRegionCount) {
+                highestRegionCount = it->second;
+                owner = it->first;
+            }
+            else if (it->second == highestRegionCount) {
+                owner = "";
+            }
+        }
+    }
+
+    return owner;
 }

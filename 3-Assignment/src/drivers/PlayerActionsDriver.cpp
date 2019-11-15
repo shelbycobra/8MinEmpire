@@ -5,7 +5,7 @@
 int main() {
     MainGameEngine mainLoop;
 
-    mainLoop.getStartUpPhase()->startGame();
+    mainLoop.startGame();
 
     Card move4Card(1, GEM, "Move 4 armies");
     Card orCard(2, CARROT, "Add 2 armies OR Build city");

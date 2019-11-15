@@ -109,7 +109,8 @@ void StartUpGameEngine::selectStartVertex() {
     while(true) {
         string answer;
 
-        initPhase->getMap()->printMap();
+        getMap()->printMap();
+        getMap()->printOccupiedRegions();
 
         cout << "\n[ START ] Please choose the start vertex on the map:" << endl;
         cout << "[ START ] > ";
@@ -222,7 +223,8 @@ void StartUpGameEngine::placeAnonArmies() {
         placedArmies++;
     }
 
-    initPhase->getMap()->printMap();
+    getMap()->printMap();
+    getMap()->printOccupiedRegions();
 
     players->insert(pair<string, Player*>(ANON, anonPlayer));
 }
@@ -239,7 +241,10 @@ void StartUpGameEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
         cout << "\n---------------------------------------------------------------------" << endl;
         cout << "{ " << player << " } Choose a region to place one of " << anonPlayer->getName() << "'s armies." << endl;
         cout << "---------------------------------------------------------------------\n" << endl;
-        initPhase->getMap()->printMap();
+
+        getMap()->printMap();
+        getMap()->printOccupiedRegions();
+
         cout << "{ " << player << " } > ";
         getline(cin, startName);
         transform(startName.begin(), startName.end(),startName.begin(), ::toupper);

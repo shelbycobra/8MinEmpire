@@ -61,9 +61,9 @@ public:
     void Ignore();
     int ComputeScore(GameMap* map);
 
-    int getOwnedRegions();
-    int computeContinents(GameMap* map);
-    int computeGoods();
+    int getVPFromRegions();
+    int getVPFromContinents(GameMap* map);
+    int getVPFromGoods();
     void fillPurseFromSupply(const int& coins);
 
     void addCardToHand(Card* card);
@@ -108,7 +108,6 @@ private:
     string chooseORAction(const string action);
     Player* chooseOpponent(Players* players);
     void findAndDistributeWildCards(unordered_map<string, int>* goodsCount);
-    string findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer);
 };
 
 #endif

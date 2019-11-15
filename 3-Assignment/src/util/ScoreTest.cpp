@@ -8,9 +8,9 @@ void ScoreTest::test_onePlayerWinsGame() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
-    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = mainEngine.getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -52,9 +52,9 @@ void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
-    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = mainEngine.getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -96,9 +96,9 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
-    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = mainEngine.getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -130,7 +130,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
         it->second->addCardToHand(cardArr[i++]);
     }
 
-    Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
+    Vertices* vertices = mainEngine.getMap()->getVertices();
 
     Vertex* PEVertex = vertices->find("PE")->second;
 
@@ -147,9 +147,9 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
-    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = mainEngine.getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -181,7 +181,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
         it->second->addCardToHand(cardArr[i++]);
     }
 
-    Vertices* vertices = mainEngine.getStartUpPhase()->getInitPhase()->getMap()->getVertices();
+    Vertices* vertices = mainEngine.getMap()->getVertices();
 
     Vertex* BAVertex = vertices->find("BA")->second;
 
@@ -197,9 +197,9 @@ void ScoreTest::test_playerHasWildCard() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
-    Players* players = mainEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = mainEngine.getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -242,15 +242,15 @@ void ScoreTest::test_gameEndsWhenPlayersHaveMaxNumCards() {
 
     MainGameEngine mainEngine;
 
-    mainEngine.getStartUpPhase()->startGame();
+    mainEngine.startGame();
 
     int maxNumCards = mainEngine.getMaxNumberOfCards();
 
     while(true) {
 
-        Player* currentPlayer = mainEngine.getNextPlayer();
+        mainEngine.getNextPlayer();
 
-        currentPlayer->addCardToHand(new Card(1, STONE, ""));
+        mainEngine.getCurrentPlayer()->addCardToHand(new Card(1, STONE, ""));
 
         if (!mainEngine.continueGame(maxNumCards))
             break;

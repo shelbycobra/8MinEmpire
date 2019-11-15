@@ -4,7 +4,7 @@
 int main() {
     MainGameEngine gameEngine;
 
-    gameEngine.getStartUpPhase()->startGame();
+    gameEngine.startGame();
 
     string cont;
 
@@ -22,7 +22,7 @@ int main() {
             break;
     }
 
-    Players* players = gameEngine.getStartUpPhase()->getInitPhase()->getPlayers();
+    Players* players = gameEngine.getPlayers();
 
     for (Players::iterator it = players->begin(); it != players->end(); ++it) {
         cout << "\n[ PLAYER CARDS ] " << it->first << endl;

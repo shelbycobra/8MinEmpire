@@ -4,13 +4,10 @@
 int main() {
     MainGameEngine gameEngine;
 
-    GameObserver gameObserver;
-    StatsObserver statsObserver;
+    PhaseObserver PhaseObserver(&gameEngine);
+    StatsObserver statsObserver(&gameEngine);
 
-    gameEngine.Attach(&gameObserver);
-    gameEngine.Attach(&statsObserver);
-
-    gameEngine.getStartUpPhase()->startGame();
+    gameEngine.startGame();
 
     int maxNumCards = gameEngine.getMaxNumberOfCards();
 
@@ -18,10 +15,9 @@ int main() {
 
     while(true) {
 
-        Player* currentPlayer = gameEngine.getNextPlayer();
-        Card* currentCard = gameEngine.chooseCardFromHand(currentPlayer);
-
-        gameEngine.performCardAction(currentPlayer, currentCard->getAction());
+        gameEngine.getNextPlayer();
+        gameEngine.chooseCardFromHand();
+        gameEngine.performCardAction();
         gameEngine.addNewCardToBackOfHand();
 
         if (!gameEngine.continueGame(maxNumCards))

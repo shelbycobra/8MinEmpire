@@ -25,6 +25,8 @@ class Card {
     int* id;
     string* good;
     string* action;
+    int* position;
+    int* cost;
 
 public:
     Card();
@@ -36,6 +38,11 @@ public:
     int getID() { return *id; }
     string getGood() { return *good; }
     string getAction() { return *action; }
+    int getPosition() { return *position; }
+    int getCost() { return *cost; }
+
+    void setPosition(int& position) { *this->position = position; }
+    void setCost(int& cost) { *this->cost = cost; }
 };
 
 class Deck {

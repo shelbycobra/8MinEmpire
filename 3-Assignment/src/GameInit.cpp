@@ -64,6 +64,7 @@ InitGameEngine::~InitGameEngine() {
     for (pair<string, Player*> player: *players) {
         delete player.second;
     }
+
     delete map;
     delete players;
     delete hand;

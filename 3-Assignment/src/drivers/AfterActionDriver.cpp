@@ -7,7 +7,7 @@ int main() {
 
     MainGameEngine gameEngine;
 
-    gameEngine.getStartUpPhase()->startGame();
+    gameEngine.startGame();
 
     string cont;
 
@@ -18,7 +18,7 @@ int main() {
 
         // gameEngine.performCardAction(currentPlayer, currentCard->getAction());
         cout << "\n\n---------------------------------------------------------------------" << endl;
-        cout << "[ MOCK ] " << currentPlayer->getName() << " performs card action: " << currentCard->getAction() << endl; 
+        cout << "[ MOCK ] " << currentPlayer->getName() << " performs card action: " << currentCard->getAction() << endl;
         cout << "---------------------------------------------------------------------\n\n" << endl;
 
         gameEngine.addNewCardToBackOfHand();

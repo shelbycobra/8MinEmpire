@@ -44,6 +44,7 @@ int main() {
     cout << "--------------------------------------------------------------------\n" << endl;
 
     map->printMap();
+    map->printOccupiedRegions();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Verify players are the same as during initialization." << endl;

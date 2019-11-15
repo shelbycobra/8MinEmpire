@@ -13,7 +13,7 @@ move armies the amount of movement the card gives him ” Then it should display
 information related to what is happening in this turn, which should be different depending on
 which player turn. This should dynamically be updated as the game goes through different
 players and be visible at all times during game play. The Observer and Observable classes code
-must be implemented in a new GameObservers.cpp/GameObservers.h file duo (same as for
+must be implemented in a new PhaseObservers.cpp/GameObservers.h file duo (same as for
 Part 3).
 
 
@@ -28,7 +28,7 @@ example has been removed from any location by an opponent, or has built a city o
 as soon as a player owns a required number of cards, the game statistics view updates itself and
 displays a celebratory message with each player scoring..
 The Observer and Observable classes code must be implemented in a new
-GameObservers.cpp/GameObservers.h file duo (same as for Part 2).
+PhaseObservers.cpp/GameObservers.h file duo (same as for Part 2).
 */
 
 class MainGameEngine;
@@ -47,7 +47,7 @@ public:
     virtual void Detach(Observer* o);
     virtual void Notify();
     Subject();
-    ~Subject();
+    virtual ~Subject();
 private:
     list<Observer*> *observers;
 };
@@ -55,12 +55,12 @@ private:
 // This needs to be included AFTER the Subject get defined to avoid errors.
 #include "GameMainLoop.h"
 
-class GameObserver : public Observer {
+class PhaseObserver : public Observer {
     MainGameEngine* mainEngine;
 public:
-    GameObserver();
-    GameObserver(MainGameEngine* mainEngine);
-    ~GameObserver();
+    PhaseObserver();
+    PhaseObserver(MainGameEngine* mainEngine);
+    ~PhaseObserver();
     void Update();
 };
 
@@ -71,6 +71,8 @@ public:
     StatsObserver(MainGameEngine* mainEngine);
     ~StatsObserver();
     void Update();
+    void printStats();
+    void printVictoryPoints();
 };
 
 #endif

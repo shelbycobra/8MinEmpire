@@ -12,7 +12,9 @@ using namespace std;
 Card::Card():
     id(new int(0)),
     good(new string("No good")),
-    action(new string("No action")) {}
+    action(new string("No action")),
+    position(new int(0)),
+    cost(new int(0)) {}
 
 /**
  * Initializes a Card object with an ID number, a good and an action.
@@ -24,7 +26,9 @@ Card::Card():
 Card::Card(const int& theId, const string& theGood, const string& theAction):
     id(new int(theId)),
     good(new string(theGood)),
-    action(new string(theAction)) {}
+    action(new string(theAction)),
+    position(new int(0)),
+    cost(new int(0)) {}
 
 /**
  * Copy Constructor
@@ -33,6 +37,8 @@ Card::Card(Card* card) {
     id = new int(card->getID());
     good = new string(card->getGood());
     action = new string(card->getAction());
+    position = new int(card->getPosition());
+    cost = new int(card->getCost());
 }
 
 /**
@@ -43,10 +49,14 @@ Card& Card::operator =(Card& card){
         delete id;
         delete good;
         delete action;
+        delete position;
+        delete cost;
 
         id = new int(card.getID());
         good = new string(card.getGood());
         action = new string(card.getAction());
+        position = new int(card.getPosition());
+        cost = new int(card.getCost());
     }
     return *this;
 }
@@ -58,10 +68,14 @@ Card::~Card() {
     delete id;
     delete good;
     delete action;
+    delete position;
+    delete cost;
 
     id = nullptr;
     good = nullptr;
     action = nullptr;
+    position = nullptr;
+    cost = nullptr;
 }
 
 /**
@@ -299,6 +313,10 @@ Card* Hand::exchange(Player* player){
         if (player->PayCoins(values[position])) {
 
             Card* card = hand->at(position);
+
+            card->setPosition(position);
+            card->setCost(values[position]);
+
 			player->addCardToHand(card);
 
             vector<Card*>::iterator it;

@@ -64,6 +64,7 @@ public:
     void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     void printMap();
+    void printOccupiedRegions();
 
     Vertices* getVertices() { return vertices; }
     string getStartVertex() { return *start; }
@@ -72,6 +73,10 @@ public:
     void setImage(const string& newImage);
     bool setStartVertex(string& startVertexName);
     vector<set<string>* > getContinents();
+    string getContinentOwner(set<string>* continent);
+
+private:
+    string findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer);
 };
 
 #endif
