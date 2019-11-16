@@ -35,20 +35,23 @@ public:
     void chooseCardFromHand();
     void performCardAction();
     void addNewCardToBackOfHand();
-    bool continueGame(int maxNumCards);
+    bool continueGame();
     void declareWinner();
     int getMaxNumberOfCards();
+    void askToChangePlayerStrategy();
 
     void startGame() { startUpPhase->startGame(); }
 
     Player* getCurrentPlayer() { return currentPlayer; }
     Card* getCurrentCard() { return currentCard; }
-    GameMap* getMap() { return startUpPhase->getMap(); }
     Players* getPlayers() { return startUpPhase->getPlayers(); }
     Hand* getHand() { return startUpPhase->getHand();}
     int getNumPlayers() { return startUpPhase->getNumPlayers(); }
     list<string>* getColours() { return startUpPhase->getColours(); }
     vector<string>* getPlayerOrder() { return startUpPhase->getPlayerOrder(); }
+
+    //Setters
+    void setCurrentCard(Card* card) { currentCard = card; }
 };
 
 #endif

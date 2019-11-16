@@ -51,15 +51,19 @@ public:
 typedef unordered_map<string, Vertex*> Vertices;
 
 class GameMap {
+
+private:
+    static GameMap* mapInstance;
     Vertices* vertices;
     string* start;
     string* image;
 
 public:
-    GameMap();
     GameMap(GameMap* map);
     GameMap& operator=(GameMap& map);
     ~GameMap();
+
+    static GameMap* instance();
 
     void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
@@ -76,6 +80,7 @@ public:
     string getContinentOwner(set<string>* continent);
 
 private:
+    GameMap();
     string findOwnerOfContinent(unordered_map<string, int> *ownedRegionsPerPlayer);
 };
 

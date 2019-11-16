@@ -16,31 +16,41 @@ int main() {
     cout << "TEST: Move armies over land." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    mainLoop.performCardAction(mainLoop.getNextPlayer(), move4Card.getAction());
+    mainLoop.getNextPlayer();
+    mainLoop.setCurrentCard(&move4Card);
+    mainLoop.performCardAction();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Or card (Add 2 armies)." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    mainLoop.performCardAction(mainLoop.getNextPlayer(), orCard.getAction());
+    mainLoop.getNextPlayer();
+    mainLoop.setCurrentCard(&orCard);
+    mainLoop.performCardAction();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: And card (Destroy an army AND Add 1 army)." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    mainLoop.performCardAction(mainLoop.getNextPlayer(), andCard.getAction());
+    mainLoop.getNextPlayer();
+    mainLoop.setCurrentCard(&andCard);
+    mainLoop.performCardAction();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Build a city." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    mainLoop.performCardAction(mainLoop.getNextPlayer(), buildCard.getAction());
+    mainLoop.getNextPlayer();
+    mainLoop.setCurrentCard(&buildCard);
+    mainLoop.performCardAction();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Ignore action." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    mainLoop.performCardAction(mainLoop.getNextPlayer(), move4Card.getAction());
+    mainLoop.getNextPlayer();
+    mainLoop.setCurrentCard(&move4Card);
+    mainLoop.performCardAction();
 
     return 0;
 }

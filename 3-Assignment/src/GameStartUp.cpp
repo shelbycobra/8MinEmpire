@@ -104,13 +104,13 @@ void StartUpGameEngine::distributeCoins() {
  * Prompts a user to choose a start region on the map.
  */
 void StartUpGameEngine::selectStartVertex() {
-    Vertices* vertices = initPhase->getMap()->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     while(true) {
         string answer;
 
-        getMap()->printMap();
-        getMap()->printOccupiedRegions();
+        GameMap::instance()->printMap();
+        GameMap::instance()->printOccupiedRegions();
 
         cout << "\n[ START ] Please choose the start vertex on the map:" << endl;
         cout << "[ START ] > ";
@@ -119,7 +119,7 @@ void StartUpGameEngine::selectStartVertex() {
         transform(answer.begin(), answer.end(), answer.begin(), ::toupper);
 
         if (vertices->find(answer) != vertices->end()) {
-            initPhase->getMap()->setStartVertex(answer);
+            GameMap::instance()->setStartVertex(answer);
             break;
         }
 
@@ -136,14 +136,14 @@ void StartUpGameEngine::selectStartVertex() {
  * 4 armies belonging to Anon on the map.
  */
 void StartUpGameEngine::placeStartingArmies() {
-    string startName = initPhase->getMap()->getStartVertex();
+    string startName = GameMap::instance()->getStartVertex();
 
     cout << "\n---------------------------------------------------------------------" << endl;
     cout << "[ START ] Placing 3 armies on the start vertex < " << startName << " >." << endl;
     cout << "---------------------------------------------------------------------\n" << endl;
     Players* players = initPhase->getPlayers();
 
-    Vertex* startVertex = initPhase->getMap()->getVertices()->find(startName)->second;
+    Vertex* startVertex = GameMap::instance()->getVertices()->find(startName)->second;
 
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
         it->second->executeAddArmies(3, startVertex, startName);
@@ -223,8 +223,8 @@ void StartUpGameEngine::placeAnonArmies() {
         placedArmies++;
     }
 
-    getMap()->printMap();
-    getMap()->printOccupiedRegions();
+    GameMap::instance()->printMap();
+    GameMap::instance()->printOccupiedRegions();
 
     players->insert(pair<string, Player*>(ANON, anonPlayer));
 }
@@ -242,17 +242,17 @@ void StartUpGameEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
         cout << "{ " << player << " } Choose a region to place one of " << anonPlayer->getName() << "'s armies." << endl;
         cout << "---------------------------------------------------------------------\n" << endl;
 
-        getMap()->printMap();
-        getMap()->printOccupiedRegions();
+        GameMap::instance()->printMap();
+        GameMap::instance()->printOccupiedRegions();
 
         cout << "{ " << player << " } > ";
         getline(cin, startName);
         transform(startName.begin(), startName.end(),startName.begin(), ::toupper);
 
-        if (initPhase->getMap()->getVertices()->find(startName) == initPhase->getMap()->getVertices()->end()) {
+        if (GameMap::instance()->getVertices()->find(startName) == GameMap::instance()->getVertices()->end()) {
             cout << "[ ERROR! ] You chose an invalid country name. Please try again." << endl;
         } else {
-            Vertex* chosenVertex = initPhase->getMap()->getVertices()->find(startName)->second;
+            Vertex* chosenVertex = GameMap::instance()->getVertices()->find(startName)->second;
             anonPlayer->addArmiesToCountry(chosenVertex, 1);
             break;
         }

@@ -3,10 +3,10 @@
 #include "Map.h"
 #include "Cards.h"
 
-void GreedyStrategy::execute(Card* card, GameMap* map, Players* players) {
+void GreedyStrategy::execute(Card* card, Players* players) {
 
 }
 
-void ModerateStrategy::execute(Card* card, GameMap* map, Players* players) {
+void ModerateStrategy::execute(Card* card, Players* players) {
     
 }

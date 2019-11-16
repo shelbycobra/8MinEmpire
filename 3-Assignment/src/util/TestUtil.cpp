@@ -60,7 +60,7 @@ Players createDummyPlayers(int numPlayers){
 }
 
 GameMap* generateValidMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Valid Map\n";
 
@@ -108,7 +108,7 @@ GameMap* generateValidMap() {
 }
 
 GameMap* generateSmallSimpleMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate SmallSimpleMap\n"
     <<"\nW---Z\n" << endl;
@@ -122,7 +122,7 @@ GameMap* generateSmallSimpleMap() {
 }
 
 GameMap* generateValidMapContainingNodeWithTwoWaterEdges() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Valid Map Containing Node With Two Water Edges\n"
     <<"\nA---B----F===O---P---R"
@@ -162,7 +162,7 @@ GameMap* generateValidMapContainingNodeWithTwoWaterEdges() {
 }
 
 GameMap* generateDisconnectedMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout <<"\n\nGenerate Disconnected Map\n"
         <<"\nW---Z   A---B----E   O---P---Q"
@@ -208,7 +208,7 @@ GameMap* generateDisconnectedMap() {
 }
 
 GameMap* generateInvalidContinentMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Invalid Continent Map\n"
     <<"\nZ===A---B----E===O---P---Q"
@@ -252,7 +252,7 @@ GameMap* generateInvalidContinentMap() {
 }
 
 GameMap* generateInvalidContinentMap2() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Invalid Continent Map2\n"
     <<"\nZ===A";
@@ -275,7 +275,7 @@ GameMap* generateInvalidContinentMap2() {
 }
 
 GameMap* generateInvalidContinentMap3() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Invalid Continent Map3\n"
     <<"\nA---B----F===O---P"
@@ -311,7 +311,7 @@ GameMap* generateInvalidContinentMap3() {
 
 
 GameMap* generateMapWithInternalWaterEdge() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Map With Internal Water Edge\n"
     <<"\nA---B----F===O---P"
@@ -345,7 +345,7 @@ GameMap* generateMapWithInternalWaterEdge() {
 }
 
 GameMap* generateCompletelyDisconnectedMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Completely Disconnected Map\n"
     <<"\nA B C\n" << endl;
@@ -358,7 +358,7 @@ GameMap* generateCompletelyDisconnectedMap() {
 }
 
 GameMap* generateDuplicateEdgesMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "Generate Duplicate Edges Map\n"
     <<"\nA---B---C"
@@ -376,7 +376,7 @@ GameMap* generateDuplicateEdgesMap() {
 }
 
 GameMap* generateSelfLoopMap() {
-    GameMap* map = new GameMap();
+    GameMap* map = GameMap::instance();
 
     cout << "\nGenerate Self Loop Map\n"
     <<"\n A---B---C"

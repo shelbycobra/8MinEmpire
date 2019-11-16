@@ -64,35 +64,33 @@ void MapLoader::setMapFilePath(const string& fileName) {
  * %
  * Image Text
  *
- * @return A GameMap pointer to a map.
+ * @return A boolean reprensenting a successful map object creation.
  */
-GameMap* MapLoader::generateMap(){
+bool MapLoader::generateMap(){
     ifstream mapFile(*mapFilePath);
-    GameMap* map = new GameMap();
     unordered_map<string, string> nameMap;
     string line;
 
-    if (!loadCountries(map, &mapFile, &nameMap))
-        return nullptr;
+    if (!loadCountries(&mapFile, &nameMap))
+        return false;
 
-    if (!loadEdges(map, &mapFile, &nameMap))
-        return nullptr;
+    if (!loadEdges(&mapFile, &nameMap))
+        return false;
 
-    if(!loadImage(map, &mapFile))
-        return nullptr;
+    if(!loadImage(&mapFile))
+        return false;
 
-    return map;
+    return true;
 }
 
 /**
  * Adds countries to a map object.
  *
- * @param map A GameMap pointer to a map object.
  * @param mapFile A ifstream pointer the map text file
  * @param nameMap An unordeder_map pointer of an object mapping vertex keys to name
  * @return A GameMap pointer to a map.
  */
-bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap) {
+bool MapLoader::loadCountries(ifstream* mapFile, unordered_map<string, string>* nameMap) {
 
     string continent;
     string line;
@@ -120,7 +118,7 @@ bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<str
             string name = line.substr(pos+1);
 
             nameMap->insert(pair<string, string> (key, name));
-            map->addVertex(key, name, continent);
+            GameMap::instance()->addVertex(key, name, continent);
 
         } else {
             //Continent found.
@@ -141,12 +139,11 @@ bool MapLoader::loadCountries(GameMap* map, ifstream* mapFile, unordered_map<str
 /**
  * Adds edges to a map object.
  *
- * @param map A GameMap pointer to a map object.
  * @param mapFile A ifstream pointer the map text file
  * @param nameMap An unordeder_map pointer of an object mapping vertex keys to name
  * @return A GameMap pointer to a map.
  */
-bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap) {
+bool MapLoader::loadEdges(ifstream* mapFile, unordered_map<string, string>* nameMap) {
 
     string line;
 
@@ -183,7 +180,7 @@ bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string,
                 return false;
             }
 
-            map->addEdge(startVertexKey, endVertexKey, isWaterEdge);
+            GameMap::instance()->addEdge(startVertexKey, endVertexKey, isWaterEdge);
         }
 
         getline(*mapFile, line);
@@ -200,11 +197,10 @@ bool MapLoader::loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string,
 /**
  * Adds Image to a map object.
  *
- * @param map A GameMap pointer to a map object.
  * @param mapFile A ifstream pointer the map text file
  * @return A GameMap pointer to a map.
  */
-bool MapLoader::loadImage(GameMap* map, ifstream* mapFile) {
+bool MapLoader::loadImage(ifstream* mapFile) {
 
     string image = "";
     string line;
@@ -223,8 +219,8 @@ bool MapLoader::loadImage(GameMap* map, ifstream* mapFile) {
     // Load in map image at end of file.
     mapFile->close();
 
-    map->setImage(image);
-    map->printMap();
+    GameMap::instance()->setImage(image);
+    GameMap::instance()->printMap();
 
     return true;
 }

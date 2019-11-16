@@ -130,7 +130,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
         it->second->addCardToHand(cardArr[i++]);
     }
 
-    Vertices* vertices = mainEngine.getMap()->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     Vertex* PEVertex = vertices->find("PE")->second;
 
@@ -181,7 +181,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
         it->second->addCardToHand(cardArr[i++]);
     }
 
-    Vertices* vertices = mainEngine.getMap()->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     Vertex* BAVertex = vertices->find("BA")->second;
 
@@ -244,15 +244,13 @@ void ScoreTest::test_gameEndsWhenPlayersHaveMaxNumCards() {
 
     mainEngine.startGame();
 
-    int maxNumCards = mainEngine.getMaxNumberOfCards();
-
     while(true) {
 
         mainEngine.getNextPlayer();
 
         mainEngine.getCurrentPlayer()->addCardToHand(new Card(1, STONE, ""));
 
-        if (!mainEngine.continueGame(maxNumCards))
+        if (!mainEngine.continueGame())
             break;
     }
 

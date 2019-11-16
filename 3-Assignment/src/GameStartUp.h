@@ -25,7 +25,6 @@ public:
     void addCoinsToSupply(int amount);
     void removeCoinsFromSupply(int amount);
 
-    GameMap* getMap() { return initPhase->getMap(); }
     Players* getPlayers() { return initPhase->getPlayers(); }
     Hand* getHand() { return initPhase->getHand();}
     int getNumPlayers() { return initPhase->getNumPlayers(); }

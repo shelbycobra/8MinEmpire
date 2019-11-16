@@ -26,53 +26,53 @@ void test_ReadValidMapFilesAndGenerateValidMaps() {
     cout << "--------------------------------------------------------------------\n" << endl;
 
     MapLoader loader("largeValid.map");
-    GameMap* map = loader.generateMap();
+    loader.generateMap();
 
-    assert(1 == isConnectedMap(map));
+    assert(1 == isConnectedMap());
     cout << "Large map is connected!" << endl;
 
-    assert(1 == validateContinents(map));
+    assert(1 == validateContinents());
     cout << "Large map has valid continents!" << endl;
 
-    assert(1 == validateEdges(map));
+    assert(1 == validateEdges());
     cout << "Large map has valid edges!" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Read a valid map file - med map." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    delete map;
+    delete GameMap::instance();
     loader.setMapFilePath("medValid.map");
-    map = loader.generateMap();
+    loader.generateMap();
 
-    assert(1 == isConnectedMap(map));
+    assert(1 == isConnectedMap());
     cout << "Medium map is connected!" << endl;
 
-    assert(1 == validateContinents(map));
+    assert(1 == validateContinents());
     cout << "Medium map has valid continents!" << endl;
 
-    assert(1 == validateEdges(map));
+    assert(1 == validateEdges());
     cout << "Medium map has valid edges!" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Read a valid map file - small map." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    delete map;
+    delete GameMap::instance();
     loader.setMapFilePath("smallValid.map");
-    map = loader.generateMap();
+    loader.generateMap();
 
-    assert(1 == isConnectedMap(map));
+    assert(1 == isConnectedMap());
     cout << "Small map is connected!" << endl;
 
-    assert(1 == validateContinents(map));
+    assert(1 == validateContinents());
     cout << "Small map has valid continents!" << endl;
 
-    assert(1 == validateEdges(map));
+    assert(1 == validateEdges());
     cout << "Small map has valid edges!" << endl;
 
-    delete map;
-    map = nullptr;
+    delete GameMap::instance();
+    
 }
 
 void test_ReadInvalidMapFiles(){
@@ -140,50 +140,50 @@ void test_CreateInvalidGraphFromMap(){
     cout << "--------------------------------------------------------------------\n" << endl;
 
     MapLoader loader("disconnected.map");
-    GameMap* map = loader.generateMap();
+    loader.generateMap();
 
-    assert(0 == isConnectedMap(map));
+    assert(0 == isConnectedMap());
     cout << "Map is disconnected!" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Read a map file and create a map with an internal water edge." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    delete map;
+    delete GameMap::instance();
     loader.setMapFilePath("internalWaterEdge.map");
-    map = loader.generateMap();
+    loader.generateMap();
 
-    assert(1 == isConnectedMap(map));
+    assert(1 == isConnectedMap());
     cout << "Map is connected!" << endl;
 
-    assert(0 == validateContinents(map));
+    assert(0 == validateContinents());
     cout << "Map has invalid continents!" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Read a map file and create a map with invalid edges." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    delete map;
+    delete GameMap::instance();
     loader.setMapFilePath("invalidEdges.map");
-    map = loader.generateMap();
+    loader.generateMap();
 
-    assert(0 == validateEdges(map));
+    assert(0 == validateEdges());
     cout << "Map has invalid edges!" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Read a map file and create a map with invalid continents." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    delete map;
+    delete GameMap::instance();
     loader.setMapFilePath("invalidContinent.map");
-    map = loader.generateMap();
+    loader.generateMap();
 
-    assert(1 == isConnectedMap(map));
+    assert(1 == isConnectedMap());
     cout << "Map is connected!" << endl;
 
-    assert(0 == validateContinents(map));
+    assert(0 == validateContinents());
     cout << "Map has invalid continents!" << endl;
 
-    delete map;
-    map = nullptr;
+    delete GameMap::instance();
+    
 }

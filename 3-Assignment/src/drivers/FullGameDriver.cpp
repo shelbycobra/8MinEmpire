@@ -1,25 +1,21 @@
 #include "../GameMainLoop.h"
+#include "../GameObservers.h"
 
 int main() {
     MainGameEngine gameEngine;
 
+    PhaseObserver phaseObserver(&gameEngine);
+    StatsObserver statsObserver(&gameEngine);
+
     gameEngine.startGame();
 
-    int maxNumCards = gameEngine.getMaxNumberOfCards();
-
     while(true) {
-
         gameEngine.getNextPlayer();
         gameEngine.chooseCardFromHand();
-
         gameEngine.performCardAction();
         gameEngine.addNewCardToBackOfHand();
-
-        if (!gameEngine.continueGame(maxNumCards))
-            break;
+        gameEngine.askToChangePlayerStrategy();
     }
-
-    gameEngine.declareWinner();
 
     return 0;
 }

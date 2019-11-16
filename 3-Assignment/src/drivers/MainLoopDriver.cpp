@@ -10,8 +10,8 @@ int main() {
 
     while(true) {
 
-        Player* currentPlayer = gameEngine.getNextPlayer();
-        gameEngine.chooseCardFromHand(currentPlayer);
+        gameEngine.getNextPlayer();
+        gameEngine.chooseCardFromHand();
 
         gameEngine.addNewCardToBackOfHand();
 

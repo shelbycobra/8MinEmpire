@@ -74,7 +74,6 @@ void MainGameEngine::chooseCardFromHand() {
  *
  */
 void MainGameEngine::performCardAction() {
-    GameMap* map = startUpPhase->getMap();
     Players* players = startUpPhase->getPlayers();
 
     const string action = currentCard->getAction();
@@ -88,18 +87,18 @@ void MainGameEngine::performCardAction() {
         currentPlayer->Ignore();
     } else {
         if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
-            currentPlayer->AndOrAction(action, map, players);
+            currentPlayer->AndOrAction(action, players);
         else if (action.find("Add") != size_t(-1))
-            currentPlayer->PlaceNewArmies(action, map);
+            currentPlayer->PlaceNewArmies(action);
         else if (action.find("Destroy") != size_t(-1))
-            currentPlayer->DestroyArmy(action, map, players);
+            currentPlayer->DestroyArmy(players);
         else if (action.find("Build") != size_t(-1))
-            currentPlayer->BuildCity(action, map);
+            currentPlayer->BuildCity();
         else if (action.find("Move") != size_t(-1)) {
             if (action.find("water") != size_t(-1))
-                currentPlayer->MoveOverWater(action, map);
+                currentPlayer->MoveOverWater(action);
             else
-                currentPlayer->MoveOverLand(action, map);
+                currentPlayer->MoveOverLand(action);
         }
         else
             cout << "[ ERROR! ] Invalid action." << endl;
@@ -121,11 +120,11 @@ void MainGameEngine::addNewCardToBackOfHand() {
  * Checks whether the game should continue based on the number of cards
  * in each player's hand.
  *
- * @param maxNumCards The maximum number of cards a player can have.
  * @return A boolean indicating whether the game should continue. Returns
  * false only when all players have reached the maxNumCards.
  */
-bool MainGameEngine::continueGame(int maxNumCards) {
+bool MainGameEngine::continueGame() {
+    int maxNumCards = getMaxNumberOfCards();
 
     Players::iterator it;
     Players* players = startUpPhase->getPlayers();
@@ -167,7 +166,7 @@ void MainGameEngine::declareWinner() {
     map<Player*, int> scores;
 
     for(Players::iterator it = players->begin(); it != players->end(); it++) {
-        int playerScore = it->second->ComputeScore(startUpPhase->getMap());
+        int playerScore = it->second->ComputeScore();
 
         scores.insert(pair<Player*, int>(it->second, playerScore));
 
@@ -251,4 +250,8 @@ int MainGameEngine::getMaxNumberOfCards() {
         cout << "[ ERROR! ] Invalid number of players." << endl;
         return 0;
     }
- }
+}
+
+void MainGameEngine::askToChangePlayerStrategy() {
+
+}

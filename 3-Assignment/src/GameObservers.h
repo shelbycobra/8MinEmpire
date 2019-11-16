@@ -73,6 +73,7 @@ public:
     void Update();
     void printStats();
     void printVictoryPoints();
+    void printCards();
 };
 
 #endif

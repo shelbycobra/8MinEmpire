@@ -12,11 +12,9 @@ int main() {
     initPhase.initGame();
 
     Hand* hand;
-    GameMap* map;
     Players* players;
 
     hand = initPhase.getHand();
-    map = initPhase.getMap();
     players = initPhase.getPlayers();
 
     cout << "\n--------------------------------------------------------------------" << endl;
@@ -43,8 +41,8 @@ int main() {
     cout << "TEST: Verify map is same as during initialization." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    map->printMap();
-    map->printOccupiedRegions();
+    GameMap::instance()->printMap();
+    GameMap::instance()->printOccupiedRegions();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Verify players are the same as during initialization." << endl;

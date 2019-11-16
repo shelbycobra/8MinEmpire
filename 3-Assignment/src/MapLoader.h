@@ -15,14 +15,14 @@ public:
     MapLoader& operator=(MapLoader& mapLoader);
     ~MapLoader();
 
-    GameMap* generateMap();
+    bool generateMap();
     string getMapFilePath() { return *mapFilePath; }
     void setMapFilePath(const string& fileName);
 
 private:
-    bool loadCountries(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap);
-    bool loadEdges(GameMap* map, ifstream* mapFile, unordered_map<string, string>* nameMap);
-    bool loadImage(GameMap* map, ifstream* mapFile);
+    bool loadCountries(ifstream* mapFile, unordered_map<string, string>* nameMap);
+    bool loadEdges(ifstream* mapFile, unordered_map<string, string>* nameMap);
+    bool loadImage(ifstream* mapFile);
 };
 
 #endif

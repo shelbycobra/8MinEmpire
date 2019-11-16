@@ -4,11 +4,9 @@
 int main() {
     MainGameEngine gameEngine;
 
-    PhaseObserver PhaseObserver(gameEngine);
+    PhaseObserver PhaseObserver(&gameEngine);
 
     gameEngine.startGame();
-
-    int maxNumCards = gameEngine.getMaxNumberOfCards();
 
     string cont;
 
@@ -19,7 +17,7 @@ int main() {
         gameEngine.performCardAction();
         gameEngine.addNewCardToBackOfHand();
 
-        if (!gameEngine.continueGame(maxNumCards))
+        if (!gameEngine.continueGame())
             break;
 
         cout << "CONTINUE DEMO?" << endl;

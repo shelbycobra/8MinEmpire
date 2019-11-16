@@ -12,7 +12,7 @@
 #include "util/ScoreTest.h"
 #include "PlayerStrategies.h"
 
-enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
+enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY, NONE };
 
 class Card;
 class Vertex;
@@ -51,21 +51,25 @@ public:
     ~Player();
 
     bool PayCoins(const int& amount);
-    void PlaceNewArmies(const string action, GameMap* map);
-    void MoveArmies(const string action, GameMap* map);
-    void MoveOverLand(const string action, GameMap* map);
-    void MoveOverWater(const string action, GameMap* map);
-    void BuildCity(const string action, GameMap* map);
-    void DestroyArmy(const string action, GameMap* map, Players* players);
-    void AndOrAction(const string action, GameMap* map, Players* players);
+    void PlaceNewArmies(const string action);
+    void MoveArmies(const string action);
+    void MoveOverLand(const string action);
+    void MoveOverWater(const string action);
+    void BuildCity();
+    void DestroyArmy(Players* players);
+    void AndOrAction(const string action, Players* players);
     void Ignore();
-    int ComputeScore(GameMap* map);
+    int ComputeScore();
 
     int getVPFromRegions();
-    int getVPFromContinents(GameMap* map);
-    int getVPFromGoods();
-    void fillPurseFromSupply(const int& coins);
+    int computeContinentScore();
+    int computeGoodsScore();
+    vector<string>* getOwnedRegions();
+    vector<string>* getOwnedContinents();
+    unordered_map<string, int>* getGoodsCount();
+    int getVPFromGoods(unordered_map<string, int>* goodsCount);
 
+    void fillPurseFromSupply(const int& coins);
     void addCardToHand(Card* card);
     void addCountry(Vertex* country);
     void removeCountry(Vertex* country);
@@ -83,7 +87,7 @@ public:
     void addArmiesToCountry(Vertex* country, const int& numArmies);
     void removeArmiesFromCountry(Vertex* country, const int& numArmies);
 
-    void executeStrategy(Card*, GameMap*, Players*);
+    void executeStrategy(Card* card, Players* players);
 
     //GETTERS
     string getName() { return *name; }
@@ -101,9 +105,9 @@ public:
 private:
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);
-    void performCardAction(string& action, GameMap* map, Players* players);
+    void performCardAction(string& action, Players* players);
     Vertex* chooseStartVertex();
-    Vertex* chooseEndVertex(const ActionType& type, GameMap* map);
+    Vertex* chooseEndVertex(const ActionType& type);
     int chooseArmies(const int& maxArmies, const int& remainderArmies, int endVertexArmies, const string& startVertexName);
     string chooseORAction(const string action);
     Player* chooseOpponent(Players* players);

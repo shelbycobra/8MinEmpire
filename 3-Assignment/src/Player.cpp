@@ -166,17 +166,15 @@ bool Player::PayCoins(const int& amount){
  *
  * The player can build a city on a country where they currently have armies.
  *
- * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  */
-void Player::BuildCity(const string action, GameMap* map) {
+void Player::BuildCity() {
     cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
 
     Vertex* endVertex;
 
     while (true) {
         cout << "{ " << *name << " } Please choose a country to build a city on." << endl;
-        endVertex = chooseEndVertex(ActionType::BUILD_CITY, map);
+        endVertex = chooseEndVertex(ActionType::BUILD_CITY);
         if (!executeBuildCity(endVertex)) {
             continue;
         }
@@ -187,22 +185,20 @@ void Player::BuildCity(const string action, GameMap* map) {
 
 /**
  * Executes the action "Moves # armies".
- * 
+ *
  * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  */
-void Player::MoveOverLand(const string action, GameMap* map){
-    MoveArmies(action, map);
+void Player::MoveOverLand(const string action){
+    MoveArmies(action);
 }
 
 /**
  * Executes the action "Move # armies over water".
- * 
+ *
  * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  */
-void Player::MoveOverWater(const string action, GameMap* map){
-    MoveArmies(action, map);
+void Player::MoveOverWater(const string action){
+    MoveArmies(action);
 }
 
 /**
@@ -211,9 +207,8 @@ void Player::MoveOverWater(const string action, GameMap* map){
  * The player can move armies around the map to adjacent countries as many times as the card dictates.
  *
  * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  */
-void Player::MoveArmies(const string action, GameMap* map) {
+void Player::MoveArmies(const string action) {
     Vertex* startVertex;
     Vertex* endVertex;
     int maxArmies;
@@ -236,7 +231,7 @@ void Player::MoveArmies(const string action, GameMap* map) {
 
         startVertex = chooseStartVertex();
         cout << "{ " << *name << " } Please choose a country to move armies to." << endl;
-        endVertex = chooseEndVertex(type, map);
+        endVertex = chooseEndVertex(type);
 
         int startVertexArmies = startVertex->getArmies()->find(playerEntry)->second;
         armies = chooseArmies(maxArmies, remainderArmies, startVertexArmies, startVertex->getName());
@@ -256,9 +251,8 @@ void Player::MoveArmies(const string action, GameMap* map) {
  * The player can add armies to any country the player currently has a city or to the start country.
  *
  * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  */
-void Player::PlaceNewArmies(const string action, GameMap* map) {
+void Player::PlaceNewArmies(const string action) {
     Vertex* endVertex;
 
     stringstream toInt(action.substr(4, 5));
@@ -274,10 +268,10 @@ void Player::PlaceNewArmies(const string action, GameMap* map) {
         int armies;
 
         cout << "{ " << *name << " } Please choose a country to add new armies to." << endl;
-        endVertex = chooseEndVertex(ActionType::ADD_ARMY, map);
+        endVertex = chooseEndVertex(ActionType::ADD_ARMY);
         armies = chooseArmies(maxArmies, remainderArmies, 0, "none");
 
-        if (!executeAddArmies(armies, endVertex, map->getStartVertex())) {
+        if (!executeAddArmies(armies, endVertex, GameMap::instance()->getStartVertex())) {
             continue;
         }
 
@@ -292,11 +286,9 @@ void Player::PlaceNewArmies(const string action, GameMap* map) {
  *
  * The player chooses an opponent's army to destroy on a country where the oponnent has an army.
  *
- * @param action The action to be executed.
- * @param map A GameMap pointer to the map.
  * @param players A list of players in the game.
  */
-void Player::DestroyArmy(const string action, GameMap* map, Players* players) {
+void Player::DestroyArmy(Players* players) {
     cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
     Vertex* endVertex;
@@ -307,7 +299,7 @@ void Player::DestroyArmy(const string action, GameMap* map, Players* players) {
 
     while(true) {
         cout << "{ " << *name << " } Please choose an opponent occupied country." << endl;
-        endVertex = chooseEndVertex(ActionType::DESTROY_ARMY, map);
+        endVertex = chooseEndVertex(ActionType::DESTROY_ARMY);
         if (!executeDestroyArmy(endVertex, opponent)) {
             continue;
         }
@@ -320,12 +312,11 @@ void Player::DestroyArmy(const string action, GameMap* map, Players* players) {
 /**
  * Executes the action "<ACTION> AND <ACTION>" or "<ACTION> OR <ACTION>".
  * If the action contains "OR", it asks the player which action to take.
- * 
+ *
  * @param action The action that contains an AND/OR double action
- * @param map A GameMap pointer to the map.
  * @param players A pointer to a map of Player pointers and their names.
  */
-void Player::AndOrAction(const string action, GameMap* map, Players* players) {
+void Player::AndOrAction(const string action, Players* players) {
     vector<string> actionArr;
 
     if (action.find("OR") != size_t(-1)) {
@@ -340,16 +331,16 @@ void Player::AndOrAction(const string action, GameMap* map, Players* players) {
     for(vector<string>::iterator it = actionArr.begin(); it != actionArr.end(); ++it) {
         if ((*it).find("Move") != size_t(-1)) {
             if ((*it).find("water") != size_t(-1))
-                MoveOverLand(*it, map);
+                MoveOverLand(*it);
             else
-                MoveOverWater(*it, map);
+                MoveOverWater(*it);
         }
         else if ((*it).find("Add") != size_t(-1))
-            PlaceNewArmies(*it, map);
+            PlaceNewArmies(*it);
         else if ((*it).find("Destroy") != size_t(-1))
-            DestroyArmy(*it, map, players);
+            DestroyArmy(players);
         else if ((*it).find("Build") != size_t(-1))
-            BuildCity(*it, map);
+            BuildCity();
     }
 }
 
@@ -363,19 +354,19 @@ void Player::Ignore() {
 /**
  * Calculates the total victory points of a player at the end of the game.
  * Totals the number of owned regions, owned continents and resource victory points.
- *
- * @param map A GameMap pointer to the map.
+ *.
  * @return The total victory points.
  */
-int Player::ComputeScore(GameMap* map) {
+int Player::ComputeScore() {
     cout << "---------------------------------------------------------------------" << endl;
     cout << "{ " << *name << " } CALCULATING SCORE ..." << endl;
     cout << "---------------------------------------------------------------------\n" << endl;
 
-    int totalPoints = 0;
-    totalPoints += getVPFromRegions();
-    totalPoints += getVPFromContinents(map);
-    totalPoints += getVPFromGoods();
+    int vpRegions = getVPFromRegions();
+    int vpContinents = computeContinentScore();
+    int vpGoods = computeGoodsScore();
+
+    int totalPoints = vpRegions + vpContinents + vpGoods;
 
     cout << "\n{ " << *name << " } Final score : " << totalPoints << "\n" << endl;
 
@@ -390,21 +381,30 @@ int Player::ComputeScore(GameMap* map) {
  * @return The total number of owned regions.
  */
 int Player::getVPFromRegions() {
-    int ownedRegions = 0;
+    vector<string>* ownedRegions = getOwnedRegions();
+
+    for (vector<string>::iterator it = ownedRegions->begin(); it != ownedRegions->end(); ++it) {
+        cout << "{ " << *name << " } Owns < " << (*it) << " >." << endl;
+    }
+
+    *controlledRegions = int(ownedRegions->size());
+
+    cout << "{ " << *name << " } Owns " << *controlledRegions << " regions." << endl;
+
+    return *controlledRegions;
+}
+
+vector<string>* Player::getOwnedRegions() {
+    vector<string>* ownedRegions = new vector<string>();
 
     Vertices::iterator it;
     for (it = countries->begin(); it != countries->end(); ++it) {
         Vertex* region = it->second;
 
         if (region->getRegionOwner() == *name) {
-            ownedRegions++;
-            cout << "{ " << *name << " } Owns < " << region->getName() << " >." << endl;
+            ownedRegions->push_back(region->getName());
         }
     }
-
-    cout << "{ " << *name << " } Owns " << ownedRegions << " regions." << endl;
-
-    *controlledRegions = ownedRegions;
 
     return ownedRegions;
 }
@@ -416,21 +416,35 @@ int Player::getVPFromRegions() {
  *
  * @return The total number of owned continents.
  */
-int Player::getVPFromContinents(GameMap* map) {
-    int ownedContinents = 0;
-    vector<set<string>* > continents = map->getContinents();
+int Player::computeContinentScore() {
+    vector<string>* ownedContinents = getOwnedContinents();
 
-    //Iterate through each continent and get the owner.
+    for(vector<string>::iterator it = ownedContinents->begin(); it != ownedContinents->end(); ++it) {
+        cout << "{ " << *name << " } Owns continent " << (*it) << "." << endl;
+    }
+
+    cout << "{ " << *name << " } Owns " << ownedContinents->size() << " continents." << endl;
+
+    int numOwnedContinents = ownedContinents->size();
+    delete ownedContinents;
+
+    return numOwnedContinents;
+}
+
+vector<string>* Player::getOwnedContinents() {
+
+    vector<set<string>* > continents = GameMap::instance()->getContinents();
+    vector<string>* ownedContinents = new vector<string>();
+
+     //Iterate through each continent and get the owner.
     for(vector<set<string>* >::iterator it = continents.begin(); it != continents.end(); ++it) {
 
         set<string>* continent = *it;
-        string continentName = map->getVertices()->find(*continent->begin())->second->getContinent();
-
-        string owner = map->getContinentOwner(continent);
+        string continentName = GameMap::instance()->getVertices()->find(*continent->begin())->second->getContinent();
+        string owner = GameMap::instance()->getContinentOwner(continent);
 
         if(owner == *name) {
-            ownedContinents++;
-            cout << "{ " << *name << " } Owns continent " << continentName << "." << endl;
+            ownedContinents->push_back(continentName);
         }
     }
 
@@ -438,7 +452,6 @@ int Player::getVPFromContinents(GameMap* map) {
         delete c;
     }
 
-    cout << "{ " << *name << " } Owns " << ownedContinents << " continents." << endl;
     return ownedContinents;
 }
 
@@ -450,7 +463,23 @@ int Player::getVPFromContinents(GameMap* map) {
  *
  * @return The total victory points for each card type.
  */
-int Player::getVPFromGoods() {
+int Player::computeGoodsScore() {
+    unordered_map<string, int>* goodsCount = getGoodsCount();
+
+    findAndDistributeWildCards(goodsCount);
+
+    int points = getVPFromGoods(goodsCount);
+
+    for(unordered_map<string, int>::iterator it = goodsCount->begin(); it != goodsCount->end(); ++it) {
+        cout << "{ " << *name << " } Owns " << it->second << " " << it->first << " cards." << endl;
+    }
+
+    cout << "{ " << *name << " } Has " << points << " card points." << endl;
+
+    return points;
+}
+
+int Player::getVPFromGoods(unordered_map<string, int>* goodsCount) {
                                     // 0 1 2 3 4 5 6 7 8
     int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5};
     int ironValuePerCardCount[]     = {0,0,1,1,2,2,3,5,5};
@@ -458,7 +487,30 @@ int Player::getVPFromGoods() {
     int stoneValuePerCardCount[]    = {0,0,1,2,3,5,5,5,5};
     int gemValuePerCardCount[]      = {0,1,2,3,5,5,5,5,5};
 
-    unordered_map<string, int> goodsCount;
+    int points = 0;
+
+    for(unordered_map<string, int>::iterator it = goodsCount->begin(); it != goodsCount->end(); ++it) {
+        if (it->first == GEM)
+            points += gemValuePerCardCount[it->second];
+        else if(it->first == WOOD)
+            points += woodValuePerCardCount[it->second];
+        else if(it->first == IRON)
+            points += ironValuePerCardCount[it->second];
+        else if(it->first == STONE)
+            points += stoneValuePerCardCount[it->second];
+        else if(it->first == CARROT)
+            points += carrotValuePerCardCount[it->second];
+        else if(it->first == WILD)
+            ;//Do nothing
+        else
+            cout << "[ ERROR! ] Invalid card type. " << it->first << endl;
+    }
+
+    return points;
+}
+
+unordered_map<string, int>* Player::getGoodsCount() {
+    unordered_map<string, int>* goodsCount = new unordered_map<string, int>();
 
     for(vector<Card*>::iterator it = hand->begin(); it != hand->end(); ++it) {
         string good = (*it)->getGood();
@@ -472,37 +524,15 @@ int Player::getVPFromGoods() {
             good = good.substr(0, spaceCharIndex);
         }
 
-        if (goodsCount.find(good) != goodsCount.end()) {
-            int count = goodsCount.find(good)->second;
-            goodsCount.erase(good);
-            goodsCount.insert(pair<string,int>(good,count+countIncrement));
+        if (goodsCount->find(good) != goodsCount->end()) {
+            int count = goodsCount->find(good)->second;
+            goodsCount->erase(good);
+            goodsCount->insert(pair<string,int>(good,count+countIncrement));
         } else
-            goodsCount.insert(pair<string,int>(good,countIncrement));
+            goodsCount->insert(pair<string,int>(good,countIncrement));
     }
 
-    findAndDistributeWildCards(&goodsCount);
-
-    int points = 0;
-
-    for(unordered_map<string, int>::iterator it = goodsCount.begin(); it != goodsCount.end(); ++it) {
-        cout << "{ " << *name << " } Owns " << it->second << " " << it->first << " cards." << endl;
-        if (it->first == GEM)
-            points += gemValuePerCardCount[it->second];
-        else if(it->first == WOOD)
-            points += woodValuePerCardCount[it->second];
-        else if(it->first == IRON)
-            points += ironValuePerCardCount[it->second];
-        else if(it->first == STONE)
-            points += stoneValuePerCardCount[it->second];
-        else if(it->first.find(CARROT) != size_t(-1))
-            points += carrotValuePerCardCount[it->second];
-        else
-            cout << "[ ERROR! ] Invalid card type. " << it->first << endl;
-    }
-
-    cout << "{ " << *name << " } Has " << points << " card points." << endl;
-
-    return points;
+    return goodsCount;
 }
 
 /**
@@ -933,8 +963,6 @@ void Player::decreaseAvailableArmies(const int& numArmies) {
 /**
  * Prompts a player to choose a start vertex among the player's occupied countries.
  *
- *
- * @param player A pointer to the Player being prompted.
  * @return A Vertex pointer to the start country.
  */
 Vertex* Player::chooseStartVertex(){
@@ -960,20 +988,18 @@ Vertex* Player::chooseStartVertex(){
 /**
  * Prompts a player to choose an end vertex on the map.
  *
- * @param player A pointer to the Player being prompted.
  * @param type An ActionType enum representing the type of action being called.
- * @param map A GameMap pointer to the map.
  * @return A Vertex pointer to the end country.
  */
-Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
+Vertex* Player::chooseEndVertex(const ActionType& type){
     string endName;
 
     while(true){
         if (type == ActionType::ADD_ARMY || type == ActionType::BUILD_CITY)
             printCountries();
         else if (type == ActionType::MOVE_OVER_LAND || type == ActionType::MOVE_OVER_WATER || type == ActionType::DESTROY_ARMY) {
-            map->printMap();
-            map->printOccupiedRegions();
+            GameMap::instance()->printMap();
+            GameMap::instance()->printOccupiedRegions();
         } else {
             cerr << "[ ERROR! ] Invalid action type." << endl;
             return 0;
@@ -984,12 +1010,12 @@ Vertex* Player::chooseEndVertex(const ActionType& type, GameMap* map){
         transform(endName.begin(), endName.end(), endName.begin(), ::toupper);
         cout << "{ " << *name << " } You chose < " << endName << " >.\n" << endl;
 
-        if (map->getVertices()->find(endName) == map->getVertices()->end()) {
+        if (GameMap::instance()->getVertices()->find(endName) == GameMap::instance()->getVertices()->end()) {
             cerr << "[ ERROR! ] That country doesn't exist on the map." << endl;
             continue;
         }
 
-        return map->getVertices()->find(endName)->second;
+        return GameMap::instance()->getVertices()->find(endName)->second;
     }
 }
 
@@ -1077,7 +1103,6 @@ string Player::chooseORAction(const string action) {
  * Prompts a player to choose an opponent.
  *
  * @param players A pointer to the list of Players in the game.
- * @param currentPlayer A pointer to the Player being prompted.
  * @return A Player pointer to the chosen opponent.
  */
 Player* Player::chooseOpponent(Players* players) {
@@ -1087,7 +1112,7 @@ Player* Player::chooseOpponent(Players* players) {
         cout << "{ " << *name << " } Choose an opponent." << endl;
 
         for (Players::iterator it = players->begin(); it != players->end(); ++it)
-            if (it->second != this && it->first != ANON)
+            if (it->second != this)
                 cout << "[ OPPONENT ] " << it->first << endl;
 
         cout << "{ " << *name << " } > ";
@@ -1105,6 +1130,6 @@ Player* Player::chooseOpponent(Players* players) {
     }
 }
 
-void Player::executeStrategy(Card* card, GameMap* map, Players* players) {
-    strategy->execute(card, map, players);
+void Player::executeStrategy(Card* card, Players* players) {
+    strategy->execute(card, players);
 }

@@ -7,17 +7,16 @@
 /**
  * Conducts a Breadth-First-Search through the GameMap object to detect if
  * it is a fully connected map.
-
- * @param map A GameMap pointer to the map.
+ *
  * @return A boolean representing if the map is connnected.
  */
-bool isConnectedMap(GameMap* map){
+bool isConnectedMap(){
     typedef pair<Vertex*, bool> Edge;
 
     set<string> visited;
     queue<string> nextToVisit;
 
-    Vertices* vertices = map->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     //Add first vertex to visited.
     visited.insert(vertices->begin()->second->getKey());
@@ -56,16 +55,15 @@ bool isConnectedMap(GameMap* map){
 
 /**
  * Analyzes each continent in the map to determine whether it is a valid continent.
- * 
+ *
  * A valid continents means that each continent contains more than one country and
  * contains no internal water edges.
-
- * @param map A GameMap pointer to the map.
+ *
  * @return A boolean representing if the map contains valid continents.
  */
-bool validateContinents(GameMap* map) {
-    vector<set<string>* > continents = getMapContinents(map);
-    Vertices* vertices = map->getVertices();
+bool validateContinents() {
+    vector<set<string>* > continents = getMapContinents();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     unordered_set<string> verticesList;
     for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it)
@@ -76,7 +74,7 @@ bool validateContinents(GameMap* map) {
     for (it = continents.begin(); it != continents.end(); ++it) {
 
         //Verify each continent is a connected subgraph
-        if (!isContinentConnected(*it, map))
+        if (!isContinentConnected(*it))
             return false;
 
         if((*it)->size() > 1) {
@@ -118,19 +116,18 @@ bool validateContinents(GameMap* map) {
 /**
  * Conducts a Breadth-First-Search on a continent in a map to determine whether it is a
  * connected subgraph.
- * 
+ *
  * @param continent A pointer to a set of strings of vertex keys belonging to a continent.
- * @param map A GameMap pointer to the map object.
  * @return A boolean that respresents if the continent is a connected subgraph.
  */
-bool isContinentConnected(set<string>* continent, GameMap* map){
-    //Iterate through set of strings and do a BFS 
+bool isContinentConnected(set<string>* continent){
+    //Iterate through set of strings and do a BFS
     typedef pair<Vertex*, bool> Edge;
 
     set<string> visited;
     queue<string> nextToVisit;
 
-    Vertices* vertices = map->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     //Add first vertex to visited.
     visited.insert(*continent->begin());
@@ -140,7 +137,7 @@ bool isContinentConnected(set<string>* continent, GameMap* map){
     for(Edge& edge: *edges)
         if (!edge.second)
             nextToVisit.push(edge.first->getKey());
-        
+
     //Breadth-First-Search
     while(!nextToVisit.empty()) {
         string currentKey = nextToVisit.front();
@@ -176,13 +173,13 @@ bool isContinentConnected(set<string>* continent, GameMap* map){
 /**
  * Conducts a Breadth-First-Search through the GameMap object to find all the continents
  * in the map.
- * 
+ *
  * @param map A GameMap pointer to the map.
  * @return a list of country names grouped in sets representing the different continents on the map.
  */
-vector<set<string>* > getMapContinents(GameMap* map){
+vector<set<string>* > getMapContinents(){
     vector<set<string>* > continents;
-    Vertices* vertices = map->getVertices();
+    Vertices* vertices = GameMap::instance()->getVertices();
     unordered_set<string> notVisited;
     queue<string> nextToVisit;
 
@@ -253,15 +250,14 @@ vector<set<string>* > getMapContinents(GameMap* map){
 /**
  * Iterates through all the vertices in a GameMap object to determine if the edges of
  * the map are valid.
- * 
- * An invalid edge is when the start vertex points to itself or contains two edges that 
+ *
+ * An invalid edge is when the start vertex points to itself or contains two edges that
  * point to the same vertex.
-
- * @param map A GameMap pointer to the map.
+ *
  * @return A boolean representing if the map contains valid edges.
  */
-bool validateEdges(GameMap* map){
-    Vertices* vertices = map->getVertices();
+bool validateEdges(){
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     //for each vertex, create new set, add edgevertex names
     Vertices::iterator it;
@@ -292,9 +288,9 @@ bool validateEdges(GameMap* map){
 
 /**
  * Splits a string into a vector of strings by a delimiter.
- * 
+ *
  * @param str String to split.
- * @param delimiter The delimiter by which to split the string. 
+ * @param delimiter The delimiter by which to split the string.
  * @return A vector of strings.
  */
 vector<string> split(string& str, char delimiter) {
@@ -320,7 +316,7 @@ vector<string> split(string& str, char delimiter) {
 
 /**
  * Executes the action of a card.
- * 
+ *
  * @param player A pointer to the Player object who is using the card.
  * @param action The action to be performed.
  * @param map A pointer to the GameMap object of the game.
@@ -328,19 +324,19 @@ vector<string> split(string& str, char delimiter) {
  */
 void performCardAction(Player* player, const string action, GameMap* map, Players* players) {
     if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
-        player->AndOrAction(action, map, players);
+        player->AndOrAction(action, players);
     else if (action.find("Move") != size_t(-1)) {
         if (action.find("water") != size_t(-1))
-            player->MoveOverLand(action, map);
+            player->MoveOverLand(action);
         else
-            player->MoveOverWater(action, map);
+            player->MoveOverWater(action);
     }
     else if (action.find("Add") != size_t(-1))
-        player->PlaceNewArmies(action, map);
+        player->PlaceNewArmies(action);
     else if (action.find("Destroy") != size_t(-1))
-        player->DestroyArmy(action, map, players);
+        player->DestroyArmy(players);
     else if (action.find("Build") != size_t(-1))
-        player->BuildCity(action, map);
-    else 
+        player->BuildCity();
+    else
         cout << "[ ERROR! ] Invalid action." << endl;
 }

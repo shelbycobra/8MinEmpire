@@ -9,8 +9,6 @@ int main() {
 
     gameEngine.startGame();
 
-    int maxNumCards = gameEngine.getMaxNumberOfCards();
-
     string cont;
 
     while(true) {
@@ -20,17 +18,22 @@ int main() {
         gameEngine.performCardAction();
         gameEngine.addNewCardToBackOfHand();
 
-        if (!gameEngine.continueGame(maxNumCards))
-            break;
-
         cout << "CONTINUE DEMO?" << endl;
         cout << "'y' or 'Y' to continue > ";
         getline(cin, cont);
-        if(cont != "y" && cont != "Y")
-            break;
-    }
+        if(cont != "y" && cont != "Y") {
+            //Add cards to each player until they reach their max card capacity to end the game.
+            while(true) {
+                gameEngine.getNextPlayer();
+                gameEngine.getCurrentPlayer()->addCardToHand(new Card(1, STONE, ""));
 
-    gameEngine.declareWinner();
+                if (!gameEngine.continueGame()) {
+                    gameEngine.Notify();
+                    break;
+                }
+            }
+        }
+    }
 
     return 0;
 }

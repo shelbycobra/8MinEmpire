@@ -5,7 +5,6 @@
 #include <list>
 
 class InitGameEngine {
-    GameMap* map;
     Players* players;
     Hand* hand;
     int* numPlayers;
@@ -20,7 +19,6 @@ public:
 
     void initGame();
 
-    GameMap* getMap() { return map;}
     Players* getPlayers() { return players;}
     Hand* getHand() { return hand;}
     int getNumPlayers() { return *numPlayers; }

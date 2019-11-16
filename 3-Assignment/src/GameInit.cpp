@@ -8,10 +8,9 @@
 /**
  * Default Constructor
  */
-InitGameEngine::InitGameEngine(): 
-    map(new GameMap()), players(new Players()),
-    hand(new Hand()), numPlayers(new int()), 
-    playerOrder(new vector<string>()) {
+InitGameEngine::InitGameEngine():
+    players(new Players()), hand(new Hand()),
+    numPlayers(new int()), playerOrder(new vector<string>()) {
         colours = new list<string>();
         colours->push_front("BLUE");
         colours->push_front("GREEN");
@@ -24,7 +23,6 @@ InitGameEngine::InitGameEngine():
  * Copy constructor
  */
 InitGameEngine::InitGameEngine(InitGameEngine* otherInitEngine) {
-    map = new GameMap(otherInitEngine->getMap());
     players = new Players(*otherInitEngine->getPlayers());
     hand = new Hand(otherInitEngine->getHand());
     numPlayers = new int(otherInitEngine->getNumPlayers());
@@ -40,14 +38,12 @@ InitGameEngine& InitGameEngine::operator=(InitGameEngine& otherInitEngine) {
         for (pair<string, Player*> player: *players) {
             delete player.second;
         }
-        delete map;
         delete players;
         delete hand;
         delete numPlayers;
         delete colours;
         delete playerOrder;
 
-        map = new GameMap(otherInitEngine.getMap());
         players = new Players(*otherInitEngine.getPlayers());
         hand = new Hand(otherInitEngine.getHand());
         numPlayers = new int(otherInitEngine.getNumPlayers());
@@ -65,14 +61,12 @@ InitGameEngine::~InitGameEngine() {
         delete player.second;
     }
 
-    delete map;
     delete players;
     delete hand;
     delete numPlayers;
     delete colours;
     delete playerOrder;
 
-    map = nullptr;
     players = nullptr;
     hand = nullptr;
     numPlayers = nullptr;
@@ -85,7 +79,7 @@ InitGameEngine::~InitGameEngine() {
  */
 void InitGameEngine::initGame() {
     // Only initialize the game once.
-    if (players->size() == 0 && map->getVertices()->size() == 0) {
+    if (players->size() == 0 && GameMap::instance()->getVertices()->size() == 0) {
 
         cout << "\n---------------------------------------------------------------------" << endl;
         cout << "---------------------------------------------------------------------" << endl;
@@ -110,7 +104,6 @@ void InitGameEngine::initGame() {
  *
  */
 void InitGameEngine::initializeMap() {
-    delete map; //Delete the empty map created by the default constructor.
 
     vector<string>* mapFiles = getMapFiles();
 
@@ -118,18 +111,18 @@ void InitGameEngine::initializeMap() {
         string mapName = selectMap(mapFiles);
         MapLoader loader(mapName);
 
-        map = loader.generateMap();
+        bool isMapFileValid = loader.generateMap();
 
         // Map file is invalid and returned no map object.
-        if (map == nullptr)
+        if (isMapFileValid == false)
             continue;
 
         // Map file is valid and created a valid map object.
-        if(isConnectedMap(map) && validateContinents(map) && validateEdges(map))
+        if(isConnectedMap() && validateContinents() && validateEdges())
             break;
 
         // Map file is valid but created a faulty map object.
-        delete map;
+        delete GameMap::instance();
     }
 
     delete mapFiles;
@@ -138,7 +131,7 @@ void InitGameEngine::initializeMap() {
 
 //PRIVATE
 /**
- * Prompts the user to select the number of players. 
+ * Prompts the user to select the number of players.
  * The user can choose between 2 and 5 players, inclusively.
  */
 void InitGameEngine::selectNumPlayers() {
@@ -188,7 +181,7 @@ void InitGameEngine::createPlayers(){
 //PRIVATE
 /**
  * Creates a Player object.
- * 
+ *
  * Prompts the user to write in a unique name and choose a colour from
  * the five available colours. Once a player selects a colour, it is no
  * longer available for the other players to choose.
@@ -208,7 +201,7 @@ Player* InitGameEngine::createPlayer(){
 //PRIVATE
 /**
  * Gets a vector pointer of all the map files in the maps/ directory.
- * 
+ *
  * @return A vector of the names of the files in the maps/ directory.
  */
 vector<string>* InitGameEngine::getMapFiles() {
@@ -328,7 +321,7 @@ string InitGameEngine::chooseName() {
         if(name != "") {
             if(players->find(name) != players->end())
                 cout << "\n[ ERROR! ] That name is already taken. Please choose another.\n" << endl;
-            else 
+            else
                 break;
         } else
             cout << "[ ERROR! ] Name cannot be empty. Please try again." << endl;

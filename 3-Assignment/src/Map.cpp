@@ -1,6 +1,8 @@
 #include "Map.h"
 #include <algorithm>
 
+GameMap *GameMap::mapInstance = 0;
+
 /**
  * Default Constructor
  */
@@ -208,6 +210,13 @@ GameMap::~GameMap() {
     vertices = nullptr;
     start = nullptr;
     image = nullptr;
+    mapInstance = nullptr;
+}
+
+GameMap* GameMap::instance() {
+    if (!mapInstance)
+        mapInstance = new GameMap();
+    return mapInstance;
 }
 
 /**
