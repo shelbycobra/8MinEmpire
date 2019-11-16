@@ -12,8 +12,6 @@
 #include "util/ScoreTest.h"
 #include "PlayerStrategies.h"
 
-enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY, NONE };
-
 class Card;
 class Vertex;
 class Bidder;
@@ -88,8 +86,6 @@ public:
     void addArmiesToCountry(Vertex* country, const int& numArmies);
     void removeArmiesFromCountry(Vertex* country, const int& numArmies);
 
-    void executeStrategy(Card* card, Players* players);
-
     //GETTERS
     string getName() { return *name; }
     Vertices* getCountries() { return countries; }
@@ -109,11 +105,6 @@ private:
     void increaseAvailableArmies(const int& numArmies);
     void decreaseAvailableArmies(const int& numArmies);
     void performCardAction(string& action, Players* players);
-    Vertex* chooseStartVertex();
-    Vertex* chooseEndVertex(const ActionType& type);
-    int chooseArmies(const int& maxArmies, const int& remainderArmies, int endVertexArmies, const string& startVertexName);
-    string chooseORAction(const string action);
-    Player* chooseOpponent(Players* players);
     void findAndDistributeWildCards(unordered_map<string, int>* goodsCount);
 };
 
