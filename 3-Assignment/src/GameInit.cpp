@@ -189,13 +189,15 @@ void InitGameEngine::createPlayers(){
 Player* InitGameEngine::createPlayer(){
     string name;
     string colour;
+    Strategy* strategy;
 
     cout << "\n[ INIT ] Creating a new player" << endl;
 
     name = chooseName();
     colour = chooseColour();
+    strategy = chooseStrategy();
 
-    return new Player(name, colour);
+    return new Player(name, colour, strategy);
 }
 
 //PRIVATE
@@ -328,4 +330,35 @@ string InitGameEngine::chooseName() {
     }
 
     return name;
+}
+
+Strategy* InitGameEngine::chooseStrategy() {
+    while (true) {
+        string strategyChoice;
+
+        cout << "\n[ INIT ] Which playing strategy would you like to change to?" << endl;
+        cout << "[ INIT ] Options:" << endl;
+        cout << "\n1. HUMAN\n2. GREEDY\n3. MODERATE\n" << endl;
+        cout << "[ INIT ] Please enter a number between 1 and 3." << endl;
+        cout << "[ INIT ] > ";
+
+        getline(cin, strategyChoice);
+
+        cout << "[ INIT ] You chose " << strategyChoice << endl;
+
+        try{
+            int choice = stoi(strategyChoice);
+
+            if (choice == 1)
+                return new HumanStrategy();
+            if (choice == 2)
+                return new GreedyStrategy();
+            if (choice == 3)
+                return new ModerateStrategy();
+
+            cout << "\n[ ERROR! ] Invalid choice.\n" << endl;
+        } catch (invalid_argument &e) {
+            cout << "\n[ ERROR! ] Please enter a number.\n" << endl;
+        }
+    }
 }

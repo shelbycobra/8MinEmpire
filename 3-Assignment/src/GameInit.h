@@ -35,6 +35,7 @@ private:
     void printColours();
     string chooseColour();
     string chooseName();
+    Strategy* chooseStrategy();
 };
 
 #endif

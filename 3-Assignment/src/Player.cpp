@@ -22,6 +22,15 @@ Player::Player():
     playerEntry(new PlayerEntry(*name, *colour)),
     controlledRegions(new int(0)) {}
 
+/**
+ * Initializes a Player object.
+ *
+ * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
+ * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ *
+ * @param playerName The name of the player.
+ * @param theColour The colour of game pieces.
+ */
 Player::Player(const string &playerName, const string& theColour):
     name(new string(playerName)),
     countries(new Vertices()),
@@ -59,6 +68,32 @@ Player::Player(const string& playerName, const int& startCoins):
     controlledRegions(new int(0))
 {
     cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
+}
+
+/**
+ * Initializes a Player object.
+ *
+ * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
+ * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ *
+ * @param playerName The name of the player.
+ * @param theColour The colour of game pieces.
+ * @param theStrategy The strategy the player will use during game play.
+ */
+Player::Player(const string &playerName, const string& theColour, Strategy* theStrategy):
+    name(new string(playerName)),
+    countries(new Vertices()),
+    armies(new int(14)),
+    cities(new int(3)),
+    coins(new int(0)),
+    hand(new vector<Card*>()),
+    bidder(new Bidder(this)),
+    colour(new string(theColour)),
+    playerEntry(new PlayerEntry(*name, *colour)),
+    controlledRegions(new int(0)),
+    strategy(theStrategy)
+{
+    cout << "\n{ " << *name << " } CREATED. [ " << *colour << " ] (Purse = 0) { Strategy " << strategy->getType() << " }." << endl;
 }
 
 /**
@@ -1132,4 +1167,9 @@ Player* Player::chooseOpponent(Players* players) {
 
 void Player::executeStrategy(Card* card, Players* players) {
     strategy->execute(card, players);
+}
+
+void Player::setStrategy(Strategy* newStrategy) {
+    delete strategy;
+    strategy = newStrategy;
 }

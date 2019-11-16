@@ -1,5 +1,6 @@
 #include "GameMainLoop.h"
 #include "GameObservers.h"
+#include "PlayerStrategies.h"
 
 /**
  * Default Constructor
@@ -253,5 +254,47 @@ int MainGameEngine::getMaxNumberOfCards() {
 }
 
 void MainGameEngine::askToChangePlayerStrategy() {
+    string answer;
+    cout << "[ GAME ] Would you like to change the playing strategy of { " << currentPlayer->getName() << " }?" << endl;
+    cout << "[ GAME ] > ";
+    getline(cin, answer);
 
+    Strategy* newStrategy;
+
+    if (answer == "y" || answer == "Y") {
+        while (true) {
+            string strategyName;
+
+            cout << "\n[ GAME ] Which playing strategy would you like to change to?" << endl;
+            cout << "[ GAME ] Current playing strategy is " << currentPlayer->getStrategy()->getType() << "." << endl;
+            cout << "[ GAME ] Options:" << endl;
+            cout << "\n1. HUMAN\n2. GREEDY\n3. MODERATE\n" << endl;
+            cout << "[ GAME ] Please enter a number between 1 and 3." << endl;
+            cout << "[ GAME ] > ";
+
+            getline(cin, strategyName);
+
+            try{
+                int choice = stoi(strategyName);
+
+                if (choice == 1) {
+                    newStrategy = new HumanStrategy();
+                    break;
+                } else if (choice == 2) {
+                    newStrategy = new GreedyStrategy();
+                    break;
+                } else if (choice == 3) {
+                    newStrategy = new ModerateStrategy();
+                    break;
+                } else {
+                    cout << "[ ERROR! ] Invalid choice." << endl;
+                }
+            } catch (invalid_argument &e) {
+                cout << "[ ERROR! ] Please enter a number." << endl;
+            }
+        }
+
+        cout << "[ GAME ] Setting strategy to " << newStrategy->getType() << "." << endl;
+        currentPlayer->setStrategy(newStrategy);
+    }
 }

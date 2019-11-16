@@ -44,8 +44,9 @@ class Player {
 
 public:
     Player();
-    Player(const string &name, const string& colour);
     Player(const string &name, const int& startCoins);
+    Player(const string &name, const string& colour);
+    Player(const string &name, const string& colour, Strategy* strategy);
     Player(Player* player);
     Player& operator=(Player& player);
     ~Player();
@@ -101,6 +102,8 @@ public:
     PlayerEntry* getPlayerEntry() { return playerEntry; }
     int getControlledRegions() { return *controlledRegions; }
     Strategy* getStrategy() { return strategy; }
+
+    void setStrategy(Strategy* newStrategy);
 
 private:
     void increaseAvailableArmies(const int& numArmies);
