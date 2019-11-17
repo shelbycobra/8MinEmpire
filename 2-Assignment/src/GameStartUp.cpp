@@ -130,7 +130,7 @@ void GameStartUpEngine::selectStartVertex() {
  * 4 armies belonging to Anon on the map.
  */
 void GameStartUpEngine::placeStartingArmies() {
-    string startName = initPhase->getMap()->getStartVertex();
+    string startName = initPhase->getMap()->getStartVertexName();
 
     cout << "\n---------------------------------------------------------------------" << endl;
     cout << "[ START ] Placing 3 armies on the start vertex < " << startName << " >." << endl;

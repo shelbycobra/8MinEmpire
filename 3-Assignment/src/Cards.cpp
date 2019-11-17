@@ -132,7 +132,7 @@ Deck::Deck(){
         CardInfo(WILD,   "Add 2 armies")
     };
 
-    cardDeck = new queue<pair<int, Card*>>();
+    cardDeck = new queue<pair<int, Card*> >();
     cardMap = new map<int,Card*>();
 
     for(int i = 0; i < 42; i++) {
@@ -152,7 +152,7 @@ Deck::Deck(){
  * Copy Constructor
  */
 Deck::Deck(Deck* deck) {
-    cardDeck = new queue<pair<int, Card*>>(*deck->getDeck());
+    cardDeck = new queue<pair<int, Card*> >(*deck->getDeck());
 }
 
 /**
@@ -161,7 +161,7 @@ Deck::Deck(Deck* deck) {
 Deck& Deck::operator =(Deck& deck) {
     if (&deck != this) {
         delete cardDeck;
-        cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
+        cardDeck = new queue<pair<int, Card*> >(*deck.getDeck());
     }
     return *this;
 }
@@ -192,7 +192,7 @@ void Deck::shuffle() {
 
     delete cardDeck;
 
-    cardDeck = new queue<pair<int, Card*>>();
+    cardDeck = new queue<pair<int, Card*> >();
     set<int>* nums = new set<int>();
 
     while(nums->size() < DECK_SIZE) {
@@ -348,28 +348,8 @@ void Hand::drawCardFromDeck() {
  * @return The position of the card to be used in gameplay.
  */
 int Hand::selectCardPosition(Player* player){
-    string pos;
-    int position;
-
     printHand();
-
-    while (true) {
-        cout << "[ GAME HAND ] Please choose a card from the game hand. { Purse = " << player->getCoins() << " } { Cards in hand " << player->getHand()->size() << " }." << endl;
-        cout << "[ GAME HAND ] > ";
-
-        try {
-        getline(cin, pos);
-
-        position = stoi(pos);
-
-        if (position < 7 && position > 0)
-            return position - 1;
-        cout << "[ ERROR! ] You can only choose numbers between [1, 6]. Please try again." << endl;
-
-        } catch (invalid_argument& e) {
-            cout << "[ ERROR! ] You entered garbage. Please try again." << endl;
-        }
-    }
+    return player->getStrategy()->chooseCardPosition(player, this);
 }
 
 /**

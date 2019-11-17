@@ -2,7 +2,7 @@
 #include "../util/TestUtil.h"
 
 void test_ConnectedMap();
-void test_EachCountryBelongsToOneContinent();
+void test_EachRegionBelongsToOneContinent();
 void test_ValidEdges();
 void test_SettingAndGettingStartVertex();
 
@@ -14,7 +14,7 @@ bool validateContinents(GameMap*);
 
 int main() {
     test_ConnectedMap();
-    test_EachCountryBelongsToOneContinent();
+    test_EachRegionBelongsToOneContinent();
     test_ValidEdges();
     test_SettingAndGettingStartVertex();
 
@@ -83,13 +83,13 @@ void test_ConnectedMap(){
     map = nullptr;
 }
 
-void test_EachCountryBelongsToOneContinent(){
+void test_EachRegionBelongsToOneContinent(){
     cout << "\n=====================================================================" << endl;
-    cout << "TEST: test_EachCountryBelongsToOneContinent" << endl;
+    cout << "TEST: test_EachRegionBelongsToOneContinent" << endl;
     cout << "=====================================================================" << endl;
 
     cout << "\n--------------------------------------------------------------------" << endl;
-    cout << "TEST: Generate a valid map where each country belongs to one and only one continent." << endl;
+    cout << "TEST: Generate a valid map where each region belongs to one and only one continent." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
     GameMap* map = generateValidMap();
@@ -203,7 +203,7 @@ void test_SettingAndGettingStartVertex(){
     cout << "--------------------------------------------------------------------\n" << endl;
 
     string start;
-    start = map->getStartVertex();
+    start = map->getStartVertexName();
     assert(start == "none");
     cout << "Success! Start == " << start << endl;
 
@@ -214,7 +214,7 @@ void test_SettingAndGettingStartVertex(){
     bool result;
     string startName = "W";
     result = map->setStartVertex(startName);
-    start = map->getStartVertex();
+    start = map->getStartVertexName();
     assert(start == startName && result == 1);
     cout << "Success! Start == " << start << endl;
 

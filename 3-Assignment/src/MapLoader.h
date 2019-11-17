@@ -20,7 +20,7 @@ public:
     void setMapFilePath(const string& fileName);
 
 private:
-    bool loadCountries(ifstream* mapFile, unordered_map<string, string>* nameMap);
+    bool loadRegions(ifstream* mapFile, unordered_map<string, string>* nameMap);
     bool loadEdges(ifstream* mapFile, unordered_map<string, string>* nameMap);
     bool loadImage(ifstream* mapFile);
 };

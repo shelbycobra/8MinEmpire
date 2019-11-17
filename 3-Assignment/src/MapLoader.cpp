@@ -71,7 +71,7 @@ bool MapLoader::generateMap(){
     unordered_map<string, string> nameMap;
     string line;
 
-    if (!loadCountries(&mapFile, &nameMap))
+    if (!loadRegions(&mapFile, &nameMap))
         return false;
 
     if (!loadEdges(&mapFile, &nameMap))
@@ -84,13 +84,13 @@ bool MapLoader::generateMap(){
 }
 
 /**
- * Adds countries to a map object.
+ * Adds regions to a map object.
  *
  * @param mapFile A ifstream pointer the map text file
  * @param nameMap An unordeder_map pointer of an object mapping vertex keys to name
  * @return A GameMap pointer to a map.
  */
-bool MapLoader::loadCountries(ifstream* mapFile, unordered_map<string, string>* nameMap) {
+bool MapLoader::loadRegions(ifstream* mapFile, unordered_map<string, string>* nameMap) {
 
     string continent;
     string line;
@@ -102,7 +102,7 @@ bool MapLoader::loadCountries(ifstream* mapFile, unordered_map<string, string>* 
         return false;
     }
 
-    cout << "[ MAP LOADER ] Getting names of countries." << endl;
+    cout << "[ MAP LOADER ] Getting names of regions." << endl;
 
     while (line != "&") {
 
@@ -110,7 +110,7 @@ bool MapLoader::loadCountries(ifstream* mapFile, unordered_map<string, string>* 
             size_t pos = line.find(':');
 
             if (pos == size_t(-1)) {
-                cout << "[ ERROR! ] Invalid country syntax \"" << line << "\". Must be in the form of KEY:COUNTRY_NAME." << endl;
+                cout << "[ ERROR! ] Invalid region syntax \"" << line << "\". Must be in the form of KEY:COUNTRY_NAME." << endl;
                 return false;
             }
 

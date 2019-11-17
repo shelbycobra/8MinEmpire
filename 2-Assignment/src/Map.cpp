@@ -149,13 +149,13 @@ GameMap::GameMap():
  */
 GameMap::GameMap(GameMap* map) {
     vertices = new Vertices(*map->getVertices());
-    start = new string(map->getStartVertex());
+    start = new string(map->getStartVertexName());
     image = new string(map->getImage());
 }
 
 GameMap& GameMap::operator=(GameMap& map) {
     vertices = new Vertices(*map.getVertices());
-    start = new string(map.getStartVertex());
+    start = new string(map.getStartVertexName());
     image = new string(map.getImage());
 
     return *this;

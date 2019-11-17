@@ -56,7 +56,7 @@ bool isConnectedMap(){
 /**
  * Analyzes each continent in the map to determine whether it is a valid continent.
  *
- * A valid continents means that each continent contains more than one country and
+ * A valid continents means that each continent contains more than one region and
  * contains no internal water edges.
  *
  * @return A boolean representing if the map contains valid continents.
@@ -101,7 +101,7 @@ bool validateContinents() {
                 }
             }
         } else {
-            cout << "[ ERROR! ] A continent can't have less than two countries!\n" << endl;
+            cout << "[ ERROR! ] A continent can't have less than two regions!\n" << endl;
             return false;
         }
     }
@@ -175,7 +175,7 @@ bool isContinentConnected(set<string>* continent){
  * in the map.
  *
  * @param map A GameMap pointer to the map.
- * @return a list of country names grouped in sets representing the different continents on the map.
+ * @return a list of region names grouped in sets representing the different continents on the map.
  */
 vector<set<string>* > getMapContinents(){
     vector<set<string>* > continents;
@@ -327,12 +327,12 @@ void performCardAction(Player* player, const string action, GameMap* map, Player
         player->AndOrAction(action, players);
     else if (action.find("Move") != size_t(-1)) {
         if (action.find("water") != size_t(-1))
-            player->MoveOverLand(action);
+            player->MoveOverLand(action, players);
         else
-            player->MoveOverWater(action);
+            player->MoveOverWater(action, players);
     }
     else if (action.find("Add") != size_t(-1))
-        player->PlaceNewArmies(action);
+        player->PlaceNewArmies(action, players);
     else if (action.find("Destroy") != size_t(-1))
         player->DestroyArmy(players);
     else if (action.find("Build") != size_t(-1))

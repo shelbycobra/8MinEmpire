@@ -134,7 +134,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
 
     Vertex* PEVertex = vertices->find("PE")->second;
 
-    players->begin()->second->addArmiesToCountry(PEVertex, 1);
+    players->begin()->second->addArmiesToRegion(PEVertex, 1);
     *players->begin()->second->armies -= 2;
 
     mainEngine.declareWinner();
@@ -185,7 +185,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
 
     Vertex* BAVertex = vertices->find("BA")->second;
 
-    players->begin()->second->addArmiesToCountry(BAVertex, 1);
+    players->begin()->second->addArmiesToRegion(BAVertex, 1);
 
     mainEngine.declareWinner();
 }

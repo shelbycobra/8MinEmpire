@@ -16,11 +16,11 @@ Vertex::Vertex():
     edges(new vector<Edge>()) {}
 
 /**
- * Initializes a Vertex object that represents a country on a GameMap object.
+ * Initializes a Vertex object that represents a region on a GameMap object.
  *
- * @param aName The name of the country.
- * @param key The key corresponding to the name of the country.
- * @param continent The name of the continent where the country sits.
+ * @param aName The name of the region.
+ * @param key The key corresponding to the name of the region.
+ * @param continent The name of the continent where the region sits.
  */
 Vertex::Vertex(string aName, string key, string continent):
     name(new string(aName)),
@@ -177,7 +177,7 @@ GameMap::GameMap():
  */
 GameMap::GameMap(GameMap* map) {
     vertices = new Vertices(*map->getVertices());
-    start = new string(map->getStartVertex());
+    start = new string(map->getStartVertexName());
     image = new string(map->getImage());
 }
 
@@ -192,7 +192,7 @@ GameMap& GameMap::operator=(GameMap& map) {
         delete image;
 
         vertices = new Vertices(*map.getVertices());
-        start = new string(map.getStartVertex());
+        start = new string(map.getStartVertexName());
         image = new string(map.getImage());
     }
     return *this;
@@ -224,7 +224,7 @@ GameMap* GameMap::instance() {
  * The variable is initialized to "none" and can only be set once.
  * Once the variable is set, it can't be changed again.
  *
- * @param startVertexKey The vertex key representing the start country
+ * @param startVertexKey The vertex key representing the start region
  * @return a boolean that shows the action was successful.
  */
 bool GameMap::setStartVertex(string& startVertexKey){
@@ -239,6 +239,7 @@ bool GameMap::setStartVertex(string& startVertexKey){
     cout << "[ MAP ] Setting start vertex. Searching for \"" << startVertexKey << "\"." << endl;
     if (vertices->find(startVertexKey) != vertices->end()) {
         *start = startVertexKey;
+        startVertex = vertices->find(startVertexKey)->second;
         cout << "[ MAP ] Start vertex is now < " << vertices->find(startVertexKey)->second->getName() << " >.\n" << endl;
         return true;
     }
@@ -262,9 +263,9 @@ void GameMap::setImage(const string& newImage) {
 /**
  * Adds a vertex object to the list of vertices belonging to the GameMap.
  *
- * @param key The vertex key that corresponds to the country.
- * @param name The name of the country.
- * @param continent The name of the continent the country is on.
+ * @param key The vertex key that corresponds to the region.
+ * @param name The name of the region.
+ * @param continent The name of the continent the region is on.
  */
 void GameMap::addVertex(const string& key, const string& name, const string& continent) {
 
@@ -282,8 +283,8 @@ void GameMap::addVertex(const string& key, const string& name, const string& con
 /**
  * Creates an edge on the map between two vertices.
  *
- * @param startVertexKey The key corresponding to the start country.
- * @param endVertexKey The key corresponding to the end country.
+ * @param startVertexKey The key corresponding to the start region.
+ * @param endVertexKey The key corresponding to the end region.
  * @param isWaterEdge A bool representing wher the edge is over water.
  */
 void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, bool isWaterEdge) {
@@ -295,7 +296,7 @@ void GameMap::addEdge(const string& startVertexKey, const string& endVertexKey, 
 
 /**
  * Prints the image of the GameMap along with a list of all the currently occupied
- * countries.
+ * regions.
  */
 void GameMap::printMap(){
     cout << *image << endl;
@@ -315,7 +316,7 @@ void GameMap::printOccupiedRegions() {
  * Conducts a Breadth-First-Search through the GameMap object to find all the continents
  * in the map.
  *
- * @return a list of country names grouped in sets representing the different continents on the map.
+ * @return a list of region names grouped in sets representing the different continents on the map.
  */
 vector<set<string>* > GameMap::getContinents(){
     vector<set<string>* > continents;
@@ -398,9 +399,9 @@ string GameMap::getContinentOwner(set<string>* continent) {
 
         // Increment the number of owned regions per player.
         if(ownedRegionsPerPlayer.find(owner) != ownedRegionsPerPlayer.end()) {
-            int numOwnedRegions = ownedRegionsPerPlayer.find(owner)->second;
+            int numRegions = ownedRegionsPerPlayer.find(owner)->second;
             ownedRegionsPerPlayer.erase(owner);
-            ownedRegionsPerPlayer.insert(pair<string,int>(owner, numOwnedRegions+1));
+            ownedRegionsPerPlayer.insert(pair<string,int>(owner, numRegions+1));
         } else {
             ownedRegionsPerPlayer.insert(pair<string,int>(owner, 1));
         }

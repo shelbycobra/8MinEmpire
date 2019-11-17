@@ -13,7 +13,7 @@ class GameMap;
  */
 Player::Player():
     name(new string("No name")),
-    countries(new Vertices()),
+    regions(new Vertices()),
     armies(new int(14)),
     cities(new int(3)),
     coins(new int(0)),
@@ -21,20 +21,21 @@ Player::Player():
     bidder(new Bidder(this)),
     colour(new string("none")),
     playerEntry(new PlayerEntry(*name, *colour)),
-    controlledRegions(new int(0)) {}
+    controlledRegions(new int(0)),
+    strategy(new HumanStrategy()) {}
 
 /**
  * Initializes a Player object.
  *
  * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
- * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ * The player is initialized with an empty list of regions, an empty hand and a Bidder object.
  *
  * @param playerName The name of the player.
  * @param theColour The colour of game pieces.
  */
 Player::Player(const string &playerName, const string& theColour):
     name(new string(playerName)),
-    countries(new Vertices()),
+    regions(new Vertices()),
     armies(new int(14)),
     cities(new int(3)),
     coins(new int(0)),
@@ -42,7 +43,8 @@ Player::Player(const string &playerName, const string& theColour):
     bidder(new Bidder(this)),
     colour(new string(theColour)),
     playerEntry(new PlayerEntry(*name, *colour)),
-    controlledRegions(new int(0))
+    controlledRegions(new int(0)),
+    strategy(new HumanStrategy())
 {
     cout << "\n{ " << *name << " } CREATED. [ " << *colour << " ] (Purse = 0)." << endl;
 }
@@ -51,14 +53,14 @@ Player::Player(const string &playerName, const string& theColour):
  * Initializes a Player object.
  *
  * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
- * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ * The player is initialized with an empty list of regions, an empty hand and a Bidder object.
  *
  * @param playerName The name of the player.
  * @param startCoins The number of coins the player starts with.
  */
 Player::Player(const string& playerName, const int& startCoins):
     name(new string(playerName)),
-    countries(new Vertices()),
+    regions(new Vertices()),
     armies(new int(14)),
     cities(new int(3)),
     coins(new int(startCoins)),
@@ -75,7 +77,7 @@ Player::Player(const string& playerName, const int& startCoins):
  * Initializes a Player object.
  *
  * Each player starts with 14 free armies and 3 free cities to place on the map during game play.
- * The player is initialized with an empty list of countries, an empty hand and a Bidder object.
+ * The player is initialized with an empty list of regions, an empty hand and a Bidder object.
  *
  * @param playerName The name of the player.
  * @param theColour The colour of game pieces.
@@ -83,7 +85,7 @@ Player::Player(const string& playerName, const int& startCoins):
  */
 Player::Player(const string &playerName, const string& theColour, Strategy* theStrategy):
     name(new string(playerName)),
-    countries(new Vertices()),
+    regions(new Vertices()),
     armies(new int(14)),
     cities(new int(3)),
     coins(new int(0)),
@@ -102,7 +104,7 @@ Player::Player(const string &playerName, const string& theColour, Strategy* theS
  */
 Player::Player(Player* player){
     name = new string(player->getName());
-    countries = new Vertices(*player->getCountries());
+    regions = new Vertices(*player->getOccupiedRegions());
     armies = new int(player->getArmies());
     cities = new int(player->getCities());
     coins = new int(player->getCoins());
@@ -111,6 +113,7 @@ Player::Player(Player* player){
     colour = new string(player->getColour());
     playerEntry = new PlayerEntry(player->getPlayerEntry()->first, player->getPlayerEntry()->second);
     controlledRegions = new int(player->getControlledRegions());
+    strategy = player->getStrategy();
 }
 
 /**
@@ -123,7 +126,7 @@ Player& Player::operator=(Player& player) {
             delete *it;
 
         delete name;
-        delete countries;
+        delete regions;
         delete armies;
         delete cities;
         delete coins;
@@ -132,9 +135,10 @@ Player& Player::operator=(Player& player) {
         delete colour;
         delete playerEntry;
         delete controlledRegions;
+        delete strategy;
 
         name = new string(player.getName());
-        countries = new Vertices(*player.getCountries());
+        regions = new Vertices(*player.getOccupiedRegions());
         armies = new int(player.getArmies());
         cities = new int(player.getCities());
         coins = new int(player.getCoins());
@@ -143,6 +147,7 @@ Player& Player::operator=(Player& player) {
         colour = new string(player.getColour());
         playerEntry = new PlayerEntry(player.getPlayerEntry()->first, player.getPlayerEntry()->second);
         controlledRegions = new int(player.getControlledRegions());
+        strategy = player.getStrategy();
     }
     return *this;
 }
@@ -156,7 +161,7 @@ Player::~Player(){
         delete *it;
 
     delete name;
-    delete countries;
+    delete regions;
     delete armies;
     delete cities;
     delete coins;
@@ -165,9 +170,10 @@ Player::~Player(){
     delete colour;
     delete playerEntry;
     delete controlledRegions;
+    delete strategy;
 
     name = nullptr;
-    countries = nullptr;
+    regions = nullptr;
     armies = nullptr;
     cities = nullptr;
     coins = nullptr;
@@ -176,6 +182,7 @@ Player::~Player(){
     colour = nullptr;
     playerEntry = nullptr;
     controlledRegions = nullptr;
+    strategy = nullptr;
 }
 
 /**
@@ -200,23 +207,11 @@ bool Player::PayCoins(const int& amount){
 /**
  * Executes the action "Build city".
  *
- * The player can build a city on a country where they currently have armies.
+ * The player can build a city on a region where they currently have armies.
  *
  */
 void Player::BuildCity() {
-    cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
-
-    Vertex* endVertex;
-
-    while (true) {
-        cout << "{ " << *name << " } Please choose a country to build a city on." << endl;
-        endVertex = strategy->chooseEndVertex(this, ActionType::BUILD_CITY);
-        if (!executeBuildCity(endVertex)) {
-            continue;
-        }
-        break;
-    }
-    printCountries();
+    strategy->BuildCity(this);
 }
 
 /**
@@ -224,8 +219,8 @@ void Player::BuildCity() {
  *
  * @param action The action to be executed.
  */
-void Player::MoveOverLand(const string action){
-    MoveArmies(action);
+void Player::MoveOverLand(const string action, Players* players){
+    MoveArmies(action, players);
 }
 
 /**
@@ -233,117 +228,42 @@ void Player::MoveOverLand(const string action){
  *
  * @param action The action to be executed.
  */
-void Player::MoveOverWater(const string action){
-    MoveArmies(action);
+void Player::MoveOverWater(const string action, Players* players){
+    MoveArmies(action, players);
 }
 
 /**
  * Executes the action "Move # armies" or "Move # armies over water".
  *
- * The player can move armies around the map to adjacent countries as many times as the card dictates.
+ * The player can move armies around the map to adjacent regions as many times as the card dictates.
  *
  * @param action The action to be executed.
  */
-void Player::MoveArmies(const string action) {
-    Vertex* startVertex;
-    Vertex* endVertex;
-    int maxArmies;
-    int remainderArmies;
-
-    stringstream toInt(action.substr(5, 6));
-    toInt >> maxArmies;
-    remainderArmies = maxArmies;
-
-    bool overWater = action.find("water") != size_t(-1);
-    ActionType type = overWater ? ActionType::MOVE_OVER_WATER : ActionType::MOVE_OVER_LAND;
-    string actionSuffix = overWater ? " armies over water.\n" : " armies over land.\n";
-
-
-    cout << "\n\n[[ ACTION ]] Move " << maxArmies << actionSuffix << "\n\n" << endl;
-    cout << "{ " << *name << " } You can move " << maxArmies << " armies around the board." << endl;
-
-    while(remainderArmies > 0) {
-        int armies;
-
-        startVertex = strategy->chooseStartVertex(this);
-        cout << "{ " << *name << " } Please choose a country to move armies to." << endl;
-        endVertex = strategy->chooseEndVertex(this, type);
-
-        int startVertexArmies = startVertex->getArmies()->find(playerEntry)->second;
-        armies = strategy->chooseArmies(this, maxArmies, remainderArmies, startVertexArmies, startVertex->getName());
-
-        if (!executeMoveArmies(armies, startVertex, endVertex, overWater)) {
-            continue;
-        }
-
-        remainderArmies -= armies;
-    }
-
-    printCountries();
+void Player::MoveArmies(const string action, Players* players) {
+    strategy->MoveArmies(this, action, players);
 }
 
 /**
  * Executes the action "Add # armies".
  *
- * The player can add armies to any country the player currently has a city or to the start country.
+ * The player can add armies to any region the player currently has a city or to the start region.
  *
  * @param action The action to be executed.
+ * @param players A pointer to the players in the game.
  */
-void Player::PlaceNewArmies(const string action) {
-    Vertex* endVertex;
-
-    stringstream toInt(action.substr(4, 5));
-    int maxArmies;
-    int remainderArmies;
-    toInt >> maxArmies;
-    remainderArmies = maxArmies;
-
-    cout << "\n\n[[ ACTION ]] " << action << ".\n\n" << endl;
-    cout << "{ " << *name << " } You have the choice of adding " << maxArmies << " armies on the board." << endl;
-
-    while(remainderArmies > 0) {
-        int armies;
-
-        cout << "{ " << *name << " } Please choose a country to add new armies to." << endl;
-        endVertex = strategy->chooseEndVertex(this, ActionType::ADD_ARMY);
-        armies = strategy->chooseArmies(this, maxArmies, remainderArmies, 0, "none");
-
-        if (!executeAddArmies(armies, endVertex, GameMap::instance()->getStartVertex())) {
-            continue;
-        }
-
-        remainderArmies -= armies;
-    }
-
-    printCountries();
+void Player::PlaceNewArmies(const string action, Players* players) {
+    strategy->PlaceNewArmies(this, action, players);
 }
 
 /**
  * Executes the action "Destroy army".
  *
- * The player chooses an opponent's army to destroy on a country where the oponnent has an army.
+ * The player chooses an opponent's army to destroy on a region where the oponnent has an army.
  *
  * @param players A list of players in the game.
  */
 void Player::DestroyArmy(Players* players) {
-    cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
-
-    Vertex* endVertex;
-    string opponentName;
-    Player* opponent;
-
-    opponent = strategy->chooseOpponent(this, players);
-
-    while(true) {
-        cout << "{ " << *name << " } Please choose an opponent occupied country." << endl;
-        endVertex = strategy->chooseEndVertex(this, ActionType::DESTROY_ARMY);
-        if (!executeDestroyArmy(endVertex, opponent)) {
-            continue;
-        }
-        break;
-    }
-
-    opponent->printCountries();
+    strategy->DestroyArmy(this, players);
 }
 
 /**
@@ -354,31 +274,7 @@ void Player::DestroyArmy(Players* players) {
  * @param players A pointer to a map of Player pointers and their names.
  */
 void Player::AndOrAction(const string action, Players* players) {
-    vector<string> actionArr;
-
-    if (action.find("OR") != size_t(-1)) {
-        actionArr.push_back(strategy->chooseORAction(this, action));
-    }
-    else {
-        size_t andPos = action.find("AND");
-        actionArr.push_back(action.substr(0, andPos));
-        actionArr.push_back(action.substr(andPos+4));
-    }
-
-    for(vector<string>::iterator it = actionArr.begin(); it != actionArr.end(); ++it) {
-        if ((*it).find("Move") != size_t(-1)) {
-            if ((*it).find("water") != size_t(-1))
-                MoveOverLand(*it);
-            else
-                MoveOverWater(*it);
-        }
-        else if ((*it).find("Add") != size_t(-1))
-            PlaceNewArmies(*it);
-        else if ((*it).find("Destroy") != size_t(-1))
-            DestroyArmy(players);
-        else if ((*it).find("Build") != size_t(-1))
-            BuildCity();
-    }
+    strategy->AndOrAction(this, action, players);
 }
 
 /**
@@ -418,7 +314,7 @@ int Player::ComputeScore() {
  * @return The total number of owned regions.
  */
 int Player::getVPFromRegions() {
-    vector<string>* ownedRegions = getOwnedRegions();
+    vector<string>* ownedRegions = getRegions();
 
     for (vector<string>::iterator it = ownedRegions->begin(); it != ownedRegions->end(); ++it) {
         cout << "{ " << *name << " } Owns < " << (*it) << " >." << endl;
@@ -431,11 +327,11 @@ int Player::getVPFromRegions() {
     return *controlledRegions;
 }
 
-vector<string>* Player::getOwnedRegions() {
+vector<string>* Player::getRegions() {
     vector<string>* ownedRegions = new vector<string>();
 
     Vertices::iterator it;
-    for (it = countries->begin(); it != countries->end(); ++it) {
+    for (it = regions->begin(); it != regions->end(); ++it) {
         Vertex* region = it->second;
 
         if (region->getRegionOwner() == *name) {
@@ -573,32 +469,32 @@ unordered_map<string, int>* Player::getGoodsCount() {
 }
 
 /**
- * Detects if a country is adjacent to at least one the player's currently
- * occupied countries.
+ * Detects if a region is adjacent to at least one the player's currently
+ * occupied regions.
  *
- * @param target A Vertex pointer to the target country.
- * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
- * @return a boolean representing if the country is adjacent.
+ * @param target A Vertex pointer to the target region.
+ * @param overWaterAllowed A boolean representing if the region is allowed to be across a water edge.
+ * @return a boolean representing if the region is adjacent.
  */
 bool Player::isAdjacent(Vertex* target, const bool& overWaterAllowed){
     return isAdjacent(target->getName(), overWaterAllowed);
 }
 
 /**
- * Detects if a country is adjacent to at least one the player's currently
- * occupied countries.
+ * Detects if a region is adjacent to at least one the player's currently
+ * occupied regions.
  *
- * @param target The target country name.
- * @param overWaterAllowed A boolean representing if the country is allowed to be across a water edge.
- * @return a boolean representing if the country is adjacent.
+ * @param target The target region name.
+ * @param overWaterAllowed A boolean representing if the region is allowed to be across a water edge.
+ * @return a boolean representing if the region is adjacent.
  */
 bool Player::isAdjacent(const string& target, const bool& overWaterAllowed){
     typedef pair<Vertex*, bool> Edge;
 
-    Vertices::iterator it = countries->begin();
+    Vertices::iterator it = regions->begin();
     set<string> visited;
 
-    while(it != countries->end()) {
+    while(it != regions->end()) {
 
         if (it->second->getName() == target)
             return true;
@@ -616,36 +512,36 @@ bool Player::isAdjacent(const string& target, const bool& overWaterAllowed){
 }
 
 /**
- * Gets the number of armies on a country occupied by the player.
+ * Gets the number of armies on a region occupied by the player.
  *
- * @param country A Vertex pointer to the target country.
- * @return the number of armies on the country.
+ * @param region A Vertex pointer to the target region.
+ * @return the number of armies on the region.
  */
-int Player::getArmiesOnCountry(Vertex* country) {
-    if(countries->find(country->getKey()) != countries->end()) {
-        int numArmies = country->getArmies()->find(playerEntry)->second;
+int Player::getArmiesOnRegion(Vertex* region) {
+    if(regions->find(region->getKey()) != regions->end()) {
+        int numArmies = region->getArmies()->find(playerEntry)->second;
         string army = numArmies == 1 ? "army" : "armies";
-        cout << "{ " << *name << " } Has " << numArmies << " " << army << " on country < " << country->getName() << " >." << endl;
+        cout << "{ " << *name << " } Has " << numArmies << " " << army << " on region < " << region->getName() << " >." << endl;
         return numArmies;
     }
-    cout << "{ " << *name << " } Has ZERO armies on country < " << country->getName() << " >." << endl;
+    cout << "{ " << *name << " } Has ZERO armies on region < " << region->getName() << " >." << endl;
     return 0;
 }
 
 /**
- * Gets the number of cities on a country occupied by the player.
+ * Gets the number of cities on a region occupied by the player.
  *
- * @param country A Vertex pointer to the target country.
- * @return the number of cities on the country.
+ * @param region A Vertex pointer to the target region.
+ * @return the number of cities on the region.
  */
-int Player::getCitiesOnCountry(Vertex* country){
-    if(countries->find(country->getKey()) != countries->end()) {
-        int numCities = country->getCities()->find(playerEntry)->second;
+int Player::getCitiesOnRegion(Vertex* region){
+    if(regions->find(region->getKey()) != regions->end()) {
+        int numCities = region->getCities()->find(playerEntry)->second;
         string city = numCities == 1 ? "city" : "cities";
-        cout << "{ " << *name << " } Has " << numCities << " " << city << " on country < " << country->getName() << " >." << endl;
+        cout << "{ " << *name << " } Has " << numCities << " " << city << " on region < " << region->getName() << " >." << endl;
         return numCities;
     }
-    cout << "{ " << *name << " } Has ZERO cities on country < " << country->getName() << " >." << endl;
+    cout << "{ " << *name << " } Has ZERO cities on region < " << region->getName() << " >." << endl;
     return 0;
 }
 
@@ -657,64 +553,64 @@ int Player::getCitiesOnCountry(Vertex* country){
  * @param card A Card pointer. Used to create a deep copy of the card for the Player's hand.
  */
 void Player::addCardToHand(Card* card) {
-    cout << "{ " << *name << " } Added card { " << card->getGood() << " : \"" << card->getAction() << "\" } to hand.\n" << endl;
+    cout << "{ " << *name << " } [ " << strategy->getType() << " ] Added card { " << card->getGood() << " : \"" << card->getAction() << "\" } to hand.\n" << endl;
     hand->push_back(card);
 }
 
 /**
- * Adds a country to the player's list of occupied countries.
+ * Adds a region to the player's list of occupied regions.
  *
- * Preconditions: Country is a valid country and it satisfies all
+ * Preconditions: Region is a valid region and it satisfies all
  * required conditions specific to the card action chosen by the Player.
  *
- * @param country A Vertex pointer to the target country.
+ * @param region A Vertex pointer to the target region.
  */
-void Player::addCountry(Vertex* country){
-    countries->insert(pair<string, Vertex*> (country->getKey(), country));
-    cout << "{ " << *name << " } " << "Added country < " << country->getName() << " > to player's countries." << endl;
+void Player::addRegion(Vertex* region){
+    regions->insert(pair<string, Vertex*> (region->getKey(), region));
+    cout << "{ " << *name << " } [ " << strategy->getType() << " ] " << "Added region < " << region->getName() << " > to player's regions." << endl;
 }
 
 /**
- * Removes a country from the Player's list of occupied countries.
+ * Removes a region from the Player's list of occupied regions.
  *
- * Detects whether the country to be removed still contains armies or cities belonging to the Player.
- * If so, the country will not be removed and an error message will print out.
+ * Detects whether the region to be removed still contains armies or cities belonging to the Player.
+ * If so, the region will not be removed and an error message will print out.
  *
- * @param country A Vertex pointer to the target country.
+ * @param region A Vertex pointer to the target region.
  */
-void Player::removeCountry(Vertex* country) {
-    if(countries->find(country->getKey()) != countries->end()) {
+void Player::removeRegion(Vertex* region) {
+    if(regions->find(region->getKey()) != regions->end()) {
         int numArmies = 0, numCities = 0;
 
-        //Get current number of armies and cities if they exist on the country.
-        if (country->getArmies()->find(playerEntry) != country->getArmies()->end())
-            numArmies = country->getArmies()->find(playerEntry)->second;
-        if (country->getCities()->find(playerEntry) != country->getCities()->end())
-            numCities = country->getCities()->find(playerEntry)->second;
+        //Get current number of armies and cities if they exist on the region.
+        if (region->getArmies()->find(playerEntry) != region->getArmies()->end())
+            numArmies = region->getArmies()->find(playerEntry)->second;
+        if (region->getCities()->find(playerEntry) != region->getCities()->end())
+            numCities = region->getCities()->find(playerEntry)->second;
 
-        //Only remove the country if the player has 0 armies and 0 cities on the country.
+        //Only remove the region if the player has 0 armies and 0 cities on the region.
         if (numArmies == 0 && numCities == 0) {
-            country->getArmies()->erase(playerEntry);
-            country->getCities()->erase(playerEntry);
-            countries->erase(country->getKey());
-            cout << "{ " << *name << " } " << "Removed < " << country->getName() << " >." << endl;
+            region->getArmies()->erase(playerEntry);
+            region->getCities()->erase(playerEntry);
+            regions->erase(region->getKey());
+            cout << "{ " << *name << " } " << "Removed < " << region->getName() << " >." << endl;
         } else
-            cout << "[ ERROR! ] Can't remove < " << country->getName() << " >. " << *name << " still owns "
+            cout << "[ ERROR! ] Can't remove < " << region->getName() << " >. " << *name << " still owns "
                 << numArmies << " armies and " << numCities << " cities on it." << endl;
     } else {
-        cout << "[ ERROR! ] " << *name << " doesn't have the country < " << country->getName() << " > available to remove." << endl;
+        cout << "[ ERROR! ] " << *name << " doesn't have the region < " << region->getName() << " > available to remove." << endl;
     }
 }
 
 /**
- * Prints a list of the Player's occupied countries.
+ * Prints a list of the Player's occupied regions.
  */
-void Player::printCountries(){
+void Player::printRegions(){
 
-    cout << "\n{ " << *name << " } Occupied Countries: [ " << *colour << " ]\n" << endl;
+    cout << "\n{ " << *name << " } Occupied Regions: [ " << *colour << " ]\n" << endl;
     cout << "---------------------------------------------------------------------" << endl;
     Vertices::iterator it;
-    for(it = countries->begin(); it != countries->end(); ++it) {
+    for(it = regions->begin(); it != regions->end(); ++it) {
         int numArmies = 0;
         int numCities = 0;
         if (it->second->getArmies()->find(playerEntry) != it->second->getArmies()->end())
@@ -729,97 +625,99 @@ void Player::printCountries(){
 }
 
 /**
- * Adds armies to a country.
- * Preconditions: The Player has enough free armies to add to this country and the country
+ * Adds armies to a region.
+ * Preconditions: The Player has enough free armies to add to this region and the region
  * has met the conditions of the card action chosen by the Player.
  *
- * Detects whether the country to be removed still contains armies or cities belonging to the Player.
- * If so, the country will not be removed and an error message will print out.
+ * Detects whether the region to be removed still contains armies or cities belonging to the Player.
+ * If so, the region will not be removed and an error message will print out.
  *
- * @param country A Vertex pointer to the target country.
+ * @param region A Vertex pointer to the target region.
  * @param numArmies The number of armies to add.
  */
-void Player::addArmiesToCountry(Vertex* country, const int& numArmies) {
-    //Add country to the Player's list of occupied countries if it hasn't been added yet.
-    if(countries->find(country->getKey()) == countries->end())
-        addCountry(country);
+void Player::addArmiesToRegion(Vertex* region, const int& numArmies) {
+    //Add region to the Player's list of occupied regions if it hasn't been added yet.
+    if(regions->find(region->getKey()) == regions->end()) {
+        addRegion(region);
+    }
 
-    if (country->getArmies()->find(playerEntry) == country->getArmies()->end()) {
-        //Country doesn't have any of Player's armies. Create a new record.
-        country->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, numArmies));
+    if (region->getArmies()->find(playerEntry) == region->getArmies()->end()) {
+        //Region doesn't have any of Player's armies. Create a new record.
+        region->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, numArmies));
     } else {
-        //Country already has some of Player's armies. Add to current number of armies.
-        int currentArmies = country->getArmies()->find(playerEntry)->second;
-        country->getArmies()->erase(playerEntry);
-        country->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, currentArmies + numArmies));
+        //Region already has some of Player's armies. Add to current number of armies.
+        int currentArmies = region->getArmies()->find(playerEntry)->second;
+        region->getArmies()->erase(playerEntry);
+        region->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, currentArmies + numArmies));
     }
 }
 
 /**
- * Removes armies from a country.
+ * Removes armies from a region.
  *
- * @param country A Vertex pointer to the target country.
- * @param numArmies The number of armies to remove from country.
+ * @param region A Vertex pointer to the target region.
+ * @param numArmies The number of armies to remove from region.
  */
-void Player::removeArmiesFromCountry(Vertex* country, const int& numArmies) {
-    int currentArmies = country->getArmies()->find(playerEntry)->second;
+void Player::removeArmiesFromRegion(Vertex* region, const int& numArmies) {
+    int currentArmies = region->getArmies()->find(playerEntry)->second;
 
     // erase current record
-    country->getArmies()->erase(playerEntry);
+    region->getArmies()->erase(playerEntry);
 
-    // only update army count if there are still armies left on country
+    // only update army count if there are still armies left on region
     if (currentArmies - numArmies > 0)
-        country->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, currentArmies - numArmies));
-    // remove country if resulting num armies is 0 and no cities exist
-    else if (numArmies == currentArmies && country->getCities()->find(playerEntry) == country->getCities()->end())
-        removeCountry(country);
+        region->getArmies()->insert(pair<PlayerEntry*, int> (playerEntry, currentArmies - numArmies));
+    // remove region if resulting num armies is 0 and no cities exist
+    else if (numArmies == currentArmies && region->getCities()->find(playerEntry) == region->getCities()->end())
+        removeRegion(region);
 }
 
 /**
- * Player places new armies on a country.
+ * Player places new armies on a region.
  *
- * Checks if the player has enough free armies to place on the country.
- * The country must either be the start country or contain a city.
+ * Checks if the player has enough free armies to place on the region.
+ * The region must either be the start region or contain a city.
  *
  * @param amount Number of armies to place.
- * @param country A Vertex pointer to the country on which to place armies.
- * @param start A string containing the name of the start country.
+ * @param region A Vertex pointer to the region on which to place armies.
  * @return a boolean that shows the action was successful.
  */
-bool Player::executeAddArmies(const int& newArmies, Vertex* country, const string& start){
-    if (country->getKey() == start || country->getCities()->find(playerEntry) != country->getCities()->end()){
+bool Player::executeAddArmies(const int& newArmies, Vertex* region){
+    string start = GameMap::instance()->getStartVertexName();
+
+    if (region->getKey() == start || region->getCities()->find(playerEntry) != region->getCities()->end()){
         if (newArmies > *armies) {
-            cout << "{ " << *name << " } doesn't have enough armies to place " << newArmies << " new armies on < " << country->getName() << " >." << endl;
-            cout << "{ " << *name << " } placing " << *armies << " instead." << endl;
-            addArmiesToCountry(country, *armies);
+            cout << "{ " << *name << " } [ " << strategy->getType() << " ] doesn't have enough armies to place " << newArmies << " new armies on < " << region->getName() << " >." << endl;
+            cout << "{ " << *name << " } [ " << strategy->getType() << " ] placing " << *armies << " instead." << endl;
+            addArmiesToRegion(region, *armies);
             *armies  = 0;
         } else {
-            addArmiesToCountry(country, newArmies);
+            addArmiesToRegion(region, newArmies);
             *armies -= newArmies;
         }
 
-        cout << "{ " << *name << " } Added " << newArmies << " new armies to < "<< country->getName() << " >." << endl;
+        cout << "{ " << *name << " } [ " << strategy->getType() << " ] Added " << newArmies << " new armies to < "<< region->getName() << " >." << endl;
         return true;
     }
-    cout << "[ ERROR! ] " << *name << " Chose an invalid country. It must be either START or contain one of the player's cities->" << endl;
+    cout << "[ ERROR! ] " << *name << " Chose an invalid region. It must be either START or contain one of the player's cities->" << endl;
     return false;
 }
 
 /**
- * Moves a certain number of armies over to an adjacent country not separated by water.
+ * Moves a certain number of armies over to an adjacent region not separated by water.
  *
- * Detects whether or not the country contains the Player's armies and if the country has
+ * Detects whether or not the region contains the Player's armies and if the region has
  * enough armies on it to move.
  *
  * @param numArmies Amount of armies to move.
- * @param start A Vertex pointer to the start country.
- * @param end A Vertex pointer to the end country.
+ * @param start A Vertex pointer to the start region.
+ * @param end A Vertex pointer to the end region.
  * @param moveOverWater A boolean representing if armies can move over water.
  * @return a boolean that shows the action was successful.
  */
 bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater){
-    //Assumes: country is a valid vertex on the map
-    //is country an adjacent country to an occupied country?
+    //Assumes: region is a valid vertex on the map
+    //is region an adjacent region to an occupied region?
     if (isAdjacent(end, moveOverWater)) {
         //does start vertex even have armies on it?
         if (start->getArmies()->find(playerEntry) != start->getArmies()->end()) {
@@ -830,11 +728,11 @@ bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end,
                 return false;
             }
 
-            addArmiesToCountry(end, numArmies);
-            removeArmiesFromCountry(start, numArmies);
+            addArmiesToRegion(end, numArmies);
+            removeArmiesFromRegion(start, numArmies);
 
-            cout << "{ " << *name << " } Moved " << numArmies
-                 << " armies from < " << start->getName() << " > to < " << end->getName() << " >." << endl;
+            cout << "{ " << *name << " } [ " << strategy->getType() << " ] Moved " << numArmies
+                 << " armies from < " << start->getName() << " > to < " << end->getName() << " >.\n" << endl;
             return true;
         }
 
@@ -842,87 +740,87 @@ bool Player::executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end,
         return false;
     }
 
-    cout << "[ ERROR! ] < " << end->getName() << " > is not an adjacent country." << endl;
+    cout << "[ ERROR! ] < " << end->getName() << " > is not an adjacent region." << endl;
     return false;
 }
 
 /**
- * Builds a city on a country occupied by the Player.
+ * Builds a city on a region occupied by the Player.
  *
- * Detects whether or not the country contains any Player's armies.
+ * Detects whether or not the region contains any Player's armies.
  *
- * @param country A Vertex pointer to the country.
+ * @param region A Vertex pointer to the region.
  * @return a boolean that shows the action was successful.
  */
-bool Player::executeBuildCity(Vertex* country){
-    unordered_map<PlayerEntry*, int>* armies = country->getArmies();
+bool Player::executeBuildCity(Vertex* region){
+    unordered_map<PlayerEntry*, int>* armies = region->getArmies();
 
-    //does country belong to the player and does it contain at least one army?
+    //does region belong to the player and does it contain at least one army?
     if (armies->find(playerEntry) != armies->end()) {
         if (armies->find(playerEntry)->second > 0) {
 
-            //If country contains a player owned city, increase the count
+            //If region contains a player owned city, increase the count
             int currentCities = 1;
-            if (country->getCities()->find(playerEntry) != country->getCities()->end()) {
-                currentCities += country->getCities()->find(playerEntry)->second;
-                country->getCities()->erase(playerEntry);
-                country->getCities()->insert(pair<PlayerEntry*,int>(playerEntry, currentCities));
+            if (region->getCities()->find(playerEntry) != region->getCities()->end()) {
+                currentCities += region->getCities()->find(playerEntry)->second;
+                region->getCities()->erase(playerEntry);
+                region->getCities()->insert(pair<PlayerEntry*,int>(playerEntry, currentCities));
             } else //Else insert new record
-                country->getCities()->insert(pair<PlayerEntry*, int> (playerEntry, currentCities));
+                region->getCities()->insert(pair<PlayerEntry*, int> (playerEntry, currentCities));
 
-            cout << "{ " << *name << " } Added an city to < " << country->getName() << " >. (New city count = " << currentCities << ")." << endl;
+            cout << "{ " << *name << " } [ " << strategy->getType() << " ] Added an city to < " << region->getName() << " >. (New city count = " << currentCities << ")." << endl;
             return true;
         }
     }
 
-    cout << "[ ERROR! ] " << *name << " can't place city on < " << country->getName() << " > because the player has no armies on it." << endl;
+    cout << "[ ERROR! ] " << *name << " can't place city on < " << region->getName() << " > because the player has no armies on it." << endl;
     return false;
 }
 
 /**
- * Destroys an army belonging an opponent's country.
+ * Destroys an army belonging an opponent's region.
  *
- * Ensures the opponent is not the current player and that the chosen country
+ * Ensures the opponent is not the current player and that the chosen region
  * contains armies belonging to the opponent.
  *
- * @param country A Vertex pointer to the target country.
+ * @param region A Vertex pointer to the target region.
  * @param opponent A Player pointer to the opponent player.
  * @return a boolean that shows the action was successful.
  */
-bool Player::executeDestroyArmy(Vertex* country, Player* opponent){
+bool Player::executeDestroyArmy(Vertex* region, Player* opponent){
 
     if (opponent->getName() == *name) {
-        cout << "\n{ " << *name << " } Can't destroy own army." << endl;
+        cout << "\n[ ERROR! ] Can't destroy own army." << endl;
         return false;
     }
 
     PlayerEntry* opponentPlayerEntry = opponent->getPlayerEntry();
-    //Does opponent country contain an army to destroy?
-    if (country->getArmies()->find(opponentPlayerEntry) != country->getArmies()->end()
-        && country->getArmies()->find(opponentPlayerEntry)->second > 0) {
+    //Does opponent region contain an army to destroy?
+    if (region->getArmies()->find(opponentPlayerEntry) != region->getArmies()->end()
+        && region->getArmies()->find(opponentPlayerEntry)->second > 0) {
 
-        int currentArmies = country->getArmies()->find(opponentPlayerEntry)->second;
+        int currentArmies = region->getArmies()->find(opponentPlayerEntry)->second;
         currentArmies--;
 
         //Add destroyed army back in opponents available armies
         opponent->increaseAvailableArmies(1);
 
-        //Remove old record of opponent's armies on country
-        country->getArmies()->erase(opponentPlayerEntry);
+        //Remove old record of opponent's armies on region
+        region->getArmies()->erase(opponentPlayerEntry);
 
         if (currentArmies != 0)
             //Insert new record with decremented army count
-            country->getArmies()->insert(pair<PlayerEntry*, int> (opponentPlayerEntry, currentArmies));
+            region->getArmies()->insert(pair<PlayerEntry*, int> (opponentPlayerEntry, currentArmies));
         else {
-            //Remove country from opponent's list of occupied countries because the last army was destroyed.
-            opponent->removeCountry(country);
+            //Remove region from opponent's list of occupied regions because the last army was destroyed.
+            opponent->removeRegion(region);
         }
 
-        cout << "{ " << *name << " } Destroyed one of " << opponent->getName() << "'s armies on < " << country->getName() << " >." << endl;
+        cout << "{ " << *name << " } [ " << strategy->getType() << " ] Destroyed one of " << opponent->getName() << "'s armies on < " << region->getName() << " >." << endl;
         return true;
     }
 
-    cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << country->getName() << " >." << endl;
+    cout << "[ ERROR! ] " << opponent->getName() << " doesn't have any armies to destroy on < " << region->getName() << " >." << endl;
     return false;
 }
 

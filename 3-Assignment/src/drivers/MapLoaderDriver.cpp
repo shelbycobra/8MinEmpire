@@ -116,10 +116,10 @@ void test_ReadInvalidMapFiles(){
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------------------" << endl;
-    cout << "TEST: Read a map file with invalid country name syntax." << endl;
+    cout << "TEST: Read a map file with invalid region name syntax." << endl;
     cout << "--------------------------------------------------------------------\n" << endl;
 
-    loader.setMapFilePath("invalidCountrySyntax.map");
+    loader.setMapFilePath("invalidRegionSyntax.map");
     loader.generateMap();
 
     cout << "\n--------------------------------------------------------------------" << endl;

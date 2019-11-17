@@ -10,16 +10,16 @@
 #include "TestUtil.h"
 
 /**
- * Iterates through a Player's countries and checks if they are indeed found on the map.
+ * Iterates through a Player's regions and checks if they are indeed found on the map.
  * 
  * @param player A pointer to a Player object.
  * @param map A GameMap pointer to the map.
- * @return A boolean representing that the Player's countries exist on the map.
+ * @return A boolean representing that the Player's regions exist on the map.
  */
-bool playerOccupiedCountriesAreFoundOnMap(Player* player, GameMap* map) {
+bool playerOccupiedRegionsAreFoundOnMap(Player* player, GameMap* map) {
     Vertices::iterator it;
 
-    for(it = player->getCountries()->begin(); it != player->getCountries()->end(); ++it) {
+    for(it = player->getOccupiedRegions()->begin(); it != player->getOccupiedRegions()->end(); ++it) {
         if (map->getVertices()->find(it->second->getKey()) == map->getVertices()->end()) {
             cout << it->second->getName() << " does not exist on the map.\n" << endl;
             return false;

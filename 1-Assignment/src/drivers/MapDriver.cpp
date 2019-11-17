@@ -203,7 +203,7 @@ void test_SettingAndGettingStartVertex(){
     cout << "--------------------------------------------------------\n" << endl;
 
     string start;
-    start = map->getStartVertex();
+    start = map->getStartVertexName();
     assert(start == "none");
     cout << "Success! Start == " << start << endl;
 
@@ -214,7 +214,7 @@ void test_SettingAndGettingStartVertex(){
     bool result;
     string startName = "W";
     result = map->setStartVertex(startName);
-    start = map->getStartVertex();
+    start = map->getStartVertexName();
     assert(start == startName && result == 1);
     cout << "Success! Start == " << start << endl;
 

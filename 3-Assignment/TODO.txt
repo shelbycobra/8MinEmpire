@@ -1,12 +1,4 @@
-1. implement wild cards (DONE)
-2. create cards exactly as in game (DONE)
-3. anon player adds 4 armies anywhere on map (DONE)
-4. each player has a colour (DONE)
-5. drivers need to test same things from ass 1 +
-6. Add "return paid coins back to pile" (DONE)
-7. Anon uses top most colour left over (DONE)
-8. Anon addd to list of players. ignored during turns but used to calculate scores. (done)
-9. Documentation
-10. winner of bid chooses who to go first (DONE)
-11. print map wheb ask cards
-12. print opponwnt names when ask
+1. print START next to start vertex
+2. Greedy Strategy
+3. Moderate Strategy
+4. Documentation

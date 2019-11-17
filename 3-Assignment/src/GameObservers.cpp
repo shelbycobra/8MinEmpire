@@ -138,7 +138,7 @@ void StatsObserver::printVictoryPoints() {
 
         Player* pl = it->second;
 
-        int vpRegions = pl->getOwnedRegions()->size();
+        int vpRegions = pl->getRegions()->size();
         int vpContinents = pl->getOwnedContinents()->size();
         int vpGoods = pl->getVPFromGoods(pl->getGoodsCount());
 

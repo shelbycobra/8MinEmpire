@@ -90,16 +90,16 @@ void MainGameEngine::performCardAction() {
         if(action.find("OR") != size_t(-1) || action.find("AND") != size_t(-1))
             currentPlayer->AndOrAction(action, players);
         else if (action.find("Add") != size_t(-1))
-            currentPlayer->PlaceNewArmies(action);
+            currentPlayer->PlaceNewArmies(action, players);
         else if (action.find("Destroy") != size_t(-1))
             currentPlayer->DestroyArmy(players);
         else if (action.find("Build") != size_t(-1))
             currentPlayer->BuildCity();
         else if (action.find("Move") != size_t(-1)) {
             if (action.find("water") != size_t(-1))
-                currentPlayer->MoveOverWater(action);
+                currentPlayer->MoveOverWater(action, players);
             else
-                currentPlayer->MoveOverLand(action);
+                currentPlayer->MoveOverLand(action, players);
         }
         else
             cout << "[ ERROR! ] Invalid action." << endl;
@@ -256,7 +256,7 @@ int MainGameEngine::getMaxNumberOfCards() {
 void MainGameEngine::askToChangePlayerStrategy() {
     string answer;
     cout << "[ GAME ] Would you like to change the playing strategy of { " << currentPlayer->getName() << " }?" << endl;
-    cout << "[ GAME ] > ";
+    cout << "[ GAME ] (y/n) > ";
     getline(cin, answer);
 
     Strategy* newStrategy;

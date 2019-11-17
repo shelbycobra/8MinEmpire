@@ -112,7 +112,7 @@ Deck::Deck(){
         CardInfo(WILD,   "Add 2 armies")
     };
 
-    cardDeck = new queue<pair<int, Card*>>();
+    cardDeck = new queue<pair<int, Card*> >();
     cardMap = new map<int,Card*>();
 
     for(int i = 0; i < 42; i++) {
@@ -132,14 +132,14 @@ Deck::Deck(){
  * Copy Constructor
  */
 Deck::Deck(Deck* deck) {
-    cardDeck = new queue<pair<int, Card*>>(*deck->getDeck());
+    cardDeck = new queue<pair<int, Card*> >(*deck->getDeck());
 }
 
 /**
  * Assignment operator
  */
 Deck& Deck::operator =(Deck& deck) {
-    cardDeck = new queue<pair<int, Card*>>(*deck.getDeck());
+    cardDeck = new queue<pair<int, Card*> >(*deck.getDeck());
     return *this;
 }
 
@@ -169,7 +169,7 @@ void Deck::shuffle() {
 
     delete cardDeck;
 
-    cardDeck = new queue<pair<int, Card*>>();
+    cardDeck = new queue<pair<int, Card*> >();
     set<int>* nums = new set<int>();
 
     while(nums->size() < DECK_SIZE) {

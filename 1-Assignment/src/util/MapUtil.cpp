@@ -290,7 +290,7 @@ void executeAddArmies(Player* player, string action, GameMap* map) {
         endVertex = chooseEndVertex(player, ActionType::ADD_ARMY, map);
         armies = chooseArmies(maxArmies, remainderArmies);
 
-        if (!player->placeNewArmies(armies, endVertex, map->getStartVertex())) {
+        if (!player->placeNewArmies(armies, endVertex, map->getStartVertexName())) {
             continue;
         }
 

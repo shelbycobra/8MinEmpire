@@ -1,19 +1,19 @@
 $Continent1
-Y:Country Y
-X:Country X
-W:Country W
-Z:Country Z
+Y:Region Y
+X:Region X
+W:Region W
+Z:Region Z
 $Continent2
-A:Country A
-B:Country B
-C:Country C
-D:Country D
-E:Country E
+A:Region A
+B:Region B
+C:Region C
+D:Region D
+E:Region E
 $Continent3
-O:Country O
-P:Country P
-Q:Country Q
-R:Country R
+O:Region O
+P:Region P
+Q:Region Q
+R:Region R
 &
 W Z X
 Y X

@@ -14,7 +14,7 @@ int main() {
     cout << "Occupied Regions on the map: " << endl;
     map->printOccupiedRegions();
     cout << "Number of vertices: " << map->getVertices()->size() << endl;
-    cout << "Start vertex is " << map->getStartVertex() << endl;
+    cout << "Start vertex is " << map->getStartVertexName() << endl;
 
     cout << "\n=====================================================================" << endl;
     cout << "TEST: test_GameEngineInitializesMap" << endl;
@@ -29,7 +29,7 @@ int main() {
     cout << "Occupied Regions on the map: " << endl;
     map->printOccupiedRegions();
     cout << "Number of vertices: " << map->getVertices()->size() << endl;
-    cout << "Start vertex is " << map->getStartVertex() << endl;
+    cout << "Start vertex is " << map->getStartVertexName() << endl;
 
     cout << "\n=====================================================================" << endl;
     cout << "TEST: test_PlayerActionsAlterMapInstance" << endl;
@@ -44,7 +44,7 @@ int main() {
     cout << "Occupied Regions on the map: " << endl;
     map->printOccupiedRegions();
     cout << "Number of vertices: " << map->getVertices()->size() << endl;
-    cout << "Start vertex is " << map->getStartVertex() << endl;
+    cout << "Start vertex is " << map->getStartVertexName() << endl;
 
     return 0;
 }

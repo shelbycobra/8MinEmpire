@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool playerOccupiedCountriesAreFoundOnMap(Player* player, GameMap* map);
+bool playerOccupiedRegionsAreFoundOnMap(Player* player, GameMap* map);
 Players createDummyPlayers(int numPlayers);
 
 GameMap* generateValidMap();

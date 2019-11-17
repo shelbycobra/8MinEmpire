@@ -66,7 +66,7 @@ public:
     void printMap();
 
     Vertices* getVertices() { return vertices; }
-    string getStartVertex() { return *start; }
+    string getStartVertexName() { return *start; }
     string getImage() { return *image; }
 
     void setImage(const string& newImage);

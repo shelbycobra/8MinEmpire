@@ -61,7 +61,7 @@ public:
     void addVertex(const string& key, const string& name, const string& continent);
     void addEdge(const string& startVertex, const string& endVertex, const bool isWaterEdge);
     Vertices* getVertices();
-    string getStartVertex();
+    string getStartVertexName();
     string getImage();
     bool setStartVertex(string& startVertexName);
     void printMap();

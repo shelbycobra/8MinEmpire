@@ -259,7 +259,7 @@ void Player::PlaceNewArmies(const string action, GameMap* map) {
         endVertex = chooseEndVertex(ActionType::ADD_ARMY, map);
         armies = chooseArmies(maxArmies, remainderArmies, 0, "none");
 
-        if (!executeAddArmies(armies, endVertex, map->getStartVertex())) {
+        if (!executeAddArmies(armies, endVertex, map->getStartVertexName())) {
             continue;
         }
 

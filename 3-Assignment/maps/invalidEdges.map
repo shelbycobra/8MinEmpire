@@ -1,7 +1,7 @@
 $Continent1
-A:Country A
-B:Country B
-C:Country C
+A:Region A
+B:Region B
+C:Region C
 &
 A B A
 B C

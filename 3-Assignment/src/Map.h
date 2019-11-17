@@ -48,7 +48,7 @@ public:
     vector<Edge>* getEdges(){return edges;}
 };
 
-typedef unordered_map<string, Vertex*> Vertices;
+typedef map<string, Vertex*> Vertices;
 
 class GameMap {
 
@@ -57,6 +57,7 @@ private:
     Vertices* vertices;
     string* start;
     string* image;
+    Vertex* startVertex;
 
 public:
     GameMap(GameMap* map);
@@ -71,8 +72,9 @@ public:
     void printOccupiedRegions();
 
     Vertices* getVertices() { return vertices; }
-    string getStartVertex() { return *start; }
+    string getStartVertexName() { return *start; }
     string getImage() { return *image; }
+    Vertex* getStartVertex() { return startVertex; }
 
     void setImage(const string& newImage);
     bool setStartVertex(string& startVertexName);

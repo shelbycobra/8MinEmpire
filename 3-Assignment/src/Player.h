@@ -3,6 +3,7 @@
 
 #include <set>
 #include <string>
+#include <map>
 #include <unordered_map>
 #include <stdio.h>
 
@@ -19,7 +20,7 @@ class Player;
 class GameMap;
 class Strategy;
 
-typedef unordered_map<string, Vertex*> Vertices;
+typedef map<string, Vertex*> Vertices;
 typedef unordered_map<string, Player*> Players;
 typedef pair<string, string> PlayerEntry;
 
@@ -27,7 +28,7 @@ const string ANON = "Anon";
 
 class Player {
     string* name;
-    Vertices* countries;
+    Vertices* regions;
     int* armies;
     int* cities;
     int* coins;
@@ -50,10 +51,10 @@ public:
     ~Player();
 
     bool PayCoins(const int& amount);
-    void PlaceNewArmies(const string action);
-    void MoveArmies(const string action);
-    void MoveOverLand(const string action);
-    void MoveOverWater(const string action);
+    void PlaceNewArmies(const string action, Players* players);
+    void MoveArmies(const string action, Players* players);
+    void MoveOverLand(const string action, Players* players);
+    void MoveOverWater(const string action, Players* players);
     void BuildCity();
     void DestroyArmy(Players* players);
     void AndOrAction(const string action, Players* players);
@@ -63,32 +64,32 @@ public:
     int getVPFromRegions();
     int computeContinentScore();
     int computeGoodsScore();
-    vector<string>* getOwnedRegions();
+    vector<string>* getRegions();
     vector<string>* getOwnedContinents();
     unordered_map<string, int>* getGoodsCount();
     int getVPFromGoods(unordered_map<string, int>* goodsCount);
 
     void fillPurseFromSupply(const int& coins);
     void addCardToHand(Card* card);
-    void addCountry(Vertex* country);
-    void removeCountry(Vertex* country);
-    void printCountries();
-    bool isAdjacent(Vertex* country, const bool& overWaterAllowed);
-    bool isAdjacent(const string& countryName, const bool& overWaterAllowed);
-    int getArmiesOnCountry(Vertex* country);
-    int getCitiesOnCountry(Vertex* country);
+    void addRegion(Vertex* region);
+    void removeRegion(Vertex* region);
+    void printRegions();
+    bool isAdjacent(Vertex* region, const bool& overWaterAllowed);
+    bool isAdjacent(const string& regionName, const bool& overWaterAllowed);
+    int getArmiesOnRegion(Vertex* region);
+    int getCitiesOnRegion(Vertex* region);
 
     bool executeMoveArmies(const int& numArmies, Vertex* start, Vertex* end, const bool& moveOverWater);
-    bool executeAddArmies(const int& newArmies, Vertex* country, const string& start);
-    bool executeDestroyArmy(Vertex* country, Player* opponent);
-    bool executeBuildCity(Vertex* country);
+    bool executeAddArmies(const int& newArmies, Vertex* region);
+    bool executeDestroyArmy(Vertex* region, Player* opponent);
+    bool executeBuildCity(Vertex* region);
 
-    void addArmiesToCountry(Vertex* country, const int& numArmies);
-    void removeArmiesFromCountry(Vertex* country, const int& numArmies);
+    void addArmiesToRegion(Vertex* region, const int& numArmies);
+    void removeArmiesFromRegion(Vertex* region, const int& numArmies);
 
     //GETTERS
     string getName() { return *name; }
-    Vertices* getCountries() { return countries; }
+    Vertices* getOccupiedRegions() { return regions; }
     int getArmies() { return *armies; }
     int getCities() { return *cities; }
     int getCoins() { return *coins; }

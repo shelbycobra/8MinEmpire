@@ -1,12 +1,12 @@
 $Continent1
-A:Country A
-B:Country B
-D:Country D
-F:Country F
+A:Region A
+B:Region B
+D:Region D
+F:Region F
 $Continent2
-O:Country O
-P:Country P
-R:Country R
+O:Region O
+P:Region P
+R:Region R
 &
 A B
 B w D F
