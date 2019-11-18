@@ -7,49 +7,66 @@ using namespace std;
 
 class GameMainEngine;
 
-Observer::Observer() {
+Observer::Observer() {}
 
-}
+Observer::~Observer() {}
 
-Observer::~Observer() {
-
-}
-
+/**
+ * Default Constructor.
+ */
 Subject::Subject(){
     observers = new list<Observer*>;
 }
 
+/**
+ * Destructor.
+ */
 Subject::~Subject(){
     delete observers;
 }
 
+/**
+ * Attaches an Observer to the subject.
+ */
 void Subject::Attach(Observer* o){
     observers->push_back(o);
 }
 
+/**
+ * Detaches an Observer to the subject.
+ */
 void Subject::Detach(Observer* o){
     observers->remove(o);
 }
 
+/**
+ * Updates all Observers attached to the Subject.
+ */
 void Subject::Notify(){
     list<Observer *>::iterator i = observers->begin();
     for (; i != observers->end(); ++i)
         (*i)->Update();
 }
 
-PhaseObserver::PhaseObserver() {
-
-}
-
+/**
+ * Copy Constructor
+ */
 PhaseObserver::PhaseObserver(MainGameEngine* mainEngine) {
     this->mainEngine = mainEngine;
     this->mainEngine->Attach(this);
 }
 
+/**
+ * Destructor
+ */
 PhaseObserver::~PhaseObserver() {
     this->mainEngine->Detach(this);
 }
 
+/**
+ * Prints out a header indicating the card the current player has chosen, the position
+ * the card was situated, and how many coins the player paid for the card.
+ */
 void PhaseObserver::Update() {
     Player* currentPlayer = mainEngine->getCurrentPlayer();
     Card* currentCard = mainEngine->getCurrentCard();
@@ -61,29 +78,42 @@ void PhaseObserver::Update() {
     cout << "---------------------------------------------------------------------\n" << endl;
 }
 
-StatsObserver::StatsObserver() {}
-
+/**
+ * Copy Constructor.
+ */
 StatsObserver::StatsObserver(MainGameEngine* mainEngine) {
     this->mainEngine = mainEngine;
     this->mainEngine->Attach(this);
 }
 
+/**
+ * Destructor.
+ */
 StatsObserver::~StatsObserver() {
     this->mainEngine->Detach(this);
 }
 
+/**
+ * Prints out the current game statistics at the end of each turn.
+ *
+ * Once all the players have reached their max card capacity, a winner is declared
+ * and the game exits.
+ */
 void StatsObserver::Update() {
     GameMap::instance()->printMap();
-    printStats();
+    printMapRegions();
     printVictoryPoints();
-    printCards();
+    printGoodsFromCards();
     if (!mainEngine->continueGame()) {
         mainEngine->declareWinner();
         exit(EXIT_SUCCESS);
     }
 }
 
-void StatsObserver::printStats() {
+/**
+* Prints out the occupied regions of the game inidicating which player currently owns each region and each continent.
+ */
+void StatsObserver::printMapRegions() {
     vector<set<string>* > continents = GameMap::instance()->getContinents();
 
     vector<set<string>* >::iterator it;
@@ -111,6 +141,9 @@ void StatsObserver::printStats() {
     cout << endl;
 }
 
+/**
+ * Prints out the current victory points for each player from owned regions, owned continents and card goods.
+ */
 void StatsObserver::printVictoryPoints() {
     Players* players = mainEngine->getPlayers();
 
@@ -127,7 +160,7 @@ void StatsObserver::printVictoryPoints() {
     string totalsline = "";
 
     int count = 0;
-    // Print out the first 3 players' stats on the same line.
+
     for(Players::iterator it= players->begin(); it != players->end(); ++it) {
 
         char namebuff[50];
@@ -148,7 +181,7 @@ void StatsObserver::printVictoryPoints() {
         snprintf(regionbuff, sizeof(regionbuff), "%-20s %d   ", "VP from Regions: ", vpRegions );
         snprintf(continentsbuff, sizeof(continentsbuff), "%-20s %d   ", "VP from Continents: ", vpContinents );
         snprintf(goodsbuff, sizeof(goodsbuff), "%-20s %d   ", "VP from Goods: ", vpGoods );
-        snprintf(totalsbuff, sizeof(totalsbuff), "%-20s  %d ", "TOTAL:", totalVP );
+        snprintf(totalsbuff, sizeof(totalsbuff), "%-20s  %d", " TOTAL:", totalVP );
 
         nameline += namebuff;
         regionline += regionbuff;
@@ -156,11 +189,11 @@ void StatsObserver::printVictoryPoints() {
         goodsline += goodsbuff;
         totalsline += totalsbuff;
 
-        count++;
-
         Players::iterator next = it;
         next++;
+        count++;
 
+        // Prints out the first 3 players on the same line to save space.
         if (count == 3 || next == players->end()) {
             cout << nameline.c_str() << endl;
             cout << endl;
@@ -181,7 +214,10 @@ void StatsObserver::printVictoryPoints() {
     cout << divider << endl << endl;
 }
 
-void StatsObserver::printCards() {
+/**
+ * Prints out the number of goods each player has from their current hand.
+ */
+void StatsObserver::printGoodsFromCards() {
 
     Players* players = mainEngine->getPlayers();
 
@@ -248,10 +284,9 @@ void StatsObserver::printCards() {
         stoneline += stonebuff;
         wildline += wildbuff;
 
-        count++;
-
         Players::iterator next = it;
         next++;
+        count++;
 
         if (count == 3 || next == players->end()) {
             cout << nameline << endl;
@@ -273,6 +308,5 @@ void StatsObserver::printCards() {
         }
     }
 
-    fflush(stdout);
     cout << divider << endl << endl;
 }

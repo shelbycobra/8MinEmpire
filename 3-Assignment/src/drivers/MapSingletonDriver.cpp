@@ -25,7 +25,8 @@ int main() {
     mainEngine.startGame();
 
     cout << "\nGameMap pointer address: " << map << endl;
-    cout << "Map image is " << map->getImage() << endl;
+    cout << "Map image is ";
+    cout << map->getImage() << endl;
     cout << "Occupied Regions on the map: " << endl;
     map->printOccupiedRegions();
     cout << "Number of vertices: " << map->getVertices()->size() << endl;
@@ -37,7 +38,7 @@ int main() {
 
     mainEngine.getNextPlayer();
 
-    mainEngine.getCurrentPlayer()->PlaceNewArmies(string("Add 2 armies"));
+    mainEngine.getCurrentPlayer()->PlaceNewArmies(string("Add 2 armies"), mainEngine.getPlayers());
 
     cout << "\nGameMap pointer address: " << map << endl;
     cout << "Map image is " << map->getImage() << endl;

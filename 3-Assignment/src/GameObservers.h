@@ -71,9 +71,9 @@ public:
     StatsObserver(MainGameEngine* mainEngine);
     ~StatsObserver();
     void Update();
-    void printStats();
+    void printMapRegions();
     void printVictoryPoints();
-    void printCards();
+    void printGoodsFromCards();
 };
 
 #endif

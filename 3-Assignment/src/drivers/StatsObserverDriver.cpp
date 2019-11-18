@@ -17,6 +17,7 @@ int main() {
         gameEngine.chooseCardFromHand();
         gameEngine.performCardAction();
         gameEngine.addNewCardToBackOfHand();
+        gameEngine.askToChangePlayerStrategy();
 
         cout << "CONTINUE DEMO?" << endl;
         cout << "'y' or 'Y' to continue > ";
@@ -25,7 +26,7 @@ int main() {
             //Add cards to each player until they reach their max card capacity to end the game.
             while(true) {
                 gameEngine.getNextPlayer();
-                gameEngine.getCurrentPlayer()->addCardToHand(new Card(1, STONE, ""));
+                gameEngine.getCurrentPlayer()->addCardToHand(new Card(1, "NONE", ""));
 
                 if (!gameEngine.continueGame()) {
                     gameEngine.Notify();

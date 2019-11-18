@@ -68,7 +68,8 @@ Player::Player(const string& playerName, const int& startCoins):
     bidder(new Bidder(this)),
     colour(new string("")),
     playerEntry(new PlayerEntry(*name, *colour)),
-    controlledRegions(new int(0))
+    controlledRegions(new int(0)),
+    strategy(new HumanStrategy())
 {
     cout << "{ " << *name << " } CREATED. (Purse = " << startCoins << ")." << endl;
 }
@@ -327,21 +328,6 @@ int Player::getVPFromRegions() {
     return *controlledRegions;
 }
 
-vector<string>* Player::getRegions() {
-    vector<string>* ownedRegions = new vector<string>();
-
-    Vertices::iterator it;
-    for (it = regions->begin(); it != regions->end(); ++it) {
-        Vertex* region = it->second;
-
-        if (region->getRegionOwner() == *name) {
-            ownedRegions->push_back(region->getName());
-        }
-    }
-
-    return ownedRegions;
-}
-
 /**
  * Calculates the total owned continent for a player. A continent is considered owned
  * if the player has the most controlled regions on a continent. If two players have
@@ -362,30 +348,6 @@ int Player::computeContinentScore() {
     delete ownedContinents;
 
     return numOwnedContinents;
-}
-
-vector<string>* Player::getOwnedContinents() {
-
-    vector<set<string>* > continents = GameMap::instance()->getContinents();
-    vector<string>* ownedContinents = new vector<string>();
-
-     //Iterate through each continent and get the owner.
-    for(vector<set<string>* >::iterator it = continents.begin(); it != continents.end(); ++it) {
-
-        set<string>* continent = *it;
-        string continentName = GameMap::instance()->getVertices()->find(*continent->begin())->second->getContinent();
-        string owner = GameMap::instance()->getContinentOwner(continent);
-
-        if(owner == *name) {
-            ownedContinents->push_back(continentName);
-        }
-    }
-
-    for ( set<string>* c : continents) {
-        delete c;
-    }
-
-    return ownedContinents;
 }
 
 /**
@@ -412,6 +374,59 @@ int Player::computeGoodsScore() {
     return points;
 }
 
+/**
+ * Gets a list of regions names that the player owns.
+ * @return A pointer to a vector of strings.
+ */
+vector<string>* Player::getRegions() {
+    vector<string>* ownedRegions = new vector<string>();
+
+    Vertices::iterator it;
+    for (it = regions->begin(); it != regions->end(); ++it) {
+        Vertex* region = it->second;
+
+        if (region->getRegionOwner() == *name) {
+            ownedRegions->push_back(region->getName());
+        }
+    }
+
+    return ownedRegions;
+}
+
+/**
+ * Gets a list of continent names that the player owns.
+ * @return A pointer to a vector of strings.
+ */
+vector<string>* Player::getOwnedContinents() {
+
+    vector<set<string>* > continents = GameMap::instance()->getContinents();
+    vector<string>* ownedContinents = new vector<string>();
+
+     //Iterate through each continent and get the owner.
+    for(vector<set<string>* >::iterator it = continents.begin(); it != continents.end(); ++it) {
+
+        set<string>* continent = *it;
+        string continentName = GameMap::instance()->getVertices()->find(*continent->begin())->second->getContinent();
+        string owner = GameMap::instance()->getContinentOwner(continent);
+
+        if(owner == *name) {
+            ownedContinents->push_back(continentName);
+        }
+    }
+
+    for ( set<string>* c : continents) {
+        delete c;
+    }
+
+    return ownedContinents;
+}
+
+/**
+ * Returns the number of victory points calculated from the cards the player holds in their hand.
+ *
+ * @param goodsCount An unordered_map<string,int> pointer that maps the name of the good to how many.
+ * @return The number of victory points.
+ */
 int Player::getVPFromGoods(unordered_map<string, int>* goodsCount) {
                                     // 0 1 2 3 4 5 6 7 8
     int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5};
@@ -435,6 +450,8 @@ int Player::getVPFromGoods(unordered_map<string, int>* goodsCount) {
             points += carrotValuePerCardCount[it->second];
         else if(it->first == WILD)
             ;//Do nothing
+        else if(it->first == NONE)
+            ;//Do nothing
         else
             cout << "[ ERROR! ] Invalid card type. " << it->first << endl;
     }
@@ -442,6 +459,10 @@ int Player::getVPFromGoods(unordered_map<string, int>* goodsCount) {
     return points;
 }
 
+/**
+ * Returns a mapping of the type of good to how many the player has in their hand.
+ * @return unordered_map<string, int> pointer.
+ */
 unordered_map<string, int>* Player::getGoodsCount() {
     unordered_map<string, int>* goodsCount = new unordered_map<string, int>();
 
@@ -835,6 +856,10 @@ void Player::fillPurseFromSupply(const int& numCoins) {
 }
 
 //PRIVATE
+/**
+ * Finds any wild cards the user may have in their hand and asks them to increment
+ * another good that they own.
+ */
 void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) {
     if (goodsCount->find(WILD) != goodsCount->end()) {
         int numWildCards = goodsCount->find(WILD)->second;
@@ -843,7 +868,8 @@ void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) 
         cout << "{ " << *name << " } You have " << numWildCards << " WILD cards!" << endl;
 
         for (int i = 0; i < numWildCards; i++) {
-            while(true) {
+            // Only ask to move Wild cards around if there the player owns other goods.
+            while(goodsCount->size() > 1) {
                 string resource;
 
                 cout << "\n{ " << *name << " } Choose which resource to add the WILD card to ( " << numWildCards - i << " WILD cards left ):" << endl;
@@ -870,6 +896,14 @@ void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) 
     }
 }
 
+/**
+ * Sets the a new strategy for the user and deletes the old one.
+ */
+void Player::setStrategy(Strategy* newStrategy) {
+    delete strategy;
+    strategy = newStrategy;
+}
+
 //PRIVATE
 /**
  * Increases number of free armies available to a Player.
@@ -892,9 +926,4 @@ void Player::decreaseAvailableArmies(const int& numArmies) {
     } else {
         *armies -= numArmies;
     }
-}
-
-void Player::setStrategy(Strategy* newStrategy) {
-    delete strategy;
-    strategy = newStrategy;
 }

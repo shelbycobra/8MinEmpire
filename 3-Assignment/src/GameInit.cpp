@@ -332,6 +332,12 @@ string InitGameEngine::chooseName() {
     return name;
 }
 
+//PRIVATE
+/**
+ * Prompts the user to choose an initial strategy for the player being created.
+ *
+ * @return A pointer to the selected strategy.
+ */
 Strategy* InitGameEngine::chooseStrategy() {
     while (true) {
         string strategyChoice;

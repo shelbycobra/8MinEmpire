@@ -70,7 +70,7 @@ void test_FullGame() {
     cout << "======================================================================\n" << endl;
 
     MapLoader loader("largeValid.map");
-    GameMap* map = loader.generateMap();
+    loader.generateMap();
     Hand* gameHand = new Hand();
     gameHand->fill();
     Players players = createDummyPlayers(3);
@@ -78,14 +78,14 @@ void test_FullGame() {
 
     //Set start vertex
     string startName = "CL";
-    map->setStartVertex(startName);
-    Vertex* startVertex = map->getVertices()->find(startName)->second;
+    GameMap::instance()->setStartVertex(startName);
+    Vertex* startVertex = GameMap::instance()->getVertices()->find(startName)->second;
 
     //Add 3 armies from each player to the start vertex
     cout << "\n[ GAME ] Each player adds 3 armies to the start vertex.\n" << endl;
 
     for (pair<string, Player*> player: players) {
-        player.second->executeAddArmies(3, startVertex, startName);
+        player.second->executeAddArmies(3, startVertex);
         nextTurn.push(player.second);
     }
 
@@ -104,7 +104,7 @@ void test_FullGame() {
         cout << "\n\n\n\n[ PLAYER TURN ] " << currentPlayer->getName() << ".\n" << endl;
 
         Card* currentCard = gameHand->exchange(currentPlayer);
-        performCardAction(currentPlayer, currentCard->getAction(), map, &players);
+        performCardAction(currentPlayer, currentCard->getAction(), GameMap::instance(), &players);
         gameHand->drawCardFromDeck();
 
         count++;
@@ -124,13 +124,11 @@ void test_FullGame() {
 
     // Deallocate heap memory
     delete gameHand;
-    delete map;
     for (pair<string, Player*> player: players) {
         delete player.second;
     }
 
     //Set pointers to 0 (NULL)
     gameHand = nullptr;
-    map = nullptr;
     startVertex = nullptr;
 }

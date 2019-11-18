@@ -38,6 +38,15 @@ GreedyStrategy::GreedyStrategy(): Strategy(GREEDY) {}
 GreedyStrategy::~GreedyStrategy() {
 }
 
+/**
+ * Places new armies on the board.
+ *
+ * Places the max number of armies on the first region found that either has a city or is the start region.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void GreedyStrategy::PlaceNewArmies(Player* player, const string action, Players* players) {
     int maxArmies = stoi(action.substr(4, 5));
     Vertices* playerRegions = player->getOccupiedRegions();
@@ -64,6 +73,14 @@ void GreedyStrategy::PlaceNewArmies(Player* player, const string action, Players
     player->printRegions();
 }
 
+/**
+ * Moves armies around the board.
+ *
+ * Moves one army to a valid adjacent army as many times as the action dictates.
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void GreedyStrategy::MoveArmies(Player* player, const string action, Players* players) {
     int maxArmies = stoi(action.substr(5, 6));
     bool overWaterAllowed = action.find("water") != size_t(-1);
@@ -89,6 +106,8 @@ void GreedyStrategy::MoveArmies(Player* player, const string action, Players* pl
             continue;
         }
 
+        bool moveTaken = false;
+
         vector<Edge>* edges = currentVertex->getEdges();
         vector<Edge>::iterator e = edges->begin();
 
@@ -99,13 +118,20 @@ void GreedyStrategy::MoveArmies(Player* player, const string action, Players* pl
                 if (player->executeMoveArmies(1, currentVertex, e->first, overWaterAllowed)) {
                     maxArmies--;
                     previousStartVertex = currentVertex->getName();
+                    moveTaken = true;
+
+                    //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
+                    //list of regions making the r pointer invalid.
+                    //Reseting it back to the beginning prevents a seg fault.
                     r = vertices->rbegin();
                     break;
                 }
             }
             e++;
         }
-        r++;
+
+        if(!moveTaken)
+            r++;
 
         if(r == vertices->rend() && maxArmies > 0) {
             r = vertices->rbegin();
@@ -115,14 +141,19 @@ void GreedyStrategy::MoveArmies(Player* player, const string action, Players* pl
     player->printRegions();
 }
 
+/**
+ * Builds a city on the first vertex found without a city. If none, defaults to the first vertex the player occupies.
+ *
+ * @param player A pointer to the player using this strategy.
+ */
 void GreedyStrategy::BuildCity(Player* player) {
     cout << "\n\n[[ ACTION ]] Build a city.\n\n" << endl;
 
     Vertices* playerRegions = player->getOccupiedRegions();
-    Vertex* buildVertex = GameMap::instance()->getStartVertex();
+    Vertex* buildVertex = playerRegions->begin()->second;
 
     for(Vertices::iterator it = playerRegions->begin(); it != playerRegions->end(); ++it) {
-        // Find first vertex without a city. If none, defaults to the start vertex.
+
         Vertex* vertex = it->second;
         PlayerEntry* entry = player->getPlayerEntry();
         if (vertex->getCities()->find(entry) == vertex->getCities()->end() && vertex != GameMap::instance()->getStartVertex()) {
@@ -137,10 +168,17 @@ void GreedyStrategy::BuildCity(Player* player) {
     player->printRegions();
 }
 
+/**
+ * Destroys an opponent's army. Find the first vertex on the map that contains an opponent army and destroy it.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void GreedyStrategy::DestroyArmy(Player* player, Players* players) {
     cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
-    Vertices* vertices = player->getOccupiedRegions();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it) {
         Vertex* currentVertex = it->second;
@@ -163,8 +201,16 @@ void GreedyStrategy::DestroyArmy(Player* player, Players* players) {
             break;
         }
     }
-
 }
+
+/**
+ * The player receives an AND/OR card. If it's an OR card, the greedy strategy chooses the
+ * first option if it contains "build" or "destroy", otherwise it chooses the second option.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void GreedyStrategy::AndOrAction(Player* player, const string action, Players* players) {
     vector<string> actionArr;
 
@@ -174,10 +220,13 @@ void GreedyStrategy::AndOrAction(Player* player, const string action, Players* p
         string secondChoice = action.substr(orPos + 3);
         string chosenAction;
 
-        if (firstChoice.find("Build") != size_t(-1) || firstChoice.find("Destroy") != size_t(-1))
+        if (firstChoice.find("Build") != size_t(-1) || firstChoice.find("Destroy") != size_t(-1)) {
             chosenAction = firstChoice;
-        else
+            cout << "\n{ " << player->getName() << " } [ GREEDY ] Chose Option 1 \"" << chosenAction << "\"" << endl;
+        } else {
             chosenAction = secondChoice;
+            cout << "\n{ " << player->getName() << " } [ GREEDY ] Chose Option 2 \"" << chosenAction << "\"" << endl;
+        }
 
         actionArr.push_back(chosenAction);
     }
@@ -200,32 +249,29 @@ void GreedyStrategy::AndOrAction(Player* player, const string action, Players* p
 }
 
 /**
- * A greedy player to choose a card position from the game hand.
+ * A greedy player to choose a card position from the game hand. Chooses the cheapest
+ * "build" or "destroy" card, else it chooses the first position.
  *
  * @param player A player pointer to the is using this strategy.
  * @param hand A pointer to the game hand (not used in human strategy).
  * @return The position of the chosen card.
  */
 int GreedyStrategy::chooseCardPosition(Player* player, Hand* hand) {
-    // BUILD CITY
-    // Find first region without a city and not start vertex
-    // Else place on start vertex.
-
-    // DESTROY ARMY
-    // Find region with only one army, else
-    // Random
-
     vector<Card*>::iterator it = hand->getHand()->begin();
     int count = 0;
 
     while(it != hand->getHand()->end() && count <= player->getCoins()) {
         if ((*it)->getAction().find("Build") != size_t(-1) || (*it)->getAction().find("Destroy") != size_t(-1)) {
-            cout << "{ " << player->getName() << " } [ GREEDY ] Chose position " << count << "." << endl;
+            cout << "{ " << player->getName() << " } [ GREEDY ] Chose position " << count + 1 << ". { Cards in hand "
+             << player->getHand()->size() << " }." << endl;
             return count;
         }
         count++;
         it++;
     }
+
+    cout << "{ " << player->getName() << " } [ GREEDY ] Chose position " << 1
+         << ". { Cards in hand " << player->getHand()->size() << " }." << endl;
 
     return 0;
 }
@@ -241,6 +287,13 @@ ModerateStrategy::ModerateStrategy(): Strategy(MODERATE) {}
 ModerateStrategy::~ModerateStrategy() {
 }
 
+/**
+ * Moves armies around the map. The moderate strategy moves armies based on if it can become the owner of the region.
+ * If the player has enough armies to move
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void ModerateStrategy::MoveArmies(Player* player, const string action, Players* players) {
     int maxArmies = stoi(action.substr(5, 6));
     bool overWaterAllowed = action.find("water") != size_t(-1);
@@ -255,115 +308,124 @@ void ModerateStrategy::MoveArmies(Player* player, const string action, Players* 
 
     string previousStartVertex = "";
 
-    // For each occupied region, find first adjacent region that moving armies would change ownership.
+    // For each of the player's occupied regions, find first adjacent region that moving armies would change ownership.
     Vertices::iterator it = vertices->begin();
     while(it != vertices->end() && maxArmies > 0) {
-        cout << "before currentVertex" << endl;
         Vertex* currentVertex = it->second;
-        cout << "before edge " << currentVertex->getName() << endl;
         vector<Edge>* edges = currentVertex->getEdges();
 
         // Skip this vertex if there are no armies on it
-        cout << "before checking armies" << endl;
         if (currentVertex->getArmies()->find(entry) == currentVertex->getArmies()->end()) {
             it++;
             continue;
         }
 
+        bool moveTaken = false;
+
         // Cycle through all adjacent vertices
-        cout << "before iterater e" << endl;
         vector<Edge>::iterator e = edges->begin();
         while(e != edges->end() && maxArmies > 0) {
+
             bool isWaterEdge = e->second;
             if ((!isWaterEdge || (overWaterAllowed && isWaterEdge)) && previousStartVertex != e->first->getName()) {
                 Vertex* endVertex = e->first;
 
-                // If change of ownership is possible, then execute move armies and continue to next adjacent vertex.
+                Vertices::iterator next = it;
+                next++;
+
+                // If change of ownership is possible, then execute move armies and continue to next owned region.
                 if(changeOwnership(currentVertex, endVertex, player, maxArmies, players, overWaterAllowed)) {
                     previousStartVertex = currentVertex->getName();
-                    cout << "MANY ARMIES" << endl;
+                    moveTaken = true;
+
+                    //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
+                    //list of regions making the it pointer invalid.
+                    //Seting it to the next prevents a seg fault.
                     it = vertices->begin();
                     break;
                 }
             }
-            cout << "before e++" << endl;
             e++;
         }
-        it++;
-    }
 
-    // If after cycling through all adjacent vertices and there are still armies left over,
-    // move one army from current vertex to every adjacent vertex until maxArmies is 0.
-    cout << "before reverse i" << endl;
-    Vertices::reverse_iterator r = vertices->rbegin();
-
-    while(maxArmies > 0) {
-        cout << "before currentVertex" << endl;
-        Vertex* currentVertex = r->second;
-
-        // Skip vertex if there are no armies on it.
-        if (currentVertex->getArmies()->find(player->getPlayerEntry()) == currentVertex->getArmies()->end()) {
-            r++;
-            continue;
-        }
-
-        cout << "before one edges" << endl;
-        vector<Edge>* edges = currentVertex->getEdges();
-        vector<Edge>::iterator e = edges->begin();
-
-        while(e != edges->end() && maxArmies > 0) {
-
-            bool isWaterEdge = e->second;
-            if((!isWaterEdge || (overWaterAllowed && isWaterEdge)) && previousStartVertex != e->first->getName()) {
-                if (player->executeMoveArmies(1, currentVertex, e->first, overWaterAllowed)) {
-                    maxArmies--;
-                    previousStartVertex = currentVertex->getName();
-                    cout << "ONE ARMY" << endl;
-                    break;
-                }
-            }
-            e++;
-        }
-        if (r->second == nullptr)
-            r = vertices->rbegin();
-        else
-            r++;
-
-        if(r == vertices->rend() && maxArmies > 0) {
-            r = vertices->rbegin();
-            cout << "RESTARTING ONE" << endl;
-        }
+        if (!moveTaken)
+            it++;
     }
 
     player->printRegions();
 }
 
-bool ModerateStrategy::changeOwnership(Vertex* startVertex, Vertex* endVertex, Player* currentPlayer, int& maxArmies, Players* players, bool overWaterAllowed) {
+/**
+ * Determines whether a change in ownership is possible with the current start and end vertex.
+ * If it is possible, it goes ahead and executes the move, else it does nothing.
+ *
+ * @param startVertex A pointer to the vertex to move armies from.
+ * @param endVertex A pointer to the vertex to move armies to.
+ * @param currentPlayer A pointer to the player using this strategy.
+ * @param maxArmies Maximum number of armies the player can make.
+ * @param players A pointer to a list of all the players in the game.
+ * @param overWaterAllowed A boolean indicating whether moving over water is allowed.
+ * @return A boolean indicating the operation was successful.
+ */
+bool ModerateStrategy::changeOwnership(Vertex* startVertex, Vertex* endVertex, Player* currentPlayer, int& maxArmies, Players* players, bool overWaterAllowed){
+    string ownerName = endVertex->getRegionOwner();
+
+    int ownerEndArmies = 0;
+    int playerEndArmies = 0;
     int playerStartArmies = startVertex->getArmies()->find(currentPlayer->getPlayerEntry())->second;
     int maxMovableArmies = playerStartArmies < maxArmies ? playerStartArmies : maxArmies;
 
-    string ownerName = endVertex->getRegionOwner();
-    int ownerEndArmies = 0;
-
-    if (ownerName != "" && ownerName != currentPlayer->getName()) {
+    // Get owner's armies on end vertex.
+    if (ownerName != "") {
         Player* owner = players->find(ownerName)->second;
         ownerEndArmies = endVertex->getArmies()->find(owner->getPlayerEntry())->second;
     }
 
-    int diff = abs(ownerEndArmies - maxMovableArmies) + 1;
-    if(diff <= maxMovableArmies) {
-        if (currentPlayer->executeMoveArmies(diff, startVertex, endVertex, overWaterAllowed)) {
-            maxArmies -= diff;
-            return true;
-        }
+    // Get current player's armies on end vertex.
+    if (endVertex->getArmies()->find(currentPlayer->getPlayerEntry()) != endVertex->getArmies()->end()) {
+        playerEndArmies = endVertex->getArmies()->find(currentPlayer->getPlayerEntry())->second;
     }
+
+    // If the current player is the owner of the start vertex, find the max armies to move from
+    // the start vertex in order to remain the owner.
+    string startVertexOwner = startVertex->getRegionOwner();
+    if (startVertexOwner == currentPlayer->getName()) {
+
+        // Find next highest army count that is not the current player.
+        int nextHighest = 0;
+        unordered_map<PlayerEntry*, int>::iterator it;
+        for (it = startVertex->getArmies()->begin(); it != startVertex->getArmies()->end(); ++it) {
+            if (it->first != currentPlayer->getPlayerEntry() && it->second > nextHighest) {
+                nextHighest = it->second;
+            }
+        }
+
+        // Find the max moveable armies to remain the owner of start vertex.
+        int diff = (playerStartArmies - nextHighest) - 1;
+        maxMovableArmies = diff < maxArmies ? diff : maxArmies;
+    }
+
+    // Find the difference in armies needed to surpass the end vertex owner's armies by 1.
+    int diff = (ownerEndArmies - playerEndArmies) + 1;
+    if(diff <= maxMovableArmies) {
+        currentPlayer->executeMoveArmies(diff, startVertex, endVertex, overWaterAllowed);
+        maxArmies -= diff;
+        return true;
+    }
+
     return false;
 }
 
+/**
+ * Destroys an opponent's army.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param players A list of all the players in the game.
+ */
 void ModerateStrategy::DestroyArmy(Player* player, Players* players) {
     cout << "\n\n[[ ACTION ]] Destroy an army.\n\n" << endl;
 
-    Vertices* vertices = player->getOccupiedRegions();
+    Vertices* vertices = GameMap::instance()->getVertices();
 
     for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it) {
         Vertex* currentVertex = it->second;
@@ -388,11 +450,16 @@ void ModerateStrategy::DestroyArmy(Player* player, Players* players) {
     }
 }
 
+/**
+ * Places new armies on the board.
+ *
+ * Places the max number of armies on the first region found that either has a city or is the start region.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void ModerateStrategy::PlaceNewArmies(Player* player, const string action, Players* players) {
-    // Find vertex with either a city or is start vertex that is not owned by player.
-    // Find first vertex where number of added regions makes region owned by player,
-    // Else return startVertex
-
     int maxArmies = stoi(action.substr(4, 5));
     Vertices* playerRegions = player->getOccupiedRegions();
     Vertex* addVertex = GameMap::instance()->getStartVertex();
@@ -447,6 +514,14 @@ void ModerateStrategy::PlaceNewArmies(Player* player, const string action, Playe
     player->printRegions();
 }
 
+/**
+ * The player receives an AND/OR card. If it's an OR card, the moderate strategy chooses the
+ * first option if it contains "Add" or "Move", otherwise it chooses the second option.
+ *
+ * @param player A pointer to the player using this strategy.
+ * @param action The action being executed.
+ * @param players A pointer to a list of all the players in the game.
+ */
 void ModerateStrategy::AndOrAction(Player* player, const string action, Players* players) {
     vector<string> actionArr;
 
@@ -456,10 +531,13 @@ void ModerateStrategy::AndOrAction(Player* player, const string action, Players*
         string secondChoice = action.substr(orPos + 3);
         string chosenAction;
 
-        if (firstChoice.find("Add") != size_t(-1) || firstChoice.find("Move") != size_t(-1))
+        if (firstChoice.find("Add") != size_t(-1) || firstChoice.find("Move") != size_t(-1)) {
             chosenAction = firstChoice;
-        else
+            cout << "\n{ " << player->getName() << " } [ MODERATE ] Chose Option 1 \"" << chosenAction << "\"" << endl;
+        } else {
             chosenAction = secondChoice;
+            cout << "\n{ " << player->getName() << " } [ MODERATE ] Chose Option 2 \"" << chosenAction << "\"" << endl;
+        }
 
         actionArr.push_back(chosenAction);
     }
@@ -481,9 +559,14 @@ void ModerateStrategy::AndOrAction(Player* player, const string action, Players*
     }
 }
 
+/**
+ * Builds a city on the first vertex found without a city. If none, defaults to the first vertex the player occupies.
+ *
+ * @param player A pointer to the player using this strategy.
+ */
 void ModerateStrategy::BuildCity(Player* player) {
     Vertices* playerRegions = player->getOccupiedRegions();
-    Vertex* buildVertex = GameMap::instance()->getStartVertex();
+    Vertex* buildVertex = playerRegions->begin()->second;
 
     for(Vertices::iterator it = playerRegions->begin(); it != playerRegions->end(); ++it) {
         // Find first vertex with a city. If none, defaults to the start vertex.
@@ -515,13 +598,16 @@ int ModerateStrategy::chooseCardPosition(Player* player, Hand* hand) {
 
     while(it != hand->getHand()->end() && count <= player->getCoins()) {
         if ((*it)->getAction().find("Add") != size_t(-1) || (*it)->getAction().find("Move") != size_t(-1)) {
-            cout << "{ " << player->getName() << " } [ MODERATE ] Chose position " << count << "." << endl;
+            cout << "{ " << player->getName() << " } [ MODERATE ] Chose position " << count + 1<< ". { Cards in hand "
+             << player->getHand()->size() << " }." << endl;
             return count;
         }
         count++;
         it++;
     }
 
+    cout << "{ " << player->getName() << " } [ MODERATE ] Chose position " << 1
+         << ". { Cards in hand " << player->getHand()->size() << " }." << endl;
     return 0;
 }
 

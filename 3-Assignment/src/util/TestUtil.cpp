@@ -4,14 +4,14 @@
  *  - connectivity
  *  - continent validity
  *  - edge validity
- * 
+ *
  */
 
 #include "TestUtil.h"
 
 /**
  * Iterates through a Player's regions and checks if they are indeed found on the map.
- * 
+ *
  * @param player A pointer to a Player object.
  * @param map A GameMap pointer to the map.
  * @return A boolean representing that the Player's regions exist on the map.

@@ -3,45 +3,44 @@ COMP 354 2019 - 8 MINUTE EMPIRE
 By Shelby Wams #29489177
 
 
-============================================ASSIGNMENT 2===================================================
+============================================ASSIGNMENT 3===================================================
 
-├── src
-│   ├── Bidder.cpp
-│   ├── Bidder.h
-│   ├── Cards.cpp
-│   ├── Cards.h
-│   ├── drivers
-│   │   ├── AfterActionDriver.cpp
-│   │   ├── BidderDriver.cpp
-│   │   ├── CardsDriver.cpp
-│   │   ├── FullGameDriver.cpp
-│   │   ├── GameInitDriver.cpp
-│   │   ├── GameScoreDriver.cpp
-│   │   ├── GameStartUpDriver.cpp
-│   │   ├── MainLoopDriver.cpp
-│   │   ├── MapDriver.cpp
-│   │   ├── MapLoaderDriver.cpp
-│   │   ├── PlayerActionsDriver.cpp
-│   │   └── PlayerDriver.cpp
-│   ├── GameInit.cpp
-│   ├── GameInit.h
-│   ├── GameMainLoop.cpp
-│   ├── GameMainLoop.h
-│   ├── GameStartUp.cpp
-│   ├── GameStartUp.h
-│   ├── Map.cpp
-│   ├── Map.h
-│   ├── MapLoader.cpp
-│   ├── MapLoader.h
-│   ├── Player.cpp
-│   ├── Player.h
-│   └── util
-│       ├── MapUtil.cpp
-│       ├── MapUtil.h
-│       ├── ScoreTest.cpp
-│       ├── ScoreTest.h
-│       ├── TestUtil.cpp
-│       └── TestUtil.h
+Note: To play the full game, run the FullGame Driver.
+
+
+Part 1: Player Strategies
+
+    DRIVER: StrategiesDriver.cpp
+
+        A driver that demonstrates the different player strategies during game play. After each turn, the user
+    is prompted to change the current player's strategy, if they wish. The three strategies are:
+
+    1. Human: Prompts the user for input during game play.
+    2. Greedy: Chooses "Build" or "Destroy" cards first.
+    3. Moderate: Chooses "Add" or "Move" cards first. Moves armies strategically to maximize the number of owned regions.
+
+Part 2: Phase Observer
+
+    DRIVER: PhaseObserverDriver.cpp
+
+        A driver that demonstates the PhaseObserver class. Prints out a header at the end of each turn that displays
+    the current player's card choice, the position of the card and the cost of the card.
+
+Part 3: Statistic Observer
+
+    DRIVER: StatsObserverDriver.cpp
+
+        A driver that demonstrates the StatsObserver class. Prints out the currently occupied regions and countries
+    with their owners, if any. Prints out the current victory points from owned regions, countries and goods, as well as
+    the number of goods in each player's hand.
+
+Part 4: Map Singleton
+
+    DRIVER: MapSingletonDriver.cpp
+
+        A driver that demonstrates that the GamMap object is a Singleton.
+
+============================================ASSIGNMENT 2===================================================
 
 
 Note: To play the full game, run the FullGame Driver.
@@ -51,7 +50,7 @@ Part 1: Game Start
 
     DRIVER: GameInitDriver.cpp
 
-        An interactive driver that tests the InitGameEngine class. It loads a map from one of 
+        An interactive driver that tests the InitGameEngine class. It loads a map from one of
     the map files in the maps/ directory and creates the players for the game.
 
 
@@ -60,7 +59,7 @@ Part 2: Game Play: Startup Phase
     DRIVER: GameStartUpDriver.cpp
 
         An interactive driver that tests the GameStartEngine class. The class uses a InitGameEngine
-    object to initialize the map and the players before setting up the map with the starter armies, 
+    object to initialize the map and the players before setting up the map with the starter armies,
     starting the bidding process and determining which player goes first.
 
 
@@ -71,7 +70,7 @@ Part 3: Game Play: Main Game Loop
         An interactive driver that tests part of the MainGameEngine class. It uses the StartUpGameEngine to start
     the game. It then runs a game loop with each player turn starting with the first and going clockwise order,
     which, in other words means, going in player creation order starting with the first player chosen by the bid winner.
-    Each player takes one face-up card and pays the appropriate cost for the card depending on its position in 
+    Each player takes one face-up card and pays the appropriate cost for the card depending on its position in
     the game hand. The card is displayed before adding it to the player's hand.
 
 
@@ -79,9 +78,9 @@ Part 4: Main Game Loop: The Player Actions
 
     DRIVER: PlayerActionsDriver.cpp
 
-        An interactive driver that demonstrates the possible actions that a player can take when they 
+        An interactive driver that demonstrates the possible actions that a player can take when they
     pay for a card from the gam hand. This driver doesn't run in a loop since it only uses a limited
-    set of cards for demo purposes. 
+    set of cards for demo purposes.
 
 
 Part 5: Main Game Loop: After The Action
@@ -89,7 +88,7 @@ Part 5: Main Game Loop: After The Action
     DRIVER: AfterActionDriver.cpp
 
         An interactive driver that demonstrates part of the MainGameEngine class. It shows the behaviour after
-    the player completes the card action. A card gets drawn from the deck and placed at the back of the game 
+    the player completes the card action. A card gets drawn from the deck and placed at the back of the game
     hand and the play passes to the next clockwise player.
 
 

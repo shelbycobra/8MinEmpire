@@ -20,6 +20,7 @@ const string CARROT = "CARROT";
 const string GEM = "GEM";
 const string STONE = "STONE";
 const string WILD = "WILD";
+const string NONE = "NONE";
 
 class Card {
     int* id;

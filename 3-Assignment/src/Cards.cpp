@@ -333,23 +333,14 @@ Card* Hand::exchange(Player* player){
     }
 }
 
+/**
+ * Draws one card from the deck and adds it to the end (ie right hand side) of the game hand.
+ */
 void Hand::drawCardFromDeck() {
     Card* card = deck->draw();
     cout << "\n[ GAME HAND ] Drew card { " << card->getGood() << " : \"" << card->getAction() << "\" } from deck." << endl;
     cout << "[ GAME HAND ] Adding it to the right side of the game hand.\n" << endl;
     hand->push_back(card);
-}
-
-//PRIVATE
-/**
- * Prompts the current player to select the position in the Hand of the
- * desired card.
- *
- * @return The position of the card to be used in gameplay.
- */
-int Hand::selectCardPosition(Player* player){
-    printHand();
-    return player->getStrategy()->chooseCardPosition(player, this);
 }
 
 /**
@@ -368,4 +359,16 @@ void Hand::printHand() {
 
     cout << "---------------------------------------------------------------------" << endl;
     cout << endl;
+}
+
+//PRIVATE
+/**
+ * Asks the current player to select the position in the Hand of the
+ * desired card.
+ *
+ * @return The position of the card to be used in gameplay.
+ */
+int Hand::selectCardPosition(Player* player){
+    printHand();
+    return player->getStrategy()->chooseCardPosition(player, this);
 }

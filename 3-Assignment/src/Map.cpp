@@ -181,23 +181,9 @@ GameMap::GameMap(GameMap* map) {
     image = new string(map->getImage());
 }
 
-GameMap& GameMap::operator=(GameMap& map) {
-    if(&map != this) {
-        // Delete all vertices on the map.
-        for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it)
-            delete it->second;
-
-        delete vertices;
-        delete start;
-        delete image;
-
-        vertices = new Vertices(*map.getVertices());
-        start = new string(map.getStartVertexName());
-        image = new string(map.getImage());
-    }
-    return *this;
-}
-
+/**
+ * Deconstructor.
+ */
 GameMap::~GameMap() {
     // Delete all vertices on the map.
     for(Vertices::iterator it = vertices->begin(); it != vertices->end(); ++it)
@@ -213,9 +199,13 @@ GameMap::~GameMap() {
     mapInstance = nullptr;
 }
 
+/**
+ * Returns a singleton instance of a GameMap object.
+ */
 GameMap* GameMap::instance() {
-    if (!mapInstance)
+    if (!mapInstance) {
         mapInstance = new GameMap();
+    }
     return mapInstance;
 }
 
@@ -387,7 +377,12 @@ vector<set<string>* > GameMap::getContinents(){
     return continents;
 }
 
-
+/**
+ * Gets the owner of the continent.
+ *
+ * @param continent A pointer to a set of strings representing a continent and its regions.
+ * @return The name of the owner. Returns "" if there's no owner.
+ */
 string GameMap::getContinentOwner(set<string>* continent) {
     // Create an empty map that tracks the number of owned regions per player.
     unordered_map<string, int> ownedRegionsPerPlayer;

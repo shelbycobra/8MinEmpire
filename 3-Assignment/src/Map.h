@@ -61,7 +61,6 @@ private:
 
 public:
     GameMap(GameMap* map);
-    GameMap& operator=(GameMap& map);
     ~GameMap();
 
     static GameMap* instance();

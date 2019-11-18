@@ -253,17 +253,20 @@ int MainGameEngine::getMaxNumberOfCards() {
     }
 }
 
+/**
+ * Asks the user if they want to change the strategy of the current player.
+ */
 void MainGameEngine::askToChangePlayerStrategy() {
     string answer;
     cout << "[ GAME ] Would you like to change the playing strategy of { " << currentPlayer->getName() << " }?" << endl;
-    cout << "[ GAME ] (y/n) > ";
+    cout << "[ GAME ] (y/*) > ";
     getline(cin, answer);
 
     Strategy* newStrategy;
 
     if (answer == "y" || answer == "Y") {
         while (true) {
-            string strategyName;
+            string strategyNum;
 
             cout << "\n[ GAME ] Which playing strategy would you like to change to?" << endl;
             cout << "[ GAME ] Current playing strategy is " << currentPlayer->getStrategy()->getType() << "." << endl;
@@ -272,10 +275,10 @@ void MainGameEngine::askToChangePlayerStrategy() {
             cout << "[ GAME ] Please enter a number between 1 and 3." << endl;
             cout << "[ GAME ] > ";
 
-            getline(cin, strategyName);
+            getline(cin, strategyNum);
 
             try{
-                int choice = stoi(strategyName);
+                int choice = stoi(strategyNum);
 
                 if (choice == 1) {
                     newStrategy = new HumanStrategy();

@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 
-enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY, NONE };
+enum ActionType { MOVE_OVER_LAND, ADD_ARMY, DESTROY_ARMY, MOVE_OVER_WATER, BUILD_CITY };
 
 class Card;
 class Hand;
