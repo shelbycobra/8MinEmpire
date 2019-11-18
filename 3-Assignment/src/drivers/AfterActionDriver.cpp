@@ -13,12 +13,12 @@ int main() {
 
     while(true) {
 
-        Player* currentPlayer = gameEngine.getNextPlayer();
-        Card* currentCard = gameEngine.chooseCardFromHand(currentPlayer);
+        gameEngine.getNextPlayer();
+        gameEngine.chooseCardFromHand();
 
         // gameEngine.performCardAction(currentPlayer, currentCard->getAction());
         cout << "\n\n---------------------------------------------------------------------" << endl;
-        cout << "[ MOCK ] " << currentPlayer->getName() << " performs card action: " << currentCard->getAction() << endl;
+        cout << "[ MOCK ] " << gameEngine.getCurrentPlayer()->getName() << " performs card action: " << gameEngine.getCurrentCard()->getAction() << endl;
         cout << "---------------------------------------------------------------------\n\n" << endl;
 
         gameEngine.addNewCardToBackOfHand();

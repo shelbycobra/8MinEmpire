@@ -263,7 +263,7 @@ int GreedyStrategy::chooseCardPosition(Player* player, Hand* hand) {
     while(it != hand->getHand()->end() && count <= player->getCoins()) {
         if ((*it)->getAction().find("Build") != size_t(-1) || (*it)->getAction().find("Destroy") != size_t(-1)) {
             cout << "{ " << player->getName() << " } [ GREEDY ] Chose position " << count + 1 << ". { Cards in hand "
-             << player->getHand()->size() << " }." << endl;
+             << player->getHand()->size()+1 << " }." << endl;
             return count;
         }
         count++;
@@ -271,7 +271,7 @@ int GreedyStrategy::chooseCardPosition(Player* player, Hand* hand) {
     }
 
     cout << "{ " << player->getName() << " } [ GREEDY ] Chose position " << 1
-         << ". { Cards in hand " << player->getHand()->size() << " }." << endl;
+         << ". { Cards in hand " << player->getHand()->size()+1 << " }." << endl;
 
     return 0;
 }
@@ -599,7 +599,7 @@ int ModerateStrategy::chooseCardPosition(Player* player, Hand* hand) {
     while(it != hand->getHand()->end() && count <= player->getCoins()) {
         if ((*it)->getAction().find("Add") != size_t(-1) || (*it)->getAction().find("Move") != size_t(-1)) {
             cout << "{ " << player->getName() << " } [ MODERATE ] Chose position " << count + 1<< ". { Cards in hand "
-             << player->getHand()->size() << " }." << endl;
+             << player->getHand()->size()+1 << " }." << endl;
             return count;
         }
         count++;
@@ -607,7 +607,7 @@ int ModerateStrategy::chooseCardPosition(Player* player, Hand* hand) {
     }
 
     cout << "{ " << player->getName() << " } [ MODERATE ] Chose position " << 1
-         << ". { Cards in hand " << player->getHand()->size() << " }." << endl;
+         << ". { Cards in hand " << player->getHand()->size()+1 << " }." << endl;
     return 0;
 }
 

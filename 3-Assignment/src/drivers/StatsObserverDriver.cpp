@@ -26,7 +26,7 @@ int main() {
             //Add cards to each player until they reach their max card capacity to end the game.
             while(true) {
                 gameEngine.getNextPlayer();
-                gameEngine.getCurrentPlayer()->addCardToHand(new Card(1, "NONE", ""));
+                gameEngine.getCurrentPlayer()->addCardToHand(new Card(1, STONE, ""));
 
                 if (!gameEngine.continueGame()) {
                     gameEngine.Notify();

@@ -428,12 +428,12 @@ vector<string>* Player::getOwnedContinents() {
  * @return The number of victory points.
  */
 int Player::getVPFromGoods(unordered_map<string, int>* goodsCount) {
-                                    // 0 1 2 3 4 5 6 7 8
-    int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5};
-    int ironValuePerCardCount[]     = {0,0,1,1,2,2,3,5,5};
-    int carrotValuePerCardCount[]   = {0,0,0,1,1,2,2,3,5};
-    int stoneValuePerCardCount[]    = {0,0,1,2,3,5,5,5,5};
-    int gemValuePerCardCount[]      = {0,1,2,3,5,5,5,5,5};
+                                    // 0 1 2 3 4 5 6 7 8 9 0 1 2 3
+    int woodValuePerCardCount[]     = {0,0,1,1,2,3,5,5,5,5,5,5,5,5};
+    int ironValuePerCardCount[]     = {0,0,1,1,2,2,3,5,5,5,5,5,5,5};
+    int carrotValuePerCardCount[]   = {0,0,0,1,1,2,2,3,5,5,5,5,5,5};
+    int stoneValuePerCardCount[]    = {0,0,1,2,3,5,5,5,5,5,5,5,5,5};
+    int gemValuePerCardCount[]      = {0,1,2,3,5,5,5,5,5,5,5,5,5,5};
 
     int points = 0;
 
