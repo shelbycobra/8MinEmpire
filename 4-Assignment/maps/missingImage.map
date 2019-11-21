@@ -1,0 +1,16 @@
+$Continent1
+A:Region A
+B:Region B
+D:Region D
+F:Region F
+$Continent2
+O:Region O
+P:Region P
+R:Region R
+&
+A B
+B w D F
+D F
+F w O
+F P R
+P R

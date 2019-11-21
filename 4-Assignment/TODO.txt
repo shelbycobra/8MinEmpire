@@ -1,0 +1,4 @@
+1. print START next to start vertex
+2. Greedy Strategy
+3. Moderate Strategy
+4. Documentation

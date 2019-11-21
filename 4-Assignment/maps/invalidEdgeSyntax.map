@@ -1,0 +1,30 @@
+$Continent1
+Y:Region Y
+X:Region X
+W:Region W
+Z:Region Z
+$Continent2
+A:Region A
+B:Region B
+C:Region C
+D:Region D
+E:Region E
+$Continent3
+O:Region O
+P:Region P
+Q:Region Q
+R:Region R
+&
+W Z X
+B D E
+E gdfggrdOd
+O P R
+P Q R
+R Q
+%
+
+W---Z   A---B---E===O---P---Q
+ \  |   |\  |  /     \  |  /
+  \ |   | \ | /       \ | /
+   \|   |  \|/         \|/
+Y---X===C   D           R
