@@ -34,13 +34,14 @@ public:
     Card(const int& theId, const string& theGood, const string& theAction);
     Card(Card* card);
     Card& operator=(Card& card);
-    ~Card();
+    virtual ~Card();
 
     int getID() { return *id; }
     string getGood() { return *good; }
     string getAction() { return *action; }
     int getPosition() { return *position; }
     int getCost() { return *cost; }
+    virtual string getType() { return NONE; }
 
     void setPosition(int& position) { *this->position = position; }
     void setCost(int& cost) { *this->cost = cost; }

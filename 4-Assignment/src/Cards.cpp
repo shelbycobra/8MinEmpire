@@ -1,5 +1,6 @@
 #include "Cards.h"
 #include "util/MapUtil.h"
+#include "CardsFactory.h"
 
 #include <time.h>
 #define DECK_SIZE 42
@@ -11,7 +12,7 @@ using namespace std;
  */
 Card::Card():
     id(new int(0)),
-    good(new string("No good")),
+    good(new string(NONE)),
     action(new string("No action")),
     position(new int(0)),
     cost(new int(0)) {}
@@ -65,7 +66,6 @@ Card& Card::operator =(Card& card){
  * Destructor
  */
 Card::~Card() {
-    delete id;
     delete good;
     delete action;
     delete position;
@@ -140,7 +140,7 @@ Deck::Deck(){
         string good = cardInfo[i].first;
         string action = cardInfo[i].second;
 
-        Card* newCard = new Card(i+1, good, action);
+        Card* newCard = CardsFactory::create(i+1, good, action);
         pair<int, Card*> cardEntry(i+1, newCard);
 
         cardMap->insert(cardEntry);
