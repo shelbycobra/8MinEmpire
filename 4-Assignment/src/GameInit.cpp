@@ -5,12 +5,15 @@
 #include "MapLoader.h"
 #include "util/MapUtil.h"
 
+InitGameEngine* InitGameEngine::initInstance = 0;
+
 /**
  * Default Constructor
  */
 InitGameEngine::InitGameEngine():
     players(new Players()), hand(new Hand()),
-    numPlayers(new int()), playerOrder(new vector<string>()) {
+    numPlayers(new int()), playerOrder(new vector<string>()),
+    isGameTournament(new bool(false)) {
         colours = new list<string>();
         colours->push_front("BLUE");
         colours->push_front("GREEN");
@@ -18,40 +21,6 @@ InitGameEngine::InitGameEngine():
         colours->push_front("RED");
         colours->push_front("WHITE");
     }
-
-/**
- * Copy constructor
- */
-InitGameEngine::InitGameEngine(InitGameEngine* otherInitEngine) {
-    players = new Players(*otherInitEngine->getPlayers());
-    hand = new Hand(otherInitEngine->getHand());
-    numPlayers = new int(otherInitEngine->getNumPlayers());
-    colours = new list<string>(*otherInitEngine->getColours());
-    playerOrder = new vector<string>(*otherInitEngine->getPlayerOrder());
-}
-
-/**
- * Assignment operator
- */
-InitGameEngine& InitGameEngine::operator=(InitGameEngine& otherInitEngine) {
-    if (&otherInitEngine != this) {
-        for (pair<string, Player*> player: *players) {
-            delete player.second;
-        }
-        delete players;
-        delete hand;
-        delete numPlayers;
-        delete colours;
-        delete playerOrder;
-
-        players = new Players(*otherInitEngine.getPlayers());
-        hand = new Hand(otherInitEngine.getHand());
-        numPlayers = new int(otherInitEngine.getNumPlayers());
-        colours = new list<string>(*otherInitEngine.getColours());
-        playerOrder = new vector<string>(*otherInitEngine.getPlayerOrder());
-    }
-    return *this;
-}
 
 /**
  * Destructor
@@ -66,12 +35,15 @@ InitGameEngine::~InitGameEngine() {
     delete numPlayers;
     delete colours;
     delete playerOrder;
+    delete isGameTournament;
 
+    initInstance = nullptr;
     players = nullptr;
     hand = nullptr;
     numPlayers = nullptr;
     colours = nullptr;
     playerOrder = nullptr;
+    isGameTournament = nullptr;
 }
 
 /**
@@ -81,18 +53,70 @@ void InitGameEngine::initGame() {
     // Only initialize the game once.
     if (players->size() == 0 && GameMap::instance()->getVertices()->size() == 0) {
 
-        cout << "\n---------------------------------------------------------------------" << endl;
-        cout << "---------------------------------------------------------------------" << endl;
+        cout << "\n---------------------------------------------------------------------------" << endl;
+        cout << "---------------------------------------------------------------------------" << endl;
         cout << "                            W E L C O M E  T O " << endl;
         cout << "                      8  M I N U T E  E M P I R E !" << endl;
-        cout << "---------------------------------------------------------------------" << endl;
-        cout << "---------------------------------------------------------------------\n" << endl;
+        cout << "---------------------------------------------------------------------------" << endl;
+        cout << "---------------------------------------------------------------------------\n" << endl;
 
+        askGameMode();
         initializeMap();
         selectNumPlayers();
         createPlayers();
         hand->fill();
     }
+}
+
+/**
+ * Returns a singleton instance of a StartUpGameEngine object.
+ */
+InitGameEngine* InitGameEngine::instance() {
+    if (!initInstance) {
+        initInstance = new InitGameEngine();
+    }
+    return initInstance;
+}
+
+void InitGameEngine::setIsTournament(bool isGameTournamentBool) {
+    delete isGameTournament;
+    isGameTournament = new bool(isGameTournamentBool);
+}
+
+//PRIVATE
+void InitGameEngine::askGameMode() {
+    while(true) {
+        cout << "[ INIT ] Select Mode:" << endl;
+        cout << endl;
+        cout << "[ INIT ] 1. Normal" << endl;
+        cout << "[ INIT ] 2. Tournament" << endl;
+        cout << endl;
+        cout << "[ INIT ] > ";
+
+        string answer;
+        getline(cin, answer);
+
+        try {
+            int a = stoi(answer);
+
+            if (a == 1) {
+                cout << "[ INIT ] You've chosen Normal Mode." << endl;
+                isGameTournament = new bool(false);
+                break;
+            }
+            if (a == 2) {
+                cout << "[ INIT ] You've chosen Tournament Mode." << endl;
+                delete isGameTournament;
+                isGameTournament = new bool(true);
+                break;
+            }
+
+            cout << "\n[ ERROR! ] Invalid input. Please choose either option 1 or 2.\n" << endl;
+        } catch (invalid_argument& e) {
+            cout << "\n[ ERROR! ] Invalid input. Please enter a number.\n" << endl;
+        }
+    }
+
 }
 
 //PRIVATE
@@ -135,13 +159,18 @@ void InitGameEngine::initializeMap() {
  * The user can choose between 2 and 5 players, inclusively.
  */
 void InitGameEngine::selectNumPlayers() {
-    const int MAX_NUM_PLAYERS = 5;
+    int maxPlayers = 5;
+
+    if (*isGameTournament)
+        maxPlayers = 4;
+
+    const int MAX_NUM_PLAYERS = maxPlayers;
     const int MIN_NUM_PLAYERS = 2;
 
     while(true) {
         string answer;
 
-        cout << "\n[ INIT ] Please enter the number of players from 2 to 5:" << endl;
+        cout << "\n[ INIT ] Please enter the number of players from " << MIN_NUM_PLAYERS << " to " << MAX_NUM_PLAYERS << ":" << endl;
         cout << "[ INIT ] > ";
 
         getline(cin, answer);
@@ -155,7 +184,7 @@ void InitGameEngine::selectNumPlayers() {
                 break;
             }
 
-            cout << "\n[ ERROR! ] Invalid answer. Please enter a number from 2 to 5." << endl;
+            cout << "\n[ ERROR! ] Invalid answer. Please enter a number from " << MIN_NUM_PLAYERS << " to " << MAX_NUM_PLAYERS << "." << endl;
 
         } catch (invalid_argument& e) {
             cout << "\n[ ERROR! ] Invalid input. Please enter a number." << endl;
@@ -355,14 +384,17 @@ Strategy* InitGameEngine::chooseStrategy() {
         try{
             int choice = stoi(strategyChoice);
 
-            if (choice == 1)
+            if (choice == 1 && !*isGameTournament)
                 return new HumanStrategy();
             if (choice == 2)
                 return new GreedyStrategy();
             if (choice == 3)
                 return new ModerateStrategy();
 
-            cout << "\n[ ERROR! ] Invalid choice.\n" << endl;
+            cout << "\n[ ERROR! ] Invalid choice.";
+            if (*isGameTournament)
+                cout << " Please choose either Greedy or Moderate Strategies.";
+            cout << endl << endl;
         } catch (invalid_argument &e) {
             cout << "\n[ ERROR! ] Please enter a number.\n" << endl;
         }

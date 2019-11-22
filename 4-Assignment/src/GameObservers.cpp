@@ -1,11 +1,11 @@
 #include "GameObservers.h"
-#include "GameMainLoop.h"
+#include "GameEngine.h"
 
 #include <stdio.h>
 
 using namespace std;
 
-class GameMainEngine;
+class GamegameEngine;
 
 Observer::Observer() {}
 
@@ -51,16 +51,16 @@ void Subject::Notify(){
 /**
  * Copy Constructor
  */
-PhaseObserver::PhaseObserver(MainGameEngine* mainEngine) {
-    this->mainEngine = mainEngine;
-    this->mainEngine->Attach(this);
+PhaseObserver::PhaseObserver(GameEngine* gameEngine) {
+    this->gameEngine = gameEngine;
+    this->gameEngine->Attach(this);
 }
 
 /**
  * Destructor
  */
 PhaseObserver::~PhaseObserver() {
-    this->mainEngine->Detach(this);
+    this->gameEngine->Detach(this);
 }
 
 /**
@@ -68,29 +68,29 @@ PhaseObserver::~PhaseObserver() {
  * the card was situated, and how many coins the player paid for the card.
  */
 void PhaseObserver::Update() {
-    Player* currentPlayer = mainEngine->getCurrentPlayer();
-    Card* currentCard = mainEngine->getCurrentCard();
+    Player* currentPlayer = gameEngine->getCurrentPlayer();
+    Card* currentCard = gameEngine->getCurrentCard();
 
-    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "\n---------------------------------------------------------------------------" << endl;
     cout << "{ " << currentPlayer->getName() << " } Has chosen card [ " << currentCard->getGood() << " : \""
          << currentCard->getAction() << "\" ]" << endl << "\tat position " << currentCard->getPosition()
          << " which costs " << currentCard->getCost() << " coins." << endl;
-    cout << "---------------------------------------------------------------------\n" << endl;
+    cout << "---------------------------------------------------------------------------\n" << endl;
 }
 
 /**
  * Copy Constructor.
  */
-StatsObserver::StatsObserver(MainGameEngine* mainEngine) {
-    this->mainEngine = mainEngine;
-    this->mainEngine->Attach(this);
+StatsObserver::StatsObserver(GameEngine* gameEngine) {
+    this->gameEngine = gameEngine;
+    this->gameEngine->Attach(this);
 }
 
 /**
  * Destructor.
  */
 StatsObserver::~StatsObserver() {
-    this->mainEngine->Detach(this);
+    this->gameEngine->Detach(this);
 }
 
 /**
@@ -104,7 +104,9 @@ void StatsObserver::Update() {
     printMapRegions();
     printVictoryPoints();
     printGoodsFromCards();
-    if (!mainEngine->continueGame()) {
+
+    MainGameEngine* mainEngine = dynamic_cast<MainGameEngine*>(gameEngine);
+    if (!InitGameEngine::instance()->isTournament() && !mainEngine->continueGame()) {
         mainEngine->declareWinner();
         exit(EXIT_SUCCESS);
     }
@@ -118,7 +120,7 @@ void StatsObserver::printMapRegions() {
 
     vector<set<string>* >::iterator it;
 
-    cout << "---------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------------" << endl;
 
     for (it = continents.begin(); it != continents.end(); ++it) {
         set<string>* continent = (*it);
@@ -136,7 +138,7 @@ void StatsObserver::printMapRegions() {
                     region->print();
             }
         }
-        cout << "---------------------------------------------------------------------" << endl;
+        cout << "---------------------------------------------------------------------------" << endl;
     }
     cout << endl;
 }
@@ -145,7 +147,7 @@ void StatsObserver::printMapRegions() {
  * Prints out the current victory points for each player from owned regions, owned continents and card goods.
  */
 void StatsObserver::printVictoryPoints() {
-    Players* players = mainEngine->getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     string divider = "========================================================================";
 
@@ -181,7 +183,7 @@ void StatsObserver::printVictoryPoints() {
         snprintf(regionbuff, sizeof(regionbuff), "%-20s %d   ", "VP from Regions: ", vpRegions );
         snprintf(continentsbuff, sizeof(continentsbuff), "%-20s %d   ", "VP from Continents: ", vpContinents );
         snprintf(goodsbuff, sizeof(goodsbuff), "%-20s %d   ", "VP from Goods: ", vpGoods );
-        snprintf(totalsbuff, sizeof(totalsbuff), "%-20s  %d", " TOTAL:", totalVP );
+        snprintf(totalsbuff, sizeof(totalsbuff), "%-20s %-2d  ", "TOTAL:", totalVP );
 
         nameline += namebuff;
         regionline += regionbuff;
@@ -219,7 +221,7 @@ void StatsObserver::printVictoryPoints() {
  */
 void StatsObserver::printGoodsFromCards() {
 
-    Players* players = mainEngine->getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     string divider = "========================================================================";
 
@@ -247,12 +249,12 @@ void StatsObserver::printGoodsFromCards() {
         char stonebuff[50];
         char wildbuff[50];
 
-        snprintf(woodbuff, sizeof(woodbuff), "%-17s%-5d", WOOD.c_str(), 0);
-        snprintf(ironbuff, sizeof(ironbuff), "%-17s%-5d", IRON.c_str(), 0);
-        snprintf(carrotbuff, sizeof(carrotbuff), "%-17s%-5d", CARROT.c_str(), 0);
-        snprintf(gembuff, sizeof(gembuff), "%-17s%-5d", GEM.c_str(), 0);
-        snprintf(stonebuff, sizeof(stonebuff), "%-17s%-5d", STONE.c_str(), 0);
-        snprintf(wildbuff, sizeof(wildbuff), "%-17s%-5d", WILD.c_str(), 0);
+        snprintf(woodbuff, sizeof(woodbuff), "%-17s%-10d", WOOD.c_str(), 0);
+        snprintf(ironbuff, sizeof(ironbuff), "%-17s%-10d", IRON.c_str(), 0);
+        snprintf(carrotbuff, sizeof(carrotbuff), "%-17s%-10d", CARROT.c_str(), 0);
+        snprintf(gembuff, sizeof(gembuff), "%-17s%-10d", GEM.c_str(), 0);
+        snprintf(stonebuff, sizeof(stonebuff), "%-17s%-10d", STONE.c_str(), 0);
+        snprintf(wildbuff, sizeof(wildbuff), "%-17s%-10d", WILD.c_str(), 0);
 
         Player* pl = it->second;
 
@@ -263,17 +265,17 @@ void StatsObserver::printGoodsFromCards() {
 
         for (good = goodsCount->begin(); good != goodsCount->end(); ++good) {
             if (good->first == WOOD)
-                snprintf(woodbuff, sizeof(woodbuff), "%-17s%-5d", WOOD.c_str(), good->second);
+                snprintf(woodbuff, sizeof(woodbuff), "%-17s%-10d", WOOD.c_str(), good->second);
             else if (good->first == IRON)
-                snprintf(ironbuff, sizeof(ironbuff), "%-17s%-5d", IRON.c_str(), good->second);
+                snprintf(ironbuff, sizeof(ironbuff), "%-17s%-10d", IRON.c_str(), good->second);
             else if (good->first == CARROT)
-                snprintf(carrotbuff, sizeof(carrotbuff), "%-17s%-5d", CARROT.c_str(), good->second);
+                snprintf(carrotbuff, sizeof(carrotbuff), "%-17s%-10d", CARROT.c_str(), good->second);
             else if (good->first == GEM)
-                snprintf(gembuff, sizeof(gembuff), "%-17s%-5d", GEM.c_str(), good->second);
+                snprintf(gembuff, sizeof(gembuff), "%-17s%-10d", GEM.c_str(), good->second);
             else if (good->first == STONE)
-                snprintf(stonebuff, sizeof(stonebuff), "%-17s%-5d", STONE.c_str(), good->second);
+                snprintf(stonebuff, sizeof(stonebuff), "%-17s%-10d", STONE.c_str(), good->second);
             else if (good->first == WILD)
-                snprintf(wildbuff, sizeof(wildbuff), "%-17s%-5d", WILD.c_str(), good->second);
+                snprintf(wildbuff, sizeof(wildbuff), "%-17s%-10d", WILD.c_str(), good->second);
         }
 
         nameline += namebuff;

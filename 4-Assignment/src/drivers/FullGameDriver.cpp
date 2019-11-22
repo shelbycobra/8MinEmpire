@@ -1,11 +1,8 @@
-#include "../GameMainLoop.h"
+#include "../GameEngine.h"
 #include "../GameObservers.h"
 
 int main() {
     MainGameEngine gameEngine;
-
-    PhaseObserver phaseObserver(&gameEngine);
-    StatsObserver statsObserver(&gameEngine);
 
     gameEngine.startGame();
 

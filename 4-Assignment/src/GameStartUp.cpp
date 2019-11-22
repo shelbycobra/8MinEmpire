@@ -1,43 +1,34 @@
 #include<algorithm>
 #include "GameStartUp.h"
 
+StartUpGameEngine* StartUpGameEngine::startUpInstance = 0;
+
 /**
  * Default Constructor
  */
 StartUpGameEngine::StartUpGameEngine():
-    initPhase(new InitGameEngine()), nextTurn(new queue<Player*>()), coinSupply(new int(44)) {}
-
-/**
- * Copy Constructor
- */
-StartUpGameEngine::StartUpGameEngine(StartUpGameEngine* otherStartUpEngine){
-    initPhase = new InitGameEngine(otherStartUpEngine->getInitPhase());
-    nextTurn = new queue<Player*>(*otherStartUpEngine->getNextTurnQueue());
-}
-
-/**
- * Assigment operator
- */
-StartUpGameEngine& StartUpGameEngine::operator=(StartUpGameEngine& otherStartUpEngine) {
-    if(&otherStartUpEngine != this) {
-        delete initPhase;
-        delete nextTurn;
-
-        initPhase = new InitGameEngine(otherStartUpEngine.getInitPhase());
-        nextTurn = new queue<Player*>(*otherStartUpEngine.getNextTurnQueue());
-    }
-    return *this;
-}
+    nextTurn(new queue<Player*>()),
+    coinSupply(new int(44)) {}
 
 /**
  * Deconstructor
  */
 StartUpGameEngine::~StartUpGameEngine(){
-    delete initPhase;
+    delete InitGameEngine::instance();
     delete nextTurn;
 
-    initPhase = nullptr;
+    startUpInstance = nullptr;
     nextTurn = nullptr;
+}
+
+/**
+ * Returns a singleton instance of a StartUpGameEngine object.
+ */
+StartUpGameEngine* StartUpGameEngine::instance() {
+    if (!startUpInstance) {
+        startUpInstance = new StartUpGameEngine();
+    }
+    return startUpInstance;
 }
 
 /**
@@ -53,25 +44,27 @@ StartUpGameEngine::~StartUpGameEngine(){
  *
  */
 void StartUpGameEngine::startGame() {
-    if (nextTurn->size() == 0) {
-        // Create Map and Players
-        initPhase->initGame();
+    // Create Map and Players
+    InitGameEngine::instance()->initGame();
 
-        // Setup Game Board
-        distributeCoins();
-        selectStartVertex();
-        placeStartingArmies();
+    // Setup Game Board
+    distributeCoins();
+    selectStartVertex();
+    placeStartingArmies();
 
-        Player* winner = Bidder::startBid(initPhase->getPlayers());
+    if(InitGameEngine::instance()->isTournament()) {
+        // The first player created is set as the first player in the game.
+        Player* firstPlayer = InitGameEngine::instance()->getPlayers()->begin()->second;
+        setPlayerOrderInQueue(firstPlayer);
+    } else {
+        // Ask the players their bids to determine the first player.
+        Player* winner = Bidder::startBid(InitGameEngine::instance()->getPlayers());
 
         int winningBid = winner->getBidder()->getBidAmount();
         removeCoinsFromSupply(winningBid);
 
-        Player* firstPlayer = Bidder::getFirstPlayer(winner, initPhase->getPlayers());
-
+        Player* firstPlayer = Bidder::getFirstPlayer(winner, InitGameEngine::instance()->getPlayers());
         setPlayerOrderInQueue(firstPlayer);
-    } else {
-        cout << "[ START ] The Start Up Phase has already occurred." << endl;
     }
 }
 
@@ -85,16 +78,16 @@ void StartUpGameEngine::startGame() {
  * two players   ->  14 coins.
  */
 void StartUpGameEngine::distributeCoins() {
-    int coins = 18 - initPhase->getNumPlayers() * 2;
-    if (initPhase->getNumPlayers() == 3 || initPhase->getNumPlayers() == 4)
+    int coins = 18 - InitGameEngine::instance()->getNumPlayers() * 2;
+    if (InitGameEngine::instance()->getNumPlayers() == 3 || InitGameEngine::instance()->getNumPlayers() == 4)
         coins--;
 
-    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "\n---------------------------------------------------------------------------" << endl;
     cout << "[ START ] Distributing coins to players. Each player gets " << coins << " coins." << endl;
-    cout << "---------------------------------------------------------------------\n" << endl;
+    cout << "---------------------------------------------------------------------------\n" << endl;
 
     Players::iterator it;
-    for(it = initPhase->getPlayers()->begin(); it != initPhase->getPlayers()->end(); ++it) {
+    for(it = InitGameEngine::instance()->getPlayers()->begin(); it != InitGameEngine::instance()->getPlayers()->end(); ++it) {
         it->second->fillPurseFromSupply(coins);
         removeCoinsFromSupply(coins);
     }
@@ -138,16 +131,16 @@ void StartUpGameEngine::selectStartVertex() {
 void StartUpGameEngine::placeStartingArmies() {
     Vertex* startVertex = GameMap::instance()->getStartVertex();
 
-    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "\n---------------------------------------------------------------------------" << endl;
     cout << "[ START ] Placing 3 armies on the start vertex < " << startVertex->getName() << " >." << endl;
-    cout << "---------------------------------------------------------------------\n" << endl;
-    Players* players = initPhase->getPlayers();
+    cout << "---------------------------------------------------------------------------\n" << endl;
+    Players* players = InitGameEngine::instance()->getPlayers();
 
     for(Players::iterator it = players->begin(); it != players->end(); ++it) {
         it->second->executeAddArmies(3, startVertex);
     }
 
-    if (initPhase->getPlayers()->size() == 2)
+    if (InitGameEngine::instance()->getPlayers()->size() == 2 && !InitGameEngine::instance()->isTournament())
         placeAnonArmies();
 }
 
@@ -160,8 +153,8 @@ void StartUpGameEngine::placeStartingArmies() {
 void StartUpGameEngine::setPlayerOrderInQueue(Player* firstPlayer) {
     nextTurn->push(firstPlayer);
 
-    Players* players = initPhase->getPlayers();
-    vector<string>* playerOrder = initPhase->getPlayerOrder();
+    Players* players = InitGameEngine::instance()->getPlayers();
+    vector<string>* playerOrder = InitGameEngine::instance()->getPlayerOrder();
 
     vector<string>::iterator it;
 
@@ -194,15 +187,15 @@ void StartUpGameEngine::setPlayerOrderInQueue(Player* firstPlayer) {
  * chooses 2 regions to add an army, up to 4 total Anon armies.
  */
 void StartUpGameEngine::placeAnonArmies() {
-    Players* players = initPhase->getPlayers();
+    Players* players = InitGameEngine::instance()->getPlayers();
     queue<string> nextTurn;
 
-    PlayerEntry anonPlayerEntry (ANON, initPhase->getColours()->front());
+    PlayerEntry anonPlayerEntry (ANON, InitGameEngine::instance()->getColours()->front());
 
-    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "\n---------------------------------------------------------------------------" << endl;
     cout << "[ START ] Because there are only 2 players, pleast take turns" << endl;
     cout << "\t  placing 4 armies belonging to a third Anon player on the map." << endl;
-    cout << "---------------------------------------------------------------------\n" << endl;
+    cout << "---------------------------------------------------------------------------\n" << endl;
 
     Players::iterator it;
     for (it = players->begin(); it != players->end(); ++it)
@@ -236,9 +229,9 @@ void StartUpGameEngine::chooseAnonVertex(string &player, Player* anonPlayer) {
     string startName;
 
     while(true){
-        cout << "\n---------------------------------------------------------------------" << endl;
+        cout << "\n---------------------------------------------------------------------------" << endl;
         cout << "{ " << player << " } Choose a region to place one of " << anonPlayer->getName() << "'s armies." << endl;
-        cout << "---------------------------------------------------------------------\n" << endl;
+        cout << "---------------------------------------------------------------------------\n" << endl;
 
         GameMap::instance()->printMap();
         GameMap::instance()->printOccupiedRegions();

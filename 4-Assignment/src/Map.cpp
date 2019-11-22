@@ -117,8 +117,12 @@ void Vertex::print() {
         player = it->first;
         if (cities->find(player) != cities->end())
             numCities = cities->find(player)->second;
-        if (numArmies > 0 || numCities > 0)
-            printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+        if (numArmies > 0 || numCities > 0) {
+            if (*vertexKey == GameMap::instance()->getStartVertex()->getKey())
+                printf("\t\t%-10s %10s Armies: %-5d Cities: %d [ START ]\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+            else
+                printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+        }
     }
 
     for (it = cities->begin(); it != cities->end(); ++it) {
@@ -128,7 +132,10 @@ void Vertex::print() {
         if (armies->find(player) == armies->end()) {
             numArmies = 0;
             numCities = it->second;
-            printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+            if (*vertexKey == GameMap::instance()->getStartVertex()->getKey())
+                printf("\t\t%-10s %10s Armies: %-5d Cities: %d [ START ]\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
+            else
+                printf("\t\t%-10s %10s Armies: %-5d Cities: %d\n", player->first.c_str(), ("[ " + player->second + " ]").c_str(), numArmies, numCities);
         }
     }
 
@@ -294,12 +301,12 @@ void GameMap::printMap(){
 
 void GameMap::printOccupiedRegions() {
     Vertices::iterator it;
-    cout << "---------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------------" << endl;
     for(it = vertices->begin(); it != vertices->end(); ++it) {
         if (it->second->getArmies()->size() > 0 || it->second->getCities()->size() > 0)
             it->second->print();
     }
-    cout << "---------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------------" << endl;
 }
 
 /**

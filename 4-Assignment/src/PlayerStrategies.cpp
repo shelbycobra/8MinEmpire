@@ -114,17 +114,31 @@ void GreedyStrategy::MoveArmies(Player* player, const string action, Players* pl
         while(e != edges->end() && maxArmies > 0) {
 
             bool isWaterEdge = e->second;
-            if((!isWaterEdge || (overWaterAllowed && isWaterEdge)) && previousStartVertex != e->first->getName()) {
-                if (player->executeMoveArmies(1, currentVertex, e->first, overWaterAllowed)) {
-                    maxArmies--;
-                    previousStartVertex = currentVertex->getName();
-                    moveTaken = true;
+            if(!isWaterEdge || (overWaterAllowed && isWaterEdge)) {
+                if (edges->size() > 2 && previousStartVertex != e->first->getName()) {
+                    if (player->executeMoveArmies(1, currentVertex, e->first, overWaterAllowed)) {
+                        maxArmies--;
+                        previousStartVertex = currentVertex->getName();
+                        moveTaken = true;
 
-                    //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
-                    //list of regions making the r pointer invalid.
-                    //Reseting it back to the beginning prevents a seg fault.
-                    r = vertices->rbegin();
-                    break;
+                        //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
+                        //list of regions making the r pointer invalid.
+                        //Reseting it back to the beginning prevents a seg fault.
+                        r = vertices->rbegin();
+                        break;
+                    }
+                } else {
+                    if (player->executeMoveArmies(1, currentVertex, currentVertex, overWaterAllowed)) {
+                        maxArmies--;
+                        previousStartVertex = currentVertex->getName();
+                        moveTaken = true;
+
+                        //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
+                        //list of regions making the r pointer invalid.
+                        //Reseting it back to the beginning prevents a seg fault.
+                        r = vertices->rbegin();
+                        break;
+                    }
                 }
             }
             e++;
@@ -338,7 +352,7 @@ void ModerateStrategy::MoveArmies(Player* player, const string action, Players* 
                     previousStartVertex = currentVertex->getName();
                     moveTaken = true;
 
-                    //If the curernt vertex has no armies or cities on it after the move, it gets removed from player's
+                    //If the current vertex has no armies or cities on it after the move, it gets removed from player's
                     //list of regions making the it pointer invalid.
                     //Seting it to the next prevents a seg fault.
                     it = vertices->begin();
@@ -407,7 +421,7 @@ bool ModerateStrategy::changeOwnership(Vertex* startVertex, Vertex* endVertex, P
 
     // Find the difference in armies needed to surpass the end vertex owner's armies by 1.
     int diff = (ownerEndArmies - playerEndArmies) + 1;
-    if(diff <= maxMovableArmies) {
+    if(diff <= maxMovableArmies && diff > 0) {
         currentPlayer->executeMoveArmies(diff, startVertex, endVertex, overWaterAllowed);
         maxArmies -= diff;
         return true;

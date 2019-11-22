@@ -1,5 +1,5 @@
 #include "ScoreTest.h"
-#include "../GameMainLoop.h"
+#include "../GameEngine.h"
 
 void ScoreTest::test_onePlayerWinsGame() {
     cout << "\n=====================================================================" << endl;
@@ -10,7 +10,7 @@ void ScoreTest::test_onePlayerWinsGame() {
 
     mainEngine.startGame();
 
-    Players* players = mainEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -54,7 +54,7 @@ void ScoreTest::test_twoPlayersTieButHaveDifferentNumCoins() {
 
     mainEngine.startGame();
 
-    Players* players = mainEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -98,7 +98,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoins() {
 
     mainEngine.startGame();
 
-    Players* players = mainEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -149,7 +149,7 @@ void ScoreTest::test_twoPlayersTieAndHaveSameNumCoinsAndSameNumArmies() {
 
     mainEngine.startGame();
 
-    Players* players = mainEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     //Create cards
     Card* cardArr[] = {
@@ -199,7 +199,7 @@ void ScoreTest::test_playerHasWildCard() {
 
     mainEngine.startGame();
 
-    Players* players = mainEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     //Create cards
     Card* cardArr[] = {

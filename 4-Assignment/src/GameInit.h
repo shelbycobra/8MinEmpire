@@ -5,19 +5,22 @@
 #include <list>
 
 class InitGameEngine {
+    static InitGameEngine* initInstance;
     Players* players;
     Hand* hand;
     int* numPlayers;
     list<string>* colours;
     vector<string>* playerOrder;
+    bool* isGameTournament;
 
 public:
-    InitGameEngine();
-    InitGameEngine(InitGameEngine* otherInitEngine);
-    InitGameEngine& operator=(InitGameEngine& otherInitEngine);
     ~InitGameEngine();
 
+    static InitGameEngine* instance();
+
     void initGame();
+    void setIsTournament(bool isTournamentBool);
+    bool isTournament() { return *isGameTournament; }
 
     Players* getPlayers() { return players;}
     Hand* getHand() { return hand;}
@@ -26,6 +29,8 @@ public:
     vector<string>* getPlayerOrder() { return playerOrder; }
 
 private:
+    InitGameEngine();
+    void askGameMode();
     void initializeMap();
     void selectNumPlayers();
     void createPlayers();

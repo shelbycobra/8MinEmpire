@@ -7,15 +7,13 @@ int main() {
     cout << "TEST: test_GameInitObject" << endl;
     cout << "=====================================================================" << endl;
 
-    InitGameEngine initPhase;
-
-    initPhase.initGame();
+    InitGameEngine::instance()->initGame();
 
     Hand* hand;
     Players* players;
 
-    hand = initPhase.getHand();
-    players = initPhase.getPlayers();
+    hand = InitGameEngine::instance()->getHand();
+    players = InitGameEngine::instance()->getPlayers();
 
     cout << "\n--------------------------------------------------------------------" << endl;
     cout << "TEST: Verify deck contains 42 cards." << endl;
@@ -68,6 +66,8 @@ int main() {
     for(pl = players->begin(); pl != players->end(); ++pl) {
         cout << pl->first << " has made bid " << pl->second->getBidder()->getMadeBid() << endl;
     }
+
+    delete InitGameEngine::instance();
 
     return 0;
 

@@ -1,4 +1,4 @@
-#include "../GameMainLoop.h"
+#include "../GameEngine.h"
 #include "../GameObservers.h"
 
 int main() {

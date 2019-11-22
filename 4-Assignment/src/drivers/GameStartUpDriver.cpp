@@ -1,8 +1,9 @@
 #include "../GameStartUp.h"
 
 int main() {
-    StartUpGameEngine startPhase;
-    startPhase.startGame();
+    StartUpGameEngine::instance()->startGame();
+
+    delete StartUpGameEngine::instance();
 
     return 0;
 }

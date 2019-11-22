@@ -3,35 +3,34 @@
 
 #include "GameInit.h"
 
-class StartUpGameEngine {
+class Player;
 
-    InitGameEngine* initPhase;
+class StartUpGameEngine {
+    static StartUpGameEngine* startUpInstance;
     queue<Player*>* nextTurn;
     int* coinSupply;
 
 public:
-    StartUpGameEngine();
-    StartUpGameEngine(StartUpGameEngine* otherStartUpEngine);
-    StartUpGameEngine& operator=(StartUpGameEngine& startUpEngine);
     ~StartUpGameEngine();
 
+    static StartUpGameEngine* instance();
     void startGame();
 
     //Getters
-    InitGameEngine* getInitPhase() { return initPhase; }
     queue<Player*>* getNextTurnQueue() { return nextTurn; }
     int getCoinSupply() { return *coinSupply; }
+
+    Players* getPlayers() { return InitGameEngine::instance()->getPlayers(); }
+    Hand* getHand() { return InitGameEngine::instance()->getHand();}
+    int getNumPlayers() { return InitGameEngine::instance()->getNumPlayers(); }
+    list<string>* getColours() { return InitGameEngine::instance()->getColours(); }
+    vector<string>* getPlayerOrder() { return InitGameEngine::instance()->getPlayerOrder(); }
 
     void addCoinsToSupply(int amount);
     void removeCoinsFromSupply(int amount);
 
-    Players* getPlayers() { return initPhase->getPlayers(); }
-    Hand* getHand() { return initPhase->getHand();}
-    int getNumPlayers() { return initPhase->getNumPlayers(); }
-    list<string>* getColours() { return initPhase->getColours(); }
-    vector<string>* getPlayerOrder() { return initPhase->getPlayerOrder(); }
-
 private:
+    StartUpGameEngine();
     void chooseAnonVertex(string &player, Player* anonPlayer);
     void selectStartVertex();
     void distributeCoins();
