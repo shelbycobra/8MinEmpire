@@ -180,6 +180,13 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
     return winner;
 }
 
+/**
+ * Prompts the winner to choose which player starts the game.
+ *
+ * @param winner The winner of the bid phase.
+ * @param players A list of all players in the game.
+ * @return The first player.
+ */
 Player* Bidder::getFirstPlayer(Player* winner, Players* players) {
     string name = "";
 

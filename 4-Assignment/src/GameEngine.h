@@ -23,8 +23,6 @@ class MainGameEngine : public GameEngine {
 
 public:
     MainGameEngine();
-    MainGameEngine(MainGameEngine* otherMainGameEngine);
-    MainGameEngine& operator=(MainGameEngine& otherMainGameEngine);
     ~MainGameEngine();
 
     void runGame();

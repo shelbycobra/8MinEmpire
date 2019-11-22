@@ -84,6 +84,9 @@ void InitGameEngine::setIsTournament(bool isGameTournamentBool) {
 }
 
 //PRIVATE
+/**
+ * Prompts the user to choose the game mode. Either 'Normal' or 'Tournament'.
+ */
 void InitGameEngine::askGameMode() {
     while(true) {
         cout << "[ INIT ] Select Mode:" << endl;

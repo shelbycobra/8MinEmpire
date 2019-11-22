@@ -13,47 +13,27 @@ GameEngine::GameEngine() {}
 /**
  * Destructor
  */
-GameEngine::~GameEngine() {
-    delete StartUpGameEngine::instance();
-}
+GameEngine::~GameEngine() {}
 
 /**
  * Default Constructor
  */
-MainGameEngine::MainGameEngine(): currentPlayer(new Player()), currentCard(new Card()) {}
-
-/**
- * Copy Constructor
- */
-MainGameEngine::MainGameEngine(MainGameEngine* otherMainGameEngine) {
-    currentPlayer = otherMainGameEngine->getCurrentPlayer();
-    currentCard = otherMainGameEngine->getCurrentCard();
-}
-
-/**
- * Assignment Operator
- */
-MainGameEngine& MainGameEngine::operator=(MainGameEngine& otherMainGameEngine) {
-    if (&otherMainGameEngine != this) {
-        // GameEngine deletes the startUpEngine which deletes the player and the card.
-        GameEngine::operator=(otherMainGameEngine);
-
-        currentPlayer = otherMainGameEngine.getCurrentPlayer();
-        currentCard = otherMainGameEngine.getCurrentCard();
-    }
-    return *this;
-}
+MainGameEngine::MainGameEngine(): GameEngine() {}
 
 /**
  * Destructor
  */
 MainGameEngine::~MainGameEngine() {
+    delete StartUpGameEngine::instance();
     currentPlayer = nullptr;
     currentCard = nullptr;
 }
 
+/**
+ * Runs the whole game in Normal mode.
+ */
 void MainGameEngine::runGame() {
-    while(true) {
+    while(continueGame()) {
         getNextPlayer();
         chooseCardFromHand();
         performCardAction();
@@ -208,33 +188,48 @@ void MainGameEngine::declareWinner() {
                 cout << "[ GAME ] " << it->first->getName() << " has the same score as " << winner->getName() << "." << endl;
                 cout << "\n[ GAME ] Comparing number of coins instead ... " << endl;
                 cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getCoins()
-                    << " coins and " << winner->getName() << " has " << winner->getCoins()
-                    << " coins." << endl;
+                     << " coins and " << winner->getName() << " has " << winner->getCoins()
+                     << " coins." << endl;
+
                 if (it->first->getCoins() > winner->getCoins()) {
                     winner = it->first;
                     break;
-                } else if (it->first->getCoins() == winner->getCoins()) {
-                    cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
-                    cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
-                    cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
-                        << " armies and " << winner->getName() << " has " << winnerArmies
-                        << " armies." << endl;
-
-                    if (otherArmies > winnerArmies) {
-                        winner = it->first;
-                        break;
-                    } else if (otherArmies == winnerArmies) {
-                        cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
-                        cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
-                        cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
-                            << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
-                            << " controlled regions." << endl;
-                        if (it->first->getControlledRegions() > winner->getControlledRegions()) {
-                            winner = it->first;
-                            break;
-                        }
-                    }
                 }
+            } else {
+                break;
+            }
+
+            if (it->first->getCoins() == winner->getCoins()) {
+                cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
+                cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
+                cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
+                     << " armies and " << winner->getName() << " has " << winnerArmies
+                     << " armies." << endl;
+
+                if (otherArmies > winnerArmies) {
+                    winner = it->first;
+                    break;
+                }
+            } else {
+                break;
+            }
+
+            if (otherArmies == winnerArmies) {
+                cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
+                cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
+                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
+                     << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
+                     << " controlled regions." << endl;
+
+                if (it->first->getControlledRegions() > winner->getControlledRegions()) {
+                    winner = it->first;
+                    break;
+                } else { // No one won.
+                    winner = new Player();
+                    break;
+                }
+            } else {
+                break;
             }
         }
     }
@@ -324,15 +319,23 @@ void MainGameEngine::askToChangePlayerStrategy() {
     }
 }
 
-TournamentGameEngine::TournamentGameEngine(): GameEngine() {
-    PhaseObserver phaseObserver(this);
-    StatsObserver statsObserver(this);
-}
+/**
+ * Default Constructor
+ */
+TournamentGameEngine::TournamentGameEngine(): GameEngine() {}
 
+/**
+ * Destructor
+ */
 TournamentGameEngine::~TournamentGameEngine() {
     delete StartUpGameEngine::instance();
+    currentPlayer = nullptr;
+    currentCard = nullptr;
 }
 
+/**
+ * Runs game in tournament mode for NUM_ROUNDS times.
+ */
 void TournamentGameEngine::runGame() {
 
     for (int i = 0; i < NUM_ROUNDS; i++) {
@@ -456,42 +459,52 @@ void TournamentGameEngine::declareWinner() {
                 cout << "[ GAME ] " << it->first->getName() << " has the same score as " << winner->getName() << "." << endl;
                 cout << "\n[ GAME ] Comparing number of coins instead ... " << endl;
                 cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getCoins()
-                    << " coins and " << winner->getName() << " has " << winner->getCoins()
-                    << " coins." << endl;
+                     << " coins and " << winner->getName() << " has " << winner->getCoins()
+                     << " coins." << endl;
 
                 if (it->first->getCoins() > winner->getCoins()) {
                     winner = it->first;
                     break;
-                } else if (it->first->getCoins() == winner->getCoins()) {
-                    cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
-                    cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
-                    cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
-                        << " armies and " << winner->getName() << " has " << winnerArmies
-                        << " armies." << endl;
-
-                    if (otherArmies > winnerArmies) {
-                        winner = it->first;
-                        break;
-                    } else if (otherArmies == winnerArmies) {
-                        cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
-                        cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
-                        cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
-                            << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
-                            << " controlled regions." << endl;
-
-                        if (it->first->getControlledRegions() > winner->getControlledRegions()) {
-                            winner = it->first;
-                            break;
-                        } else {
-                            // No one won.
-                            winner = new Player();
-                            break;
-                        }
-                    }
                 }
+            } else {
+                break;
+            }
+
+            if (it->first->getCoins() == winner->getCoins()) {
+                cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
+                cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
+                cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
+                     << " armies and " << winner->getName() << " has " << winnerArmies
+                     << " armies." << endl;
+
+                if (otherArmies > winnerArmies) {
+                    winner = it->first;
+                    break;
+                }
+            } else {
+                break;
+            }
+
+            if (otherArmies == winnerArmies) {
+                cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
+                cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
+                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
+                     << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
+                     << " controlled regions." << endl;
+
+                if (it->first->getControlledRegions() > winner->getControlledRegions()) {
+                    winner = it->first;
+                    break;
+                } else { // No one won.
+                    winner = new Player();
+                    break;
+                }
+            } else {
+                break;
             }
         }
     }
+
     cout << endl;
     cout << " ---------------------------------------------- " << endl;
     cout << "| Player Name | Cards | Victory Points | Coins |" << endl;
@@ -517,6 +530,12 @@ void TournamentGameEngine::declareWinner() {
     cout << "---------------------------------------------------------------------------\n" << endl;
 }
 
+/**
+ * Creates a GameEngine object.
+ *
+ * @return A TournamentGameEngine (tournament mode) if InitGameEngine isTournament boolean is true,
+ * else return a MainGameEngine (normal mode)
+ */
 GameEngine* GameEngineFactory::create() {
     if (InitGameEngine::instance()->isTournament()) {
         return new TournamentGameEngine();
