@@ -38,7 +38,7 @@ int main() {
 
     mainEngine.getNextPlayer();
 
-    mainEngine.getCurrentPlayer()->PlaceNewArmies(string("Add 2 armies"), mainEngine.getPlayers());
+    mainEngine.getCurrentPlayer()->PlaceNewArmies(string("Add 2 armies"), StartUpGameEngine::instance()->getPlayers());
 
     cout << "\nGameMap pointer address: " << map << endl;
     cout << "Map image is " << map->getImage() << endl;

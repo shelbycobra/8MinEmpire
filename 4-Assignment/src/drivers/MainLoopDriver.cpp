@@ -1,6 +1,5 @@
 #include "../GameEngine.h"
 
-
 int main() {
     MainGameEngine gameEngine;
 
@@ -22,7 +21,7 @@ int main() {
             break;
     }
 
-    Players* players = gameEngine.getPlayers();
+    Players* players = StartUpGameEngine::instance()->getPlayers();
 
     for (Players::iterator it = players->begin(); it != players->end(); ++it) {
         cout << "\n[ PLAYER CARDS ] " << it->first << endl;

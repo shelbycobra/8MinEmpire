@@ -152,7 +152,7 @@ void StatsObserver::printVictoryPoints() {
     string divider = "========================================================================";
 
     cout << endl << divider << endl;
-    cout << "                       G A M E  S T A T I S T I C S" << endl;
+    cout << "                       V I C T O R Y  P O I N T S" << endl;
     cout << divider << endl << endl;
 
     string nameline = "";
@@ -179,11 +179,27 @@ void StatsObserver::printVictoryPoints() {
 
         int totalVP = vpRegions + vpContinents + vpGoods;
 
-        snprintf(namebuff, sizeof(namebuff), "\t%-15s    ",("{ " + pl->getName() + " }").c_str());
-        snprintf(regionbuff, sizeof(regionbuff), "%-20s %d   ", "VP from Regions: ", vpRegions );
-        snprintf(continentsbuff, sizeof(continentsbuff), "%-20s %d   ", "VP from Continents: ", vpContinents );
-        snprintf(goodsbuff, sizeof(goodsbuff), "%-20s %d   ", "VP from Goods: ", vpGoods );
-        snprintf(totalsbuff, sizeof(totalsbuff), "%-20s %-2d  ", "TOTAL:", totalVP );
+        snprintf(namebuff, sizeof(namebuff), "\t    %-20s    ",("{ " + pl->getName() + " }").c_str());
+
+        string regGraph = "";
+        string contGraph = "";
+        string goodsGraph = "";
+
+        for (int i = 0; i < vpRegions; i++ )
+            regGraph +="#";
+
+        for (int i = 0; i < vpContinents; i++)
+            contGraph += "#";
+
+        for (int i = 0; i < vpGoods; i++)
+            goodsGraph += "#";
+
+        string totalGraph = regGraph + contGraph + goodsGraph;
+
+        snprintf(regionbuff, sizeof(regionbuff), "(%2d) %-10s %-20s", vpRegions, "Regions", regGraph.c_str() );
+        snprintf(continentsbuff, sizeof(continentsbuff), "(%2d) %-10s %-20s", vpContinents, "Continents", contGraph.c_str() );
+        snprintf(goodsbuff, sizeof(goodsbuff), "(%2d) %-10s %-20s", vpGoods, "Goods", goodsGraph.c_str() );
+        snprintf(totalsbuff, sizeof(totalsbuff), "(%2d) %-10s %-20s", totalVP, "TOTAL", totalGraph.c_str() );
 
         nameline += namebuff;
         regionline += regionbuff;
@@ -196,14 +212,15 @@ void StatsObserver::printVictoryPoints() {
         count++;
 
         // Prints out the first 3 players on the same line to save space.
-        if (count == 3 || next == players->end()) {
-            cout << nameline.c_str() << endl;
+        if (count == 2 || count == 4 || next == players->end()) {
+            cout << nameline << endl;
             cout << endl;
-            cout << regionline.c_str() << endl;
-            cout << continentsline.c_str() << endl;
-            cout << goodsline.c_str() << endl;
+            cout << regionline << endl;
+            cout << continentsline << endl;
+            cout << goodsline << endl;
             cout << endl;
-            cout << totalsline.c_str() << endl << endl;
+            cout << totalsline << endl << endl;
+            cout << endl;
 
             nameline = "";
             regionline = "";

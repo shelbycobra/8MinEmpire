@@ -299,8 +299,10 @@ string InitGameEngine::selectMap(vector<string>* maps) {
  */
 void InitGameEngine::printColours() {
     cout << "[ INIT ]  AVAILABLE COLOURS\n" << endl;
+    int i = 1;
     for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
-        cout << (*it) << endl;
+        cout << i << ". " << (*it) << endl;
+        i++;
     }
     cout << endl;
 }
@@ -310,31 +312,40 @@ void InitGameEngine::printColours() {
  * Prompts the user to choose among available colours.
  */
 string InitGameEngine::chooseColour() {
+    string colourPos;
     string colour;
+    int pos;
 
     while(true) {
         cout << "\n[ INIT ] Choose a colour for the player:" << endl;
         printColours();
         cout << "[ INIT ] > ";
 
-        getline(cin, colour);
-        transform(colour.begin(), colour.end(), colour.begin(), ::toupper);
+        getline(cin, colourPos);
 
-        bool colourMatched = 0;
+        try {
+            pos = stoi(colourPos);
 
-        for(list<string>::iterator it = colours->begin(); it != colours->end(); ++it) {
-            if ((*it) == colour) {
-                cout << "[ INIT ] You chose " << (*it) << "." << endl;
-                colourMatched = 1;
-                colours->remove(colour);
+            list<string>::iterator it = colours->begin();
+
+            for(int i = 1; i <= (int) colours->size(); i++) {
+                if (i == pos) {
+                    colour = *it;
+                    colours->remove(*it);
+                    break;
+                }
+                it++;
+            }
+
+            if (colour != "") {
+                cout << "[ INIT ] You chose " << colour << "." << endl;
                 break;
             }
+
+            cout << "[ ERROR! ] You must enter a number between 1 and " << colours->size() << "." << endl;
+        } catch (invalid_argument &e) {
+            cout << "[ ERROR! ] Please enter a number." << endl;
         }
-
-        if (colourMatched)
-            break;
-
-        cout << "[ ERROR! ] You must choose a colour from the list." << endl;
     }
 
     return colour;

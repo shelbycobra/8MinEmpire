@@ -3,6 +3,26 @@ COMP 354 2019 - 8 MINUTE EMPIRE
 By Shelby Wams #29489177
 
 
+============================================ASSIGNMENT 4===================================================
+
+Note: To play the full game, run the FullGame Driver.
+
+
+Part 1: Cards Factory
+
+    DRIVER: CardsFactoryDriver.cpp
+
+        A driver that demonstrates the CardsFactory object. The factory creates one of several card types:
+    WoodCard, StoneCard, WildCard, IronCard, CarrotCard, and GemCard.
+
+Part 2: Tournament Mode
+
+    DRIVER: TournamentDriver.cpp
+
+        A driver that demonstrates the Tournament mode of the game. It prompts the user to first select either
+    
+
+
 ============================================ASSIGNMENT 3===================================================
 
 Note: To play the full game, run the FullGame Driver.
@@ -154,7 +174,7 @@ Part 6: Main Game Loop: Compute The Game Score
 0. DESCRIPTION
 
 8 Minute Empire is a area control game via the console. The current implementation creates some key classes
-and tests them, but it does not include a full game loop yet. However, if you run the Cards driver, 
+and tests them, but it does not include a full game loop yet. However, if you run the Cards driver,
 you will be able to interact with the game in a way that closely mimics what the game loop might be like.
 
 1. SRC DIRECTORY STRUCTURE
