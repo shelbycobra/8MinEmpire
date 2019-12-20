@@ -1,6 +1,4 @@
 #include "Bidder.h"
-#include "GameInit.h"
-#include <time.h>
 
 /**
  * Default constructor
@@ -19,7 +17,7 @@ Bidder::Bidder():
 Bidder::Bidder(Player* player):
     madeBid(new bool(false)),
     player(player),
-    bidAmount(new int(0)) {srand(time(0));}
+    bidAmount(new int(0)) {}
 
 /**
  * Copy constructor
@@ -69,42 +67,27 @@ int Bidder::bid() {
     string bidStr;
 
     if (!*madeBid) {
+        while(true) {
+            try {
+                cout << "[ BIDDER ] " << player->getName() << ", please select your bid."
+                        << " You have " << player->getCoins() << " coins." << endl;
+                cout << "[ BIDDER ] > ";
+                getline(cin, bidStr);
 
-        cout << "[ BIDDER ] " << player->getName() << ", please select your bid."
-             << " You have " << player->getCoins() << " coins." << endl;
-        cout << "[ BIDDER ] > ";
+                bid = stoi(bidStr);
 
-        if (InitGameEngine::instance()->isTournament())
-        {
-
-            int maxBid = player->getCoins();
-            bid = rand() % (maxBid+1);
-            *bidAmount = bid;
-
-            cout << bid << endl;
-        }
-        else
-        {
-            while(true) {
-                try {
-
-                    getline(cin, bidStr);
-
-                    bid = stoi(bidStr);
-
-                    if (bid <= player->getCoins()) {
-                        *bidAmount = bid;
-                        break;
-                    }
-
-                    cout << "\n[ ERROR! ] You don't have enough coins to make that bid. Please try again.\n" << endl;
-
-                } catch(invalid_argument &e) {
-                    cout << "\n[ ERROR! ] Please enter a number.\n" << endl;
+                if (bid <= player->getCoins()) {
+                    *bidAmount = bid;
+                    break;
                 }
-            }
-        }
 
+                cout << "\n[ ERROR! ] You don't have enough coins to make that bid. Please try again.\n" << endl;
+
+            } catch(invalid_argument &e) {
+                cout << "\n[ ERROR! ] Please enter a number.\n" << endl;
+            }
+
+        }
     } else {
         cout << "\n[ ERROR! ] A bid has already been made for " << player->getName() << endl;
     }
@@ -172,74 +155,48 @@ Player* Bidder::calculateWinner(unordered_map<Player*, int>* bids, Players* play
         if (it->second == max && it->first != winner) {
             cout << "\n[ BIDDER ] There is a tie between " << winner->getName() << " and "
                     << it->first->getName() << " for the highest bid of " << max << ".\n";
+            while(true) {
+                cout << "[ BIDDER ] Who is the younger player?\n";
+                cout << "[ BIDDER ] > ";
 
-            cout << "[ BIDDER ] Who is the younger player?\n";
-            cout << "[ BIDDER ] > ";
+                string youngerPlayer;
+                getline(cin, youngerPlayer);
 
-            if (InitGameEngine::instance()->isTournament())
-            {
-                cout << winner->getName() << endl;
-            }
-            else
-            {
-                while(true) {
-
-                    string youngerPlayer;
-                    getline(cin, youngerPlayer);
-
-                    if (youngerPlayer == winner->getName() || youngerPlayer == it->first->getName()) {
-                        winner = players->find(youngerPlayer)->second;
-                        break;
-                    } else {
-                        cout << "[ BIDDER ] That name is invalid. Please choose between " << winner->getName() << " and "
-                        << it->first->getName() << " for the highest bid of " << max << ".\n";
-                    }
+                if (youngerPlayer == winner->getName() || youngerPlayer == it->first->getName()) {
+                    winner = players->find(youngerPlayer)->second;
+                    break;
+                } else {
+                    cout << "[ BIDDER ] That name is invalid. Please choose between " << winner->getName() << " and "
+                    << it->first->getName() << " for the highest bid of " << max << ".\n";
                 }
             }
         }
     }
 
-    cout << "\n---------------------------------------------------------------------------" << endl;
+    cout << "\n---------------------------------------------------------------------" << endl;
     cout << "[ BIDDER ] " << winner->getName() << " has won the bid!" << endl;
-    cout << "---------------------------------------------------------------------------\n" << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 
     return winner;
 }
 
-/**
- * Prompts the winner to choose which player starts the game.
- *
- * @param winner The winner of the bid phase.
- * @param players A list of all players in the game.
- * @return The first player.
- */
 Player* Bidder::getFirstPlayer(Player* winner, Players* players) {
     string name = "";
 
-    cout << "[ BIDDER ] " << winner->getName() << ", please choose who goes first. " << endl;
-    cout << "[ BIDDER ] > ";
+    while (true) {
+        cout << "[ BIDDER ] " << winner->getName() << ", please choose who goes first. " << endl;
+        cout << "[ BIDDER ] > ";
+        getline(cin, name);
 
-    if(InitGameEngine::instance()->isTournament())
-    {
-        name = winner->getName();
-        cout << name << endl;
-    }
-    else
-    {
-        while (true) {
-            getline(cin, name);
-
-            if (players->find(name) != players->end()) {
-                break;
-            }
-
-            cout << "\n[ ERROR! ] " << name << " doesn't exist among current players.\n" << endl;
+        if (players->find(name) != players->end()) {
+            cout << "\n---------------------------------------------------------------------" << endl;
+            cout << "[ BIDDER ] " << name << " goes first!" << endl;
+            cout << "---------------------------------------------------------------------\n" << endl;
+            break;
         }
-    }
 
-    cout << "\n---------------------------------------------------------------------------" << endl;
-    cout << "[ BIDDER ] " << name << " goes first!" << endl;
-    cout << "---------------------------------------------------------------------------\n" << endl;
+        cout << "\n[ ERROR! ] " << name << " doesn't exist among current players.\n" << endl;
+    }
 
     return players->find(name)->second;
 }

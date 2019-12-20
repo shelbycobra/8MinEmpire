@@ -3,18 +3,16 @@
 #include "Cards.h"
 #include "util/MapUtil.h"
 #include "PlayerStrategies.h"
-#include "GameInit.h"
 
 #include <algorithm>
 
 class GameMap;
-class InitGameEngine;
 
 /**
  * Default constructor
  */
 Player::Player():
-    name(new string("N O  O N E")),
+    name(new string("No name")),
     regions(new Vertices()),
     armies(new int(14)),
     cities(new int(3)),
@@ -294,9 +292,9 @@ void Player::Ignore() {
  * @return The total victory points.
  */
 int Player::ComputeScore() {
-    cout << "---------------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
     cout << "{ " << *name << " } CALCULATING SCORE ..." << endl;
-    cout << "---------------------------------------------------------------------------\n" << endl;
+    cout << "---------------------------------------------------------------------\n" << endl;
 
     int vpRegions = getVPFromRegions();
     int vpContinents = computeContinentScore();
@@ -631,7 +629,7 @@ void Player::removeRegion(Vertex* region) {
 void Player::printRegions(){
 
     cout << "\n{ " << *name << " } Occupied Regions: [ " << *colour << " ]\n" << endl;
-    cout << "---------------------------------------------------------------------------" << endl;
+    cout << "---------------------------------------------------------------------" << endl;
     Vertices::iterator it;
     for(it = regions->begin(); it != regions->end(); ++it) {
         int numArmies = 0;
@@ -641,13 +639,10 @@ void Player::printRegions(){
         if (it->second->getCities()->find(playerEntry) != it->second->getCities()->end())
             numCities = it->second->getCities()->find(playerEntry)->second;
 
-        if (it->second->getKey() == GameMap::instance()->getStartVertex()->getKey())
-            printf("\t%-3s : %-20s ARMIES: %-5d CITIES: %-5d [ START ]\n", it->second->getKey().c_str(), it->second->getName().c_str(), numArmies, numCities);
-        else
-            printf("\t%-3s : %-20s ARMIES: %-5d CITIES: %-5d\n", it->second->getKey().c_str(), it->second->getName().c_str(), numArmies, numCities);
+        printf("\t%-3s : %-20s ARMIES: %-5d CITIES: %-5d\n", it->second->getKey().c_str(), it->second->getName().c_str(), numArmies, numCities);
     }
 
-    cout << "---------------------------------------------------------------------------\n" << endl;
+    cout << "--------------------------------------------------------------------\n" << endl;
 }
 
 /**
@@ -870,46 +865,32 @@ void Player::findAndDistributeWildCards(unordered_map<string, int>* goodsCount) 
         int numWildCards = goodsCount->find(WILD)->second;
         goodsCount->erase(WILD);
 
-        cout << "{ " << *name << " } has " << numWildCards << " WILD cards!" << endl;
+        cout << "{ " << *name << " } You have " << numWildCards << " WILD cards!" << endl;
 
-        if (InitGameEngine::instance()->isTournament()) {
-            unordered_map<string, int>::iterator it = goodsCount->begin();
-            for (int i = 0; i < numWildCards; i++) {
-                if (it->first == WILD) it++;
+        for (int i = 0; i < numWildCards; i++) {
+            // Only ask to move Wild cards around if there the player owns other goods.
+            while(goodsCount->size() > 1) {
+                string resource;
 
-                cout << "{ " << *name << " } added a " << it->first << " card." << endl;
-                int count = it->second;
-                string good = it->first;
-                goodsCount->erase(it->first);
-                goodsCount->insert(pair<string, int>(good, count+1));
-                it++;
-            }
-        } else {
-            for (int i = 0; i < numWildCards; i++) {
-                // Only ask to move Wild cards around if there the player owns other goods.
-                while(goodsCount->size() > 1) {
-                    string resource;
+                cout << "\n{ " << *name << " } Choose which resource to add the WILD card to ( " << numWildCards - i << " WILD cards left ):" << endl;
 
-                    cout << "\n{ " << *name << " } Choose which resource to add the WILD card to ( " << numWildCards - i << " WILD cards left ):" << endl;
+                for (unordered_map<string, int>::iterator it  = goodsCount->begin(); it != goodsCount->end(); ++it)
+                    cout << "{ " << *name << " } You have " << it->second << " " << it->first << " cards." << endl;
 
-                    for (unordered_map<string, int>::iterator it  = goodsCount->begin(); it != goodsCount->end(); ++it)
-                        cout << "{ " << *name << " } You have " << it->second << " " << it->first << " cards." << endl;
+                cout << "{ " << *name << " } > ";
 
-                    cout << "{ " << *name << " } > ";
+                getline(cin, resource);
+                transform(resource.begin(), resource.end(), resource.begin(), ::toupper);
 
-                    getline(cin, resource);
-                    transform(resource.begin(), resource.end(), resource.begin(), ::toupper);
-
-                    if (goodsCount->find(resource) != goodsCount->end()) {
-                        cout << "{ " << *name << " } Adding 1 count of " << resource << "." << endl;
-                        int count = goodsCount->find(resource)->second;
-                        goodsCount->erase(resource);
-                        goodsCount->insert(pair<string,int>(resource,count+1));
-                        break;
-                    }
-
-                    cout << "\n[ ERROR! ] Invalid resource name. Please choose a resource that you own.\n" << endl;
+                if (goodsCount->find(resource) != goodsCount->end()) {
+                    cout << "{ " << *name << " } Adding 1 count of " << resource << "." << endl;
+                    int count = goodsCount->find(resource)->second;
+                    goodsCount->erase(resource);
+                    goodsCount->insert(pair<string,int>(resource,count+1));
+                    break;
                 }
+
+                cout << "\n[ ERROR! ] Invalid resource name. Please choose a resource that you own.\n" << endl;
             }
         }
     }

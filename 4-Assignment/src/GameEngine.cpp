@@ -2,6 +2,7 @@
 #include "GameObservers.h"
 #include "PlayerStrategies.h"
 #include "GameStartUp.h"
+#include <algorithm>
 
 #define NUM_ROUNDS 30
 
@@ -450,84 +451,68 @@ void TournamentGameEngine::declareWinner() {
         }
     }
 
+    bool isDraw = false;
+    string playersInDraw = "";
+    string winnerName = winner->getName();
+
+    transform(winnerName.begin(), winnerName.end(), winnerName.begin(), ::toupper);
+
     if (highestScore > 0) {
+
         for(map<Player*, int>::iterator it = scores.begin(); it != scores.end(); it++) {
-            int winnerArmies = 14 - winner->getArmies();
-            int otherArmies = 14 - it->first->getArmies();
 
             if (it->second == highestScore && it->first != winner) {
-                cout << "[ GAME ] " << it->first->getName() << " has the same score as " << winner->getName() << "." << endl;
-                cout << "\n[ GAME ] Comparing number of coins instead ... " << endl;
-                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getCoins()
-                     << " coins and " << winner->getName() << " has " << winner->getCoins()
-                     << " coins." << endl;
+                isDraw = true;
 
-                if (it->first->getCoins() > winner->getCoins()) {
-                    winner = it->first;
-                    break;
-                }
-            } else {
-                break;
-            }
-
-            if (it->first->getCoins() == winner->getCoins()) {
-                cout << "[ GAME ] " << it->first->getName() << " has the same number of coins as " << winner->getName() << "." << endl;
-                cout << "\n[ GAME ] Comparing number of armies instead ..." << endl;
-                cout << "[ GAME ] " << it->first->getName() << " has " << otherArmies
-                     << " armies and " << winner->getName() << " has " << winnerArmies
-                     << " armies." << endl;
-
-                if (otherArmies > winnerArmies) {
-                    winner = it->first;
-                    break;
-                }
-            } else {
-                break;
-            }
-
-            if (otherArmies == winnerArmies) {
-                cout << "[ GAME ] " << it->first->getName() << " has the same number of armies as " << winner->getName() << "." << endl;
-                cout << "\n[ GAME ] Comparing number of controlled regions instead ..." << endl;
-                cout << "[ GAME ] " << it->first->getName() << " has " << it->first->getControlledRegions()
-                     << " controlled regions and " << winner->getName() << " has " << winner->getControlledRegions()
-                     << " controlled regions." << endl;
-
-                if (it->first->getControlledRegions() > winner->getControlledRegions()) {
-                    winner = it->first;
-                    break;
-                } else { // No one won.
-                    winner = new Player();
-                    break;
-                }
-            } else {
-                break;
+                // Add player's name to list of players in the draw.
+                string playerName = it->first->getName();
+                transform(playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
+                playersInDraw.append("  &  ").append(playerName);
             }
         }
     }
 
-    cout << endl;
-    cout << " ---------------------------------------------- " << endl;
-    cout << "| Player Name | Cards | Victory Points | Coins |" << endl;
-    cout << "|-------------|-------|----------------|-------|" << endl;
+    vector<Player*> playerPtrs;
 
     unordered_map<string, Player*>::iterator it;
 
     for(it = players->begin(); it != players->end(); it++) {
-        Player* player = it->second;
-        string name = player->getName();
-        int cards = player->getHand()->size();
-        int points = scores.at(player);
-        int coins = player->getCoins();
-        printf( "| %-11s |   %-3d |        %-7d |   %-3d |\n",
-            name.c_str(), cards, points, coins);
+        playerPtrs.push_back(it->second);
     }
-    cout << " ---------------------------------------------- " << endl;
+
+    cout << endl;
+    cout << " -------------------------------------------------------------- " << endl;
+    cout << "| Player Number | Player Name | Cards | Victory Points | Coins |" << endl;
+    cout << "|---------------|-------------|-------|----------------|-------|" << endl;
+
+    int playerNum = 1;
+    vector<Player*>::reverse_iterator r_it;
+
+    for(r_it = playerPtrs.rbegin(); r_it != playerPtrs.rend(); r_it++) {
+        string name = (*r_it)->getName();
+        int cards = (*r_it)->getHand()->size();
+        int points = scores.at(*r_it);
+        int coins = (*r_it)->getCoins();
+
+        printf( "|       %d       | %-11s |   %-3d |        %-7d |   %-3d |\n",
+            playerNum, name.c_str(), cards, points, coins);
+
+        playerNum++;
+    }
+
+    cout << " -------------------------------------------------------------- " << endl;
 
     cout << "\n---------------------------------------------------------------------------" << endl;
     cout << "---------------------------------------------------------------------------" << endl;
-    cout << "                     W I N N E R  I S  " << winner->getName() << endl;
+
+    if (isDraw)
+        cout << "          DRAW  BETWEEN  " << winnerName << playersInDraw << endl;
+    else
+        cout << "                     W I N N E R  I S  " << winnerName << endl;
+
     cout << "---------------------------------------------------------------------------" << endl;
     cout << "---------------------------------------------------------------------------\n" << endl;
+
 }
 
 /**
