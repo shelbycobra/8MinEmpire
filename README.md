@@ -1,8 +1,8 @@
-# 8 Minute Empire Copy
+# 8 Minute Empire
 
 ## 1. DESCRIPTION
 
-8 Minute Empire Copy is a area control game via the console. It is based on the board game by the same title.
+8 Minute Empire is a area control game via the console. It is based on the board game by the same title.
 
 
 ## 2. RUNNING THE DRIVERS
