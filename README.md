@@ -4,7 +4,6 @@
 
 8 Minute Empire Copy is a area control game via the console. It is based on the board game by the same title.
 
-This README is a combination of all the README.txt files from each assignment.
 
 ## 2. RUNNING THE DRIVERS
 
