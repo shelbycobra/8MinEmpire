@@ -1,10 +1,5 @@
 # 8 Minute Empire Copy
 
-COMP 354 2019
-
-By Shelby Wams #29489177
-
-
 ## 1. DESCRIPTION
 
 8 Minute Empire Copy is a area control game via the console. It is based on the board game by the same title.
