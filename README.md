@@ -8,17 +8,17 @@
 ## 2. RUNNING THE DRIVERS
 
 ### If on Mac or Linux:
-    Open a terminal window and change directory into the root directory of the project.
-    Execute `./run_driver <driver_name>`, where 'driver_name' is the name of one of the drivers below.
+Open a terminal window and change directory into the root directory of the project.
+Execute `./run_driver <driver_name>`, where 'driver_name' is the name of one of the drivers below.
     
 ** Note: To play the full game, run the **FullGame** Driver.
 
 ### If on Windows:
-    Open up Visual Studio.
-    Create a New Project from Existing Source Code.
-    Check project configuration in Properties->Linker->System->SubSystem. It should be CONSOLE.
-    Run the project in debug. Make sure to only include the driver class you want to run since each driver has
-    its own main().
+Open up Visual Studio.
+Create a New Project from Existing Source Code.
+Check project configuration in Properties->Linker->System->SubSystem. It should be CONSOLE.
+Run the project in debug. Make sure to only include the driver class you want to run since each driver has
+its own main().
 
 ## 3. ABOUT THE DRIVERS (TESTING)
 
@@ -26,7 +26,7 @@ Note: To play the full game, run the **FullGame** Driver.
     
 ### Map
 
-DRIVER: NapDriver.cpp
+DRIVER: MapDriver.cpp
 
 Creates several example maps and tests their validity according to the assignment criteria.
 
